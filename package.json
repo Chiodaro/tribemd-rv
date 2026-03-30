@@ -1,7 +1,8 @@
 {
   "name": "tribemd-rv",
   "version": "1.0.0",
+  "type": "module",
   "dependencies": {
-    "@netlify/blobs": "^8.2.0"
+    "@netlify/blobs": "^8.0.0"
   }
 }
