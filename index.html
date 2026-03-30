@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TribeMD — Simulador RV</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F6F3;--surface:#fff;--surface2:#F0EEE9;--border:rgba(0,0,0,.09);--border-mid:rgba(0,0,0,.14);--text:#1A1916;--text-2:#6B6860;--text-3:#A09D96;--accent:#1D6B4E;--accent-light:#E6F5EF;--accent-text:#0E4A34;--amber:#8A5E00;--amber-light:#FFF3D6;--red:#B33000;--red-light:#FFF0EB;--blue:#1A4D8A;--blue-light:#EBF2FF;--radius:10px;--radius-sm:6px;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+.app-shell{display:flex;min-height:100vh}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo .brand{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--accent);text-transform:uppercase}
+.sidebar-logo .sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.nav-section{padding:12px 10px 4px;font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--text-3);text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;margin:2px 6px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text-2);transition:all .15s;border:none;background:none;width:calc(100% - 12px);text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-light);color:var(--accent-text);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.4;flex-shrink:0}
+.nav-item.active .nav-dot{opacity:1}
+.main{flex:1;padding:28px 32px;max-width:1000px}
+.page-header{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.page-title{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+.page-meta{font-size:12px;color:var(--text-3);margin-top:3px}
+
+/* PERSON BANNER */
+.person-banner{display:none;align-items:center;gap:12px;background:var(--accent-light);border:1px solid rgba(29,107,78,.18);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px}
+.person-banner.visible{display:flex}
+.person-banner-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:white;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.02em}
+.person-banner-info{flex:1;min-width:0}
+.person-banner-name{font-size:16px;font-weight:600;color:var(--accent-text);letter-spacing:-.01em}
+.person-banner-role{font-size:12px;color:var(--accent-text);opacity:.7;margin-top:1px}
+.person-banner-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:4px;background:var(--accent);color:white;flex-shrink:0}
+.person-banner-clear{width:28px;height:28px;border-radius:var(--radius-sm);border:1px solid rgba(29,107,78,.3);background:transparent;cursor:pointer;color:var(--accent-text);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.person-banner-clear:hover{background:var(--accent);color:white;border-color:var(--accent)}
+
+/* DIRETÓRIO DE PESSOAS */
+.dir-section-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.dir-section-title:first-child{margin-top:0}
+.dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:4px}
+.dir-card{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;text-decoration:none}
+.dir-card:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.07)}
+.dir-card-avatar{width:34px;height:34px;border-radius:50%;background:var(--surface2);color:var(--text-2);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.dir-card:hover .dir-card-avatar{background:var(--accent);color:white}
+.dir-card-info{flex:1;min-width:0}
+.dir-card-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dir-card-role{font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.dir-card-tag{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;flex-shrink:0;align-self:flex-start;margin-top:2px;white-space:nowrap}
+.dir-tag-b2b{background:var(--blue-light);color:var(--blue)}
+.dir-tag-b2c{background:var(--accent-light);color:var(--accent-text)}
+.dir-tag-lc{background:var(--amber-light);color:var(--amber)}
+.dir-tag-hc{background:var(--red-light);color:var(--red)}
+.dir-tag-pdl{background:var(--surface2);color:var(--text-2)}
+.dir-empty{text-align:center;padding:32px;color:var(--text-3);font-size:13px}
+.section{display:none}.section.active{display:block}
+
+/* SUBTABS */
+.subtabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.stab{padding:8px 16px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.stab:hover{color:var(--text-2)}
+.stab.active{color:var(--accent-text);border-bottom-color:var(--accent)}
+.subpanel{display:none}.subpanel.active{display:block}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+.card-title{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:720px){.sidebar{display:none}.main{padding:16px}.grid2,.grid4{grid-template-columns:1fr}}
+
+/* FORM */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--text-2);margin-bottom:5px;letter-spacing:.02em}
+.field input[type=text],.field input[type=number],.field select{width:100%;height:34px;padding:0 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,107,78,.08)}
+
+/* RANGE */
+.range-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+.range-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border-mid);border-radius:2px;outline:none}
+.range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.range-val{font-size:12px;font-weight:500;font-family:'DM Mono',monospace;min-width:52px;text-align:right;color:var(--text)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.badge-green{background:var(--accent-light);color:var(--accent-text)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.badge-gray{background:var(--surface2);color:var(--text-2)}
+
+/* METRICS */
+.metric-card{background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px}
+.metric-label{font-size:11px;font-weight:500;color:var(--text-3);letter-spacing:.03em;margin-bottom:6px;text-transform:uppercase}
+.metric-value{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.metric-sub{font-size:11px;color:var(--text-3);margin-top:4px}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{font-size:13px;padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+tr.row-total td{background:var(--surface2);font-weight:600}
+table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var(--accent-text)}
+
+/* PEOPLE LIST */
+.people-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.person-card{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;background:var(--surface)}
+.person-card:hover{border-color:var(--accent);background:var(--accent-light)}
+.person-card.selected{border-color:var(--accent);background:var(--accent-light)}
+.person-avatar{width:32px;height:32px;border-radius:50%;background:var(--surface2);color:var(--text-2);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.02em}
+.person-card.selected .person-avatar{background:var(--accent);color:white}
+.person-info{flex:1;min-width:0}
+.person-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person-role{font-size:11px;color:var(--text-3)}
+.person-actions{display:flex;gap:4px;flex-shrink:0}
+.btn-sm{height:26px;padding:0 10px;border-radius:4px;border:1px solid var(--border-mid);background:var(--surface);font-size:11px;font-weight:500;cursor:pointer;color:var(--text-2);transition:all .12s}
+.btn-sm:hover{border-color:var(--red);color:var(--red)}
+.btn-sm.load{border-color:var(--accent);color:var(--accent-text)}
+.btn-sm.load:hover{background:var(--accent);color:white}
+.empty-state{text-align:center;padding:24px;color:var(--text-3);font-size:13px;border:1px dashed var(--border-mid);border-radius:var(--radius-sm)}
+
+/* SAB */
+.sab-grid{display:grid;gap:10px;margin-top:4px}
+.sab-item{border:1px solid var(--border-mid);border-radius:var(--radius-sm);padding:10px 12px;background:var(--surface);transition:border-color .15s,background .15s}
+.sab-item.active{border-color:var(--accent);background:var(--accent-light)}
+.sab-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.sab-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1}
+.sab-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-mid);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.sab-item.active .sab-check{background:var(--accent);border-color:var(--accent)}
+.sab-check-inner{width:8px;height:8px;background:white;border-radius:2px;opacity:0;transition:opacity .15s}
+.sab-item.active .sab-check-inner{opacity:1}
+.sab-name{font-size:13px;font-weight:500;color:var(--text)}
+.sab-tag{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:var(--surface2);color:var(--text-3)}
+.sab-weight-row{display:flex;align-items:center;gap:8px;opacity:.45;transition:opacity .15s;pointer-events:none;flex-wrap:wrap;margin-top:4px}
+.sab-item.active .sab-weight-row{opacity:1;pointer-events:auto}
+.sab-weight-label{font-size:11px;color:var(--text-2);white-space:nowrap}
+.sab-weight-btns{display:flex;gap:4px}
+.w-btn{width:28px;height:22px;border-radius:4px;border:1px solid var(--border-mid);background:var(--surface);font-size:12px;font-weight:500;cursor:pointer;color:var(--text-2);transition:all .12s;display:flex;align-items:center;justify-content:center}
+.w-btn.sel{background:var(--accent);border-color:var(--accent);color:white}
+.sab-desc{font-size:11px;color:var(--text-3);margin-top:4px;line-height:1.4}
+.sab-total-row{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:10px}
+.sab-total-label{color:var(--text-2);font-size:12px}
+.sab-total-val{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* RESULT */
+.result-block{background:var(--surface2);border-radius:var(--radius);padding:16px}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px}
+.result-row+.result-row{border-top:1px solid var(--border)}
+.result-key{color:var(--text-2)}
+.result-val{font-weight:500;font-variant-numeric:tabular-nums}
+.result-total{margin-top:8px;padding-top:10px;border-top:2px solid var(--border-mid);display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:600;color:var(--accent-text)}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:8px 0 3px}
+.progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .4s ease}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.info-block{background:var(--blue-light);border:1px solid rgba(26,77,138,.15);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:14px;line-height:1.5}
+
+/* KAM ranking */
+.kam-row{display:flex;align-items:center;gap:12px;padding:12px 0}
+.kam-row+.kam-row{border-top:1px solid var(--border)}
+.kam-rank{font-size:11px;font-weight:600;color:var(--text-3);width:18px;flex-shrink:0;font-family:'DM Mono',monospace}
+.kam-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-light);color:var(--accent-text);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kam-info{flex:1;min-width:0}
+.kam-name{font-size:13px;font-weight:500}
+.kam-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.kam-right{text-align:right}
+.kam-comissao{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.kam-pct{font-size:11px;color:var(--text-3);margin-top:2px}
+
+.btn-action{height:34px;padding:0 16px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-action:hover{background:var(--accent-text)}
+.btn-outline{height:34px;padding:0 14px;background:transparent;color:var(--text-2);border:1px solid var(--border-mid);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent-text)}
+.mono{font-family:'DM Mono',monospace}
+
+/* META PERIOD PANEL */
+.meta-panel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.meta-period{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
+.meta-period::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.meta-period.mensal::before{background:var(--accent)}
+.meta-period.trimestral::before{background:#1A4D8A}
+.meta-period.anual::before{background:#8A5E00}
+.meta-period-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px}
+.meta-period-meta{font-size:11px;color:var(--text-3);margin-bottom:2px}
+.meta-period-val{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--text);font-family:'DM Mono',monospace;margin-bottom:6px}
+.meta-period-real{font-size:11px;color:var(--text-2);margin-bottom:4px}
+.meta-period-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.meta-period-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.meta-period.mensal .meta-period-fill{background:var(--accent)}
+.meta-period.trimestral .meta-period-fill{background:#1A4D8A}
+.meta-period.anual .meta-period-fill{background:#8A5E00}
+.meta-period-pct{font-size:10px;margin-top:3px;font-weight:500}
+.meta-period.mensal .meta-period-pct{color:var(--accent-text)}
+.meta-period.trimestral .meta-period-pct{color:var(--blue)}
+.meta-period.anual .meta-period-pct{color:var(--amber)}
+@media(max-width:720px){.meta-panel{grid-template-columns:1fr}}
+
+/* ACOMPANHAMENTO — realizados vs meta */
+.track-section{margin-top:8px}
+.track-mes-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+@media(max-width:720px){.track-mes-grid{grid-template-columns:repeat(3,1fr)}}
+.track-mes-cell{display:flex;flex-direction:column;gap:3px}
+.track-mes-label{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);text-align:center}
+.track-mes-input{width:100%;height:30px;padding:0 6px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);font-size:12px;font-family:'DM Mono',monospace;text-align:right;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s}
+.track-mes-input:focus{border-color:var(--accent)}
+.track-mes-meta{font-size:10px;color:var(--text-3);text-align:center;margin-top:1px}
+.track-mes-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:2px}
+.track-mes-fill{height:100%;border-radius:2px;transition:width .3s}
+.track-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+@media(max-width:720px){.track-summary{grid-template-columns:1fr}}
+.track-kpi{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;position:relative;overflow:hidden}
+.track-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.track-kpi.mes::before{background:var(--accent)}
+.track-kpi.tri::before{background:#1A4D8A}
+.track-kpi.ano::before{background:#8A5E00}
+.track-kpi-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.track-kpi-nums{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+.track-kpi-real{font-size:16px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.track-kpi-sep{font-size:12px;color:var(--text-3)}
+.track-kpi-meta{font-size:12px;color:var(--text-3);font-family:'DM Mono',monospace}
+.track-kpi-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.track-kpi-fill{height:100%;border-radius:2px;transition:width .4s}
+.track-kpi.mes .track-kpi-fill{background:var(--accent)}
+.track-kpi.tri .track-kpi-fill{background:#1A4D8A}
+.track-kpi.ano .track-kpi-fill{background:#8A5E00}
+.track-kpi-pct{font-size:11px;font-weight:500}
+.track-kpi.mes .track-kpi-pct{color:var(--accent-text)}
+.track-kpi.tri .track-kpi-pct{color:var(--blue)}
+.track-kpi.ano .track-kpi-pct{color:var(--amber)}
+
+/* PERSON TRACK CARD (accordion on Pessoas tab) */
+.person-track-card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px;transition:border-color .15s}
+.person-track-card.open{border-color:var(--accent)}
+.person-track-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;background:var(--surface);transition:background .15s}
+.person-track-header:hover{background:var(--surface2)}
+.person-track-avatar{width:34px;height:34px;border-radius:50%;background:var(--surface2);color:var(--text-2);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.person-track-card.open .person-track-avatar{background:var(--accent);color:white}
+.person-track-info{flex:1;min-width:0}
+.person-track-name{font-size:13px;font-weight:500}
+.person-track-role{font-size:11px;color:var(--text-3)}
+.person-track-summary{display:flex;gap:12px;align-items:center;flex-shrink:0}
+.pts-item{text-align:right}
+.pts-label{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)}
+.pts-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace}
+.pts-pct{font-size:10px;font-weight:600}
+.pts-pct.ok{color:var(--accent-text)}
+.pts-pct.warn{color:var(--amber)}
+.pts-pct.bad{color:var(--red)}
+.person-track-chevron{font-size:12px;color:var(--text-3);transition:transform .2s;flex-shrink:0}
+.person-track-card.open .person-track-chevron{transform:rotate(180deg)}
+.person-track-body{display:none;padding:14px 16px;border-top:1px solid var(--border);background:var(--bg)}
+.person-track-card.open .person-track-body{display:block}
+.pdl-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);position:relative}
+.pdl-card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.pdl-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-light);color:var(--accent-text);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.02em}
+.pdl-person-info{flex:1;min-width:0}
+.pdl-name{font-size:14px;font-weight:600;color:var(--text)}
+.pdl-role{font-size:11px;color:var(--text-3);margin-top:2px}
+.pdl-remove{width:26px;height:26px;border-radius:4px;border:1px solid var(--border-mid);background:none;cursor:pointer;color:var(--text-3);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.pdl-remove:hover{border-color:var(--red);color:var(--red);background:var(--red-light)}
+.pdl-obj-list{display:flex;flex-direction:column;gap:10px}
+.pdl-obj{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;transition:border-color .15s}
+.pdl-obj:focus-within{border-color:var(--accent)}
+.pdl-obj-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pdl-obj-num{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);width:20px;flex-shrink:0}
+.pdl-obj-status{display:flex;gap:4px;margin-left:auto}
+.pdl-status-btn{padding:2px 8px;border-radius:3px;border:1px solid var(--border-mid);background:var(--surface);font-size:10px;font-weight:600;cursor:pointer;transition:all .12s;color:var(--text-3);letter-spacing:.02em}
+.pdl-status-btn.active-pendente{background:var(--surface2);color:var(--text-2);border-color:var(--border-mid)}
+.pdl-status-btn.active-andamento{background:var(--amber-light);color:var(--amber);border-color:rgba(138,94,0,.2)}
+.pdl-status-btn.active-concluido{background:var(--accent-light);color:var(--accent-text);border-color:rgba(29,107,78,.2)}
+.pdl-obj-text{width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:transparent;resize:none;line-height:1.5;min-height:38px}
+.pdl-obj-text::placeholder{color:var(--text-3)}
+.pdl-progress{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.pdl-progress-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;display:flex;justify-content:space-between}
+.pdl-progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.pdl-progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .4s ease}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">TribeMD · BCRI</div>
+    <div class="sub">Simulador de RV 2025</div>
+    <div id="save-status" style="font-size:10px;margin-top:6px;color:var(--text-3);min-height:14px;transition:color .3s"></div>
+  </div>
+  <div class="nav-section">Módulos</div>
+  <button class="nav-item active" onclick="showTab('b2b',this)"><span class="nav-dot"></span> B2B — KAMs</button>
+  <button class="nav-item" onclick="showTab('b2c',this)"><span class="nav-dot"></span> B2C — Academy</button>
+  <button class="nav-item" onclick="showTab('lideres',this)"><span class="nav-dot"></span> Líderes Comerciais</button>
+  <button class="nav-item" onclick="showTab('head',this)"><span class="nav-dot"></span> Head Comercial</button>
+  <button class="nav-item" onclick="showTab('pdl',this)"><span class="nav-dot"></span> Líderes Outras Áreas</button>
+  <div class="nav-section">Referência</div>
+  <button class="nav-item" onclick="showTab('dir',this)"><span class="nav-dot"></span> Diretório de Pessoas</button>
+  <button class="nav-item" onclick="showTab('faixas',this)"><span class="nav-dot"></span> Tabela de Faixas</button>
+  <button class="nav-item" onclick="showTab('ranking',this)"><span class="nav-dot"></span> Ranking KAMs</button>
+</nav>
+
+<main class="main">
+
+<!-- ===== B2B ===== -->
+<div id="tab-b2b" class="section active">
+  <div class="page-header">
+    <div><div class="page-title">B2B — Key Account Managers</div>
+    <div class="page-meta">Apuração trimestral · Base: Faturamento Líquido s/ pass-through</div></div>
+  </div>
+  <div class="subtabs">
+    <button class="stab active" onclick="showSub('b2b','sim',this)">Simulador</button>
+    <button class="stab" onclick="showSub('b2b','pessoas',this)">Pessoas</button>
+  </div>
+
+  <div id="b2b-sub-sim" class="subpanel active">
+    <div class="person-banner" id="b2b-banner"></div>
+    <div id="b2b-meta-panel" class="meta-panel" style="display:none"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Dados do KAM</div>
+        <div id="b2b-person-selector" style="margin-bottom:12px"></div>
+        <div class="field"><label>Nome</label><input type="text" id="b2b-nome" value="KAM - VV" oninput="calcB2B()"></div>
+        <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2b-salario" value="29511" oninput="calcB2B()"></div>
+        <div class="field"><label>Meta anual da BU (R$)</label><input type="number" id="b2b-meta-bu" value="55000000" oninput="calcB2B()"></div>
+        <div class="field"><label>Impostos s/ NF</label>
+          <div class="range-row"><input type="range" id="b2b-imp" min="0" max="0.3" step="0.0025" value="0.1175" oninput="syncR('b2b-imp','b2b-imp-v',true);calcB2B()"><span class="range-val mono" id="b2b-imp-v">11,75%</span></div>
+        </div>
+        <div class="field"><label>Pass-through (% do fat. líquido)</label>
+          <div class="range-row"><input type="range" id="b2b-pt" min="0" max="0.8" step="0.01" value="0.4" oninput="syncR('b2b-pt','b2b-pt-v',true);calcB2B()"><span class="range-val mono" id="b2b-pt-v">40,00%</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Faturamento Bruto por Trimestre (R$)</div>
+        <div class="field"><label>Q1</label><input type="number" id="b2b-q1" value="524287" oninput="calcB2B()"></div>
+        <div class="field"><label>Q2</label><input type="number" id="b2b-q2" value="213990" oninput="calcB2B()"></div>
+        <div class="field"><label>Q3</label><input type="number" id="b2b-q3" value="867080" oninput="calcB2B()"></div>
+        <div class="field"><label>Q4</label><input type="number" id="b2b-q4" value="2667087" oninput="calcB2B()"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Special Achievements — KAM</div>
+      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3). O peso pondera a distribuição do bônus SAB entre os achievements ativos.</div>
+      <div class="sab-grid" id="sab-b2b-grid"></div>
+      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no período</span><span class="sab-total-val" id="b2b-sab-total">R$ 0</span></div>
+    </div>
+    <div class="grid4" id="b2b-metrics"></div>
+    <div class="card">
+      <div class="card-title">Detalhamento por trimestre</div>
+      <div class="tbl-wrap"><table id="b2b-detail">
+        <thead><tr><th>Trim.</th><th>Fat. Bruto</th><th>Fat. Líquido</th><th>Base Cálculo</th><th>% Ating.</th><th>Faixa</th><th>% Com.</th><th>Com. Base</th><th>SAB</th><th>Total</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+    <div class="card" id="b2b-track-card" style="display:none">
+      <div class="card-title">Acompanhamento — Realizado vs Meta</div>
+      <div class="track-mes-grid" id="b2b-track-grid"></div>
+      <div class="track-summary" id="b2b-track-summary"></div>
+    </div>
+  </div>
+
+  <div id="b2b-sub-pessoas" class="subpanel">
+    <div class="card">
+      <div class="card-title">Cadastro de KAMs</div>
+      <div id="b2b-people-list" class="people-list"></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
+        <div class="grid2">
+          <div>
+            <div class="field"><label>Nome completo</label><input type="text" id="b2b-p-nome" placeholder="Ex: Vanessa Victorello"></div>
+            <div class="field"><label>Cargo / Código</label><input type="text" id="b2b-p-cargo" placeholder="Ex: KAM - VV"></div>
+            <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2b-p-sal" placeholder="0"></div>
+          </div>
+          <div>
+            <div class="field"><label>Faturamento Q1 (R$)</label><input type="number" id="b2b-p-q1" placeholder="0"></div>
+            <div class="field"><label>Faturamento Q2 (R$)</label><input type="number" id="b2b-p-q2" placeholder="0"></div>
+            <div class="field"><label>Faturamento Q3 (R$)</label><input type="number" id="b2b-p-q3" placeholder="0"></div>
+            <div class="field"><label>Faturamento Q4 (R$)</label><input type="number" id="b2b-p-q4" placeholder="0"></div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="addPerson('b2b')">+ Adicionar KAM</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== B2C ===== -->
+<div id="tab-b2c" class="section">
+  <div class="page-header">
+    <div><div class="page-title">B2C — Vendedores Academy</div>
+    <div class="page-meta">Apuração mensal · Base: Faturamento Líquido</div></div>
+  </div>
+  <div class="subtabs">
+    <button class="stab active" onclick="showSub('b2c','sim',this)">Simulador</button>
+    <button class="stab" onclick="showSub('b2c','pessoas',this)">Pessoas</button>
+  </div>
+
+  <div id="b2c-sub-sim" class="subpanel active">
+    <div class="person-banner" id="b2c-banner"></div>
+    <div id="b2c-meta-panel" class="meta-panel" style="display:none"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Dados do Vendedor</div>
+        <div id="b2c-person-selector" style="margin-bottom:12px"></div>
+        <div class="field"><label>Nome</label><input type="text" id="b2c-nome" value="Vendedor Academy" oninput="calcB2C()"></div>
+        <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2c-sal" value="3662" oninput="calcB2C()"></div>
+        <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="b2c-meta" value="296250" oninput="calcB2C()"></div>
+        <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="b2c-fat" value="296250" oninput="calcB2C()"></div>
+      </div>
+      <div class="card"><div class="card-title">Resultado</div><div id="b2c-result"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Faixas — Vendedores B2C</div>
+      <div class="tbl-wrap"><table id="b2c-faixas-tbl">
+        <thead><tr><th>#</th><th>% Atingimento</th><th>% Fat. Líquido</th><th>Comissão (exemplo)</th><th>x Salário</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Special Achievements — B2C</div>
+      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um.</div>
+      <div class="sab-grid" id="sab-b2c-grid"></div>
+      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="b2c-sab-total">R$ 0</span></div>
+    </div>
+    <div class="card" id="b2c-track-card" style="display:none">
+      <div class="card-title">Acompanhamento — Realizado vs Meta</div>
+      <div class="track-mes-grid" id="b2c-track-grid"></div>
+      <div class="track-summary" id="b2c-track-summary"></div>
+    </div>
+  </div>
+
+  <div id="b2c-sub-pessoas" class="subpanel">
+    <div class="card">
+      <div class="card-title">Cadastro de Vendedores B2C</div>
+      <div id="b2c-people-list" class="people-list"></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
+        <div class="grid2">
+          <div>
+            <div class="field"><label>Nome completo</label><input type="text" id="b2c-p-nome" placeholder="Ex: João Vitor Gonçalves"></div>
+            <div class="field"><label>Cargo</label><input type="text" id="b2c-p-cargo" placeholder="Ex: Analista de Vendas Jr"></div>
+            <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2c-p-sal" placeholder="0"></div>
+          </div>
+          <div>
+            <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="b2c-p-meta" placeholder="0"></div>
+            <div class="field"><label>Fat. Líquido Realizado (R$)</label><input type="number" id="b2c-p-fat" placeholder="0"></div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="addPerson('b2c')">+ Adicionar Vendedor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LÍDERES ===== -->
+<div id="tab-lideres" class="section">
+  <div class="page-header">
+    <div><div class="page-title">Líderes Comerciais</div>
+    <div class="page-meta">Apuração mensal · Base: Faturamento Líquido</div></div>
+  </div>
+  <div class="subtabs">
+    <button class="stab active" onclick="showSub('lc','sim',this)">Simulador</button>
+    <button class="stab" onclick="showSub('lc','pessoas',this)">Pessoas</button>
+  </div>
+
+  <div id="lc-sub-sim" class="subpanel active">
+    <div class="person-banner" id="lc-banner"></div>
+    <div id="lc-meta-panel" class="meta-panel" style="display:none"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Dados do Líder</div>
+        <div id="lc-person-selector" style="margin-bottom:12px"></div>
+        <div class="field"><label>Nome</label><input type="text" id="lc-nome" value="Líder Comercial" oninput="calcLC()"></div>
+        <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="lc-sal" value="2249" oninput="calcLC()"></div>
+        <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="lc-meta" value="655305" oninput="calcLC()"></div>
+        <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="lc-fat" value="655305" oninput="calcLC()"></div>
+      </div>
+      <div class="card"><div class="card-title">Resultado</div><div id="lc-result"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Special Achievements — Líderes Comerciais</div>
+      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um.</div>
+      <div class="sab-grid" id="sab-lc-grid"></div>
+      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="lc-sab-total">R$ 0</span></div>
+    </div>
+    <div class="card" id="lc-track-card" style="display:none">
+      <div class="card-title">Acompanhamento — Realizado vs Meta</div>
+      <div class="track-mes-grid" id="lc-track-grid"></div>
+      <div class="track-summary" id="lc-track-summary"></div>
+    </div>
+  </div>
+
+  <div id="lc-sub-pessoas" class="subpanel">
+    <div class="card">
+      <div class="card-title">Cadastro de Líderes Comerciais</div>
+      <div id="lc-people-list" class="people-list"></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
+        <div class="grid2">
+          <div>
+            <div class="field"><label>Nome completo</label><input type="text" id="lc-p-nome" placeholder="Ex: Danielle da Silva"></div>
+            <div class="field"><label>Cargo</label><input type="text" id="lc-p-cargo" placeholder="Ex: Diretor(a) Comercial"></div>
+            <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="lc-p-sal" placeholder="0"></div>
+          </div>
+          <div>
+            <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="lc-p-meta" placeholder="0"></div>
+            <div class="field"><label>Fat. Líquido Realizado (R$)</label><input type="number" id="lc-p-fat" placeholder="0"></div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="addPerson('lc')">+ Adicionar Líder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEAD ===== -->
+<div id="tab-head" class="section">
+  <div class="page-header">
+    <div><div class="page-title">Head Comercial</div>
+    <div class="page-meta">Apuração mensal · Base: Faturamento Líquido · Piso de margem bruta: 40% da meta de receita</div></div>
+  </div>
+  <div class="subtabs">
+    <button class="stab active" onclick="showSub('hc','sim',this)">Simulador</button>
+    <button class="stab" onclick="showSub('hc','pessoas',this)">Pessoas</button>
+  </div>
+
+  <div id="hc-sub-sim" class="subpanel active">
+    <div class="person-banner" id="hc-banner"></div>
+    <div id="hc-meta-panel" class="meta-panel" style="display:none"></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Dados do Head</div>
+        <div id="hc-person-selector" style="margin-bottom:12px"></div>
+        <div id="hc-mes-selector" style="margin-bottom:12px;display:none"></div>
+        <div class="field"><label>Nome</label><input type="text" id="hc-nome" value="Head Comercial" oninput="calcHC()"></div>
+        <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="hc-sal" value="15000" oninput="calcHC()"></div>
+        <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="hc-meta" value="936150" oninput="calcHC()"></div>
+        <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="hc-fat" value="936150" oninput="calcHC()"></div>
+        <div class="divider"></div>
+        <div class="field"><label>Meta de Margem Bruta (R$)</label><input type="number" id="hc-mb-meta" value="0" oninput="calcHC()"></div>
+        <div class="field"><label>Margem Bruta Realizada (R$)</label><input type="number" id="hc-mb-real" value="0" oninput="calcHC()"></div>
+        <div id="hc-mb-status" style="margin-top:4px"></div>
+      </div>
+      <div class="card"><div class="card-title">Resultado</div><div id="hc-result"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Special Achievements — BU Head</div>
+      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um. A remuneração variável base já depende do atingimento de margem bruta definido acima.</div>
+      <div class="sab-grid" id="sab-hc-grid"></div>
+      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="hc-sab-total">R$ 0</span></div>
+    </div>
+    <div class="grid4" id="hc-metrics"></div>
+    <div class="card" id="hc-track-card" style="display:none">
+      <div class="card-title">Acompanhamento — Realizado vs Meta</div>
+      <div class="track-mes-grid" id="hc-track-grid"></div>
+      <div class="track-summary" id="hc-track-summary"></div>
+    </div>
+  </div>
+
+  <div id="hc-sub-pessoas" class="subpanel">
+    <div class="card">
+      <div class="card-title">Cadastro de Heads Comerciais</div>
+      <div id="hc-people-list" class="people-list"></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
+        <div class="grid2">
+          <div>
+            <div class="field"><label>Nome completo</label><input type="text" id="hc-p-nome" placeholder="Ex: Hugo Santa Cruz"></div>
+            <div class="field"><label>Cargo</label><input type="text" id="hc-p-cargo" placeholder="Ex: Diretor Comercial"></div>
+            <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="hc-p-sal" placeholder="0"></div>
+          </div>
+          <div>
+            <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="hc-p-meta" placeholder="0"></div>
+            <div class="field"><label>Fat. Líquido Realizado (R$)</label><input type="number" id="hc-p-fat" placeholder="0"></div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="addPerson('hc')">+ Adicionar Head</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LÍDERES OUTRAS ÁREAS (PDL) ===== -->
+<div id="tab-pdl" class="section">
+  <div class="page-header">
+    <div><div class="page-title">Líderes Outras Áreas</div>
+    <div class="page-meta">Participantes do PDL · Registro de objetivos anuais</div></div>
+  </div>
+
+  <div class="info-block" style="margin-bottom:20px">
+    Cada líder tem <strong>3 objetivos</strong> a atingir no ano. Clique em qualquer campo para editar. Use o botão de status para marcar o andamento de cada objetivo.
+  </div>
+
+  <div id="pdl-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px"></div>
+
+  <div class="card" style="margin-top:8px">
+    <div class="card-title">Adicionar Líder</div>
+    <div class="grid2">
+      <div class="field"><label>Nome completo</label><input type="text" id="pdl-p-nome" placeholder="Ex: Maria Silva"></div>
+      <div class="field"><label>Cargo / Área</label><input type="text" id="pdl-p-cargo" placeholder="Ex: Gerente Financeiro"></div>
+    </div>
+    <button class="btn-action" onclick="addPDL()">+ Adicionar Líder</button>
+  </div>
+</div>
+
+<!-- ===== FAIXAS ===== -->
+<!-- ===== DIRETÓRIO ===== -->
+<div id="tab-dir" class="section">
+  <div class="page-header">
+    <div><div class="page-title">Diretório de Pessoas</div>
+    <div class="page-meta">Todos os participantes cadastrados · clique para ir à página da pessoa</div></div>
+  </div>
+  <div id="dir-search-wrap" style="margin-bottom:16px">
+    <input type="text" id="dir-search" placeholder="Buscar por nome ou cargo…"
+      style="width:100%;height:38px;padding:0 14px;border:1px solid var(--border-mid);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s"
+      oninput="renderDiretorio(this.value)">
+  </div>
+  <div id="dir-grid"></div>
+</div>
+
+<div id="tab-faixas" class="section">
+  <div class="page-header"><div><div class="page-title">Tabela de Faixas</div><div class="page-meta">Referência completa do plano de incentivo 2025</div></div></div>
+  <div class="card">
+    <div class="card-title">Faixas KAM B2B — Meta Anual de Vendas</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Faixa</th><th>Volume Anual</th><th>Gatilho Q1</th><th>Gatilho Q2</th><th>Gatilho Q3</th><th>Gatilho Q4</th><th>% Comissão</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>R$ 0–R$ 1,9MM</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="mono">1,00%</td></tr>
+        <tr><td>1</td><td>R$ 2MM–R$ 2,9MM</td><td class="mono">R$ 240k</td><td class="mono">R$ 400k</td><td class="mono">R$ 620k</td><td class="mono">R$ 740k</td><td class="mono">2,50%</td></tr>
+        <tr><td>2</td><td>R$ 3MM–R$ 3,9MM</td><td class="mono">R$ 360k</td><td class="mono">R$ 600k</td><td class="mono">R$ 930k</td><td class="mono">R$ 1,11MM</td><td class="mono">2,75%</td></tr>
+        <tr><td>3</td><td>R$ 4MM–R$ 4,9MM</td><td class="mono">R$ 480k</td><td class="mono">R$ 800k</td><td class="mono">R$ 1,24MM</td><td class="mono">R$ 1,48MM</td><td class="mono">3,00%</td></tr>
+        <tr><td>4</td><td>R$ 5MM–R$ 6,1MM</td><td class="mono">R$ 600k</td><td class="mono">R$ 1,0MM</td><td class="mono">R$ 1,55MM</td><td class="mono">R$ 1,85MM</td><td class="mono">3,25%</td></tr>
+        <tr><td>5</td><td>R$ 6,2MM–R$ 7,2MM</td><td class="mono">R$ 744k</td><td class="mono">R$ 1,24MM</td><td class="mono">R$ 1,92MM</td><td class="mono">R$ 2,29MM</td><td class="mono">4,00%</td></tr>
+        <tr><td>6</td><td>≥ R$ 7,2MM</td><td class="mono">R$ 864k</td><td class="mono">R$ 1,44MM</td><td class="mono">R$ 2,23MM</td><td class="mono">R$ 2,66MM</td><td class="mono">5,00%</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Vendedores B2C Academy</div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento</th><th>% Fat. Líquido</th></tr></thead><tbody>
+        <tr><td>1</td><td>Até 49,9%</td><td class="mono">1,00%</td></tr>
+        <tr><td>2</td><td>50%–69,99%</td><td class="mono">1,25%</td></tr>
+        <tr><td>3</td><td>70%–89,99%</td><td class="mono">1,50%</td></tr>
+        <tr><td>4</td><td>90%–100%</td><td class="mono">2,00%</td></tr>
+        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
+        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Líderes Comerciais</div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento</th><th>% Fat. Líquido</th></tr></thead><tbody>
+        <tr><td>1</td><td>Até 49,9%</td><td class="mono">2,50%</td></tr>
+        <tr><td>2</td><td>50%–69,99%</td><td class="mono">2,75%</td></tr>
+        <tr><td>3</td><td>70%–89,99%</td><td class="mono">2,85%</td></tr>
+        <tr><td>4</td><td>90%–100%</td><td class="mono">3,00%</td></tr>
+        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
+        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Head Comercial</div>
+      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento Receita</th><th>% Fat. Líquido</th></tr></thead><tbody>
+        <tr><td>1</td><td>Até 49,9%</td><td class="mono">2,50%</td></tr>
+        <tr><td>2</td><td>50%–69,99%</td><td class="mono">2,80%</td></tr>
+        <tr><td>3</td><td>70%–89,99%</td><td class="mono">3,10%</td></tr>
+        <tr><td>4</td><td>90%–100%</td><td class="mono">3,50%</td></tr>
+        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
+        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
+      </tbody></table></div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Condição de Margem Bruta</div>
+        <div style="background:var(--amber-light);border:1px solid rgba(138,94,0,.18);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.6;margin-bottom:8px">
+          <strong>Piso mínimo:</strong> Para que qualquer remuneração variável seja paga ao Head Comercial, a margem bruta absoluta realizada no período deve ser de, no mínimo, <strong>40% da meta de receita</strong>. Abaixo desse piso, a RV é zero, independentemente do atingimento de receita.
+        </div>
+        <div style="background:var(--blue-light);border:1px solid rgba(26,77,138,.15);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--blue);line-height:1.6">
+          <strong>Proporcionalidade:</strong> Atingido o piso, o percentual de RV da faixa correspondente é multiplicado pelo percentual de atingimento da meta de margem bruta. Exemplo: faixa de 2,80% de RV + atingimento de 40% da meta de margem → RV efetiva = 2,80% × 40% = <strong>1,12%</strong>. O mesmo fator proporcional aplica-se aos bônus de Special Achievement.
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">SAB — Percentuais por faixa</div>
+      <div class="tbl-wrap"><table><thead><tr><th>Achievement</th><th>50–69%</th><th>70–79%</th><th>80–89%</th><th>90–100%</th></tr></thead><tbody>
+        <tr><td>Nova Área / Cliente</td><td class="mono">0,25%</td><td class="mono">0,50%</td><td class="mono">0,75%</td><td class="mono">1,00%</td></tr>
+        <tr><td>Expansão (BR+1)</td><td class="mono">0,25%</td><td class="mono">0,50%</td><td class="mono">0,75%</td><td class="mono">1,00%</td></tr>
+        <tr><td>Portfólio Digital</td><td class="mono">0,50%</td><td class="mono">1,00%</td><td class="mono">1,50%</td><td class="mono">2,00%</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RANKING ===== -->
+<div id="tab-ranking" class="section">
+  <div class="page-header"><div><div class="page-title">Ranking de KAMs</div><div class="page-meta">Desempenho acumulado Q1–Q3 · 2025</div></div></div>
+  <div class="card"><div class="card-title">Performance acumulada</div><div id="ranking-list"></div></div>
+</div>
+
+</main>
+</div>
+
+<script>
+const fmt = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+const fmtPct = v => (v*100).toFixed(2).replace('.',',')+'%';
+const ini = n => n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+
+function syncR(id,outId,isPct){
+  const v=parseFloat(document.getElementById(id).value);
+  document.getElementById(outId).textContent=isPct?(v*100).toFixed(2).replace('.',',')+'%':v.toFixed(0);
+}
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+}
+function showSub(prefix,sub,btn){
+  const panels=document.querySelectorAll(`[id^="${prefix}-sub-"]`);
+  panels.forEach(p=>p.classList.remove('active'));
+  document.getElementById(`${prefix}-sub-${sub}`).classList.add('active');
+  btn.closest('.subtabs').querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ===== FAIXAS B2B ===== */
+const FAIXAS=[
+  {pct:.01,   g:[0,0,0,0]},
+  {pct:.025,  g:[240000,400000,620000,740000]},
+  {pct:.0275, g:[360000,600000,930000,1110000]},
+  {pct:.03,   g:[480000,800000,1240000,1480000]},
+  {pct:.0325, g:[600000,1000000,1550000,1850000]},
+  {pct:.04,   g:[744000,1240000,1922000,2294000]},
+  {pct:.05,   g:[864000,1440000,2232000,2664000]}
+];
+function getFaixaIdx(acum,qi){for(let i=FAIXAS.length-1;i>=0;i--){if(FAIXAS[i].g[qi]>0&&acum>=FAIXAS[i].g[qi])return i;}return 0;}
+
+/* ===== SAB CONFIG ===== */
+const mkSAB=(tag)=>[
+  {id:'nat',label:'Nova Área Terap. / Novo Cliente',desc:'Abertura de nova área terapêutica ou primeiro pedido de novo cliente.',tag,active:false,weight:1,pcts:{50:.0025,70:.005,80:.0075,90:.01}},
+  {id:'exp',label:'Expansão (BR + 1)',desc:'Expansão geográfica para novo estado ou país adicional.',tag,active:false,weight:1,pcts:{50:.0025,70:.005,80:.0075,90:.01}},
+  {id:'dig',label:'Portfólio Digital',desc:'Inclusão de produtos ou serviços digitais.',tag,active:false,weight:2,pcts:{50:.005,70:.01,80:.015,90:.02}},
+  {id:'mba',label:'Atingimento de Margem Bruta-Alvo',desc:'Gatilho: margem bruta realizada ≥ alvo definida. % sobre faturamento líquido.',tag:'Todos',active:false,weight:2,pcts:{50:.005,70:.0075,80:.01,90:.015},useMargemAlvo:true},
+];
+
+const SAB_KAM=mkSAB('KAM');
+const SAB_B2C=mkSAB('B2C');
+const SAB_LC=mkSAB('Líder');
+const SAB_HEAD=mkSAB('Head');
+
+const sabExtras={
+  'sab-b2b-grid':{margemAlvo:0,margemRealizada:0},
+  'sab-hc-grid': {margemAlvo:0,margemRealizada:0},
+  'sab-b2c-grid':{margemAlvo:0,margemRealizada:0},
+  'sab-lc-grid': {margemAlvo:0,margemRealizada:0},
+};
+
+function getSABList(cid){return cid.includes('b2b')?SAB_KAM:cid.includes('hc')?SAB_HEAD:cid.includes('b2c')?SAB_B2C:SAB_LC;}
+function getCalcFn(cid){return cid.includes('b2b')?calcB2B:cid.includes('hc')?calcHC:cid.includes('b2c')?calcB2C:calcLC;}
+
+function getSABPct(s,pctMeta){const p=s.pcts;if(pctMeta>=.9)return p[90];if(pctMeta>=.8)return p[80];if(pctMeta>=.7)return p[70];if(pctMeta>=.5)return p[50];return 0;}
+
+function calcSABBonus(list,base,pctMeta,cid){
+  const ex=sabExtras[cid]||{};
+  const actives=list.filter(s=>{
+    if(!s.active)return false;
+    if(s.useMargemAlvo){const a=ex.margemAlvo||0,r=ex.margemRealizada||0;if(a<=0||r<a)return false;}
+    return true;
+  });
+  if(!actives.length)return 0;
+  const tw=actives.reduce((a,s)=>a+s.weight,0);
+  return actives.reduce((sum,s)=>{
+    const share=s.weight/tw,pct=getSABPct(s,pctMeta);
+    const cb=base;
+    return sum+cb*pct*share;
+  },0);
+}
+
+function renderSABGrid(cid,list){
+  const ex=sabExtras[cid]||{};
+  const grid=document.getElementById(cid);
+  if(!grid)return;
+  grid.innerHTML=list.map((s,idx)=>{
+    const mbBlocked=s.useMargemAlvo&&s.active&&((ex.margemAlvo||0)<=0||(ex.margemRealizada||0)<(ex.margemAlvo||0));
+    return`<div class="sab-item${s.active?' active':''}">
+      <div class="sab-top">
+        <div class="sab-toggle" onclick="toggleSAB('${cid}',${idx})">
+          <div class="sab-check"><div class="sab-check-inner"></div></div>
+          <span class="sab-name">${s.label}</span>
+        </div>
+        <span class="sab-tag">${s.tag}</span>
+        ${mbBlocked?'<span class="badge badge-amber" style="font-size:10px">Margem-alvo não atingida</span>':''}
+      </div>
+      <div class="sab-weight-row">
+        <span class="sab-weight-label">Peso:</span>
+        <div class="sab-weight-btns">${[1,2,3].map(w=>`<button class="w-btn${s.weight===w?' sel':''}" onclick="setWeight('${cid}',${idx},${w})">${w}</button>`).join('')}</div>
+        ${s.useMargemAlvo?`<span class="sab-weight-label" style="margin-left:10px">Alvo (R$):</span><input type="number" value="${ex.margemAlvo||0}" style="width:110px;height:26px;padding:0 8px;font-size:12px;border:1px solid var(--border-mid);border-radius:4px;background:var(--surface);color:var(--text)" oninput="sabExtras['${cid}'].margemAlvo=parseFloat(this.value)||0;renderSABGrid('${cid}',getSABList('${cid}'));getCalcFn('${cid}')()"><span class="sab-weight-label" style="margin-left:6px">Realizada (R$):</span><input type="number" value="${ex.margemRealizada||0}" style="width:110px;height:26px;padding:0 8px;font-size:12px;border:1px solid var(--border-mid);border-radius:4px;background:var(--surface);color:var(--text)" oninput="sabExtras['${cid}'].margemRealizada=parseFloat(this.value)||0;renderSABGrid('${cid}',getSABList('${cid}'));getCalcFn('${cid}')()">`:''}
+      </div>
+      <div class="sab-desc">${s.desc}</div>
+    </div>`}).join('');
+}
+function toggleSAB(cid,idx){const l=getSABList(cid);l[idx].active=!l[idx].active;renderSABGrid(cid,l);getCalcFn(cid)();}
+function setWeight(cid,idx,w){const l=getSABList(cid);l[idx].weight=w;renderSABGrid(cid,l);getCalcFn(cid)();}
+
+/* ===== PEOPLE DATA ===== */
+// Os valores mensais são as METAS de cada pessoa (fonte: tabela de vendas 2025)
+// Q1=Jan+Fev+Mar · Q2=Abr+Mai+Jun · Q3=Jul+Ago+Set · Q4=Out+Nov+Dez
+function mkMetas(m){
+  return{
+    m,
+    q1:m[0]+m[1]+m[2],
+    q2:m[3]+m[4]+m[5],
+    q3:m[6]+m[7]+m[8],
+    q4:m[9]+m[10]+m[11],
+    anual:m.reduce((a,b)=>a+b,0)
+  };
+}
+function mkReal(){return[0,0,0,0,0,0,0,0,0,0,0,0];}
+
+const people={
+  b2b:[
+    (()=>{const t=mkMetas([0,0,0,0,0,350000,450000,550000,800000,1000000,1150000,1200000]);
+      return{nome:'Iara',cargo:'KAM',sal:0,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([56846,108165,0,0,0,100000,200000,200000,250000,250000,300000,333557]);
+      return{nome:'Ilze Garcia',cargo:'KAM',sal:0,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([77131,78770,147652,250000,300000,300000,300000,300000,350000,400000,425930,705506]);
+      return{nome:'Pablo',cargo:'KAM',sal:0,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([151745,50000,862834,300000,400000,350000,1019000,850000,1421280,800000,1000000,1095141]);
+      return{nome:'Paulo Marques',cargo:'KAM',sal:23500,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([0,0,0,0,0,0,0,300000,300000,350000,500000,650000]);
+      return{nome:'Claudia Dovali',cargo:'KAM',sal:0,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([0,0,0,0,0,400000,400000,550000,700000,700000,950000,1000000]);
+      return{nome:'Paulo Cavalcanti',cargo:'KAM',sal:0,metaAnualBU:44000000,metas:t,q1:t.q1,q2:t.q2,q3:t.q3,q4:t.q4,realizado:mkReal()};})(),
+  ],
+  b2c:[],
+  lc:[],
+  hc:[
+    (()=>{const t=mkMetas([237109,687211,1049776,500000,860000,1000000,700000,950000,1000000,1300000,1300000,1415904]);
+      return{nome:'André Albuquerque',cargo:'Head Comercial',sal:35000,metas:t,meta:t.m[0],fat:t.m[0],realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([75405,70794,0,300000,350000,400000,500000,700000,1000000,1200000,1200000,1703801]);
+      return{nome:'Hugo Cruz',cargo:'Head Comercial',sal:35000,metas:t,meta:t.m[0],fat:t.m[0],realizado:mkReal()};})(),
+    (()=>{const t=mkMetas([34630,14960,0,0,200000,300000,500000,600000,750000,900000,1000000,1300410]);
+      return{nome:'Thaiza Menezes',cargo:'Head Comercial',sal:31000,metas:t,meta:t.m[0],fat:t.m[0],realizado:mkReal()};})(),
+  ]
+};
+
+const selectedPerson={b2b:null,b2c:null,lc:null,hc:null};
+
+const MESES_ABREV=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function getMetasMensais(p,grp){
+  // Returns array of 12 monthly targets
+  if(p.metas) return p.metas.m;
+  if(grp==='b2c'||grp==='lc') return Array(12).fill(p.meta||0);
+  if(grp==='b2b'){
+    const metaAnual=p.metaAnualBU?(p.metaAnualBU/8):0;
+    return Array(12).fill(Math.round(metaAnual/12));
+  }
+  return Array(12).fill(0);
+}
+
+function calcTrackPeriods(p,grp,mesIdx){
+  // mesIdx = 0-based current month (0=Jan)
+  const metas=getMetasMensais(p,grp);
+  const real=p.realizado||Array(12).fill(0);
+  const triIdx=Math.floor(mesIdx/3);
+  const mesesTri=[triIdx*3,triIdx*3+1,triIdx*3+2];
+
+  const metaMes=metas[mesIdx];
+  const realMes=real[mesIdx];
+
+  const metaTri=mesesTri.reduce((s,m)=>s+(metas[m]||0),0);
+  const realTri=mesesTri.reduce((s,m)=>s+(real[m]||0),0);
+
+  const metaAno=metas.reduce((a,b)=>a+b,0);
+  const realAno=real.reduce((a,b)=>a+b,0);
+
+  const pct=v=>v;// passthrough — compute inline
+  return{metaMes,realMes,metaTri,realTri,metaAno,realAno,mesIdx,triIdx,mesesTri};
+}
+
+function renderTrackPanel(grp,idx){
+  const panelId=`track-panel-${grp}-${idx}`;
+  const el=document.getElementById(panelId);
+  if(!el)return;
+  const p=people[grp][idx];
+  if(!p){el.innerHTML='';return;}
+
+  const metas=getMetasMensais(p,grp);
+  const real=p.realizado||(p.realizado=Array(12).fill(0));
+  const mesAtualIdx=grp==='hc'?(hcMesAtual[idx]??0):
+    (()=>{const last=[...real].reverse().findIndex(v=>v>0);return last>=0?11-last:0;})();
+
+  const {metaMes,realMes,metaTri,realTri,metaAno,realAno}=calcTrackPeriods(p,grp,mesAtualIdx);
+
+  const pctBar=(r,m)=>m>0?Math.min(r/m*100,100).toFixed(1)+'%':'0%';
+  const pctLbl=(r,m)=>m>0?(r/m*100).toFixed(1)+'%':'—';
+  const pctCls=(r,m)=>m>0&&r>=m?'ok':m>0&&r>=m*.7?'warn':'bad';
+
+  // Month selector
+  const mesSel=`<div style="margin-bottom:10px">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Mês de referência</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+      ${MESES_ABREV.map((m,i)=>{
+        const sel=mesAtualIdx===i;
+        return`<button onclick="setTrackMes('${grp}',${idx},${i})" style="padding:2px 8px;border-radius:3px;border:1px solid ${sel?'var(--accent)':'var(--border-mid)'};background:${sel?'var(--accent)':'var(--surface)'};color:${sel?'white':'var(--text-2)'};font-size:11px;cursor:pointer;font-family:inherit">${m}</button>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  // Monthly inputs grid (2 rows of 6)
+  const monthGrid=`<div style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Realizado mensal (R$)</div>
+    <div class="track-mes-grid">
+      ${MESES_ABREV.map((m,i)=>{
+        const r=real[i]||0;
+        const mt=metas[i]||0;
+        const pct=mt>0?Math.min(r/mt,1):0;
+        const fillColor=pct>=1?'var(--accent)':pct>=.7?'#8A5E00':'var(--red)';
+        return`<div class="track-mes-cell">
+          <div class="track-mes-label">${m}</div>
+          <div class="track-mes-meta">Meta: ${mt>0?fmt(mt):'—'}</div>
+          <input class="track-mes-input" type="number" value="${r||''}" placeholder="0"
+            oninput="setRealizado('${grp}',${idx},${i},this.value)">
+          <div class="track-mes-bar"><div class="track-mes-fill" style="width:${(pct*100).toFixed(1)}%;background:${fillColor}"></div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // KPI summary
+  const mkKpi=(cls,label,real,meta)=>`
+    <div class="track-kpi ${cls}">
+      <div class="track-kpi-label">${label}</div>
+      <div class="track-kpi-nums">
+        <span class="track-kpi-real">${fmt(real)}</span>
+        <span class="track-kpi-sep">/</span>
+        <span class="track-kpi-meta">${fmt(meta)}</span>
+      </div>
+      <div class="track-kpi-bar"><div class="track-kpi-fill" style="width:${pctBar(real,meta)}"></div></div>
+      <div class="track-kpi-pct ${pctCls(real,meta)}">${pctLbl(real,meta)} atingido</div>
+    </div>`;
+
+  const kpis=`<div class="track-summary">
+    ${mkKpi('mes','Mês atual',realMes,metaMes)}
+    ${mkKpi('tri','Trimestre acum.',realTri,metaTri)}
+    ${mkKpi('ano','Ano acum.',realAno,metaAno)}
+  </div>`;
+
+  el.innerHTML=`<div class="track-section">${mesSel}${monthGrid}${kpis}</div>`;
+}
+
+function setRealizado(grp,idx,mesIdx,val){
+  const p=people[grp][idx];
+  if(!p)return;
+  if(!p.realizado)p.realizado=Array(12).fill(0);
+  p.realizado[mesIdx]=parseFloat(val)||0;
+  // Re-render just the KPI part without losing focus — update summary only
+  const panelId=`track-panel-${grp}-${idx}`;
+  const el=document.getElementById(panelId);
+  if(!el)return;
+  const mesAtualIdx=grp==='hc'?(hcMesAtual[idx]??0):
+    (()=>{const last=[...p.realizado].reverse().findIndex(v=>v>0);return last>=0?11-last:0;})();
+  const {metaMes,realMes,metaTri,realTri,metaAno,realAno}=calcTrackPeriods(p,grp,mesAtualIdx);
+  const pctBar=(r,m)=>m>0?Math.min(r/m*100,100).toFixed(1)+'%':'0%';
+  const pctLbl=(r,m)=>m>0?(r/m*100).toFixed(1)+'%':'—';
+  const pctCls=(r,m)=>m>0&&r>=m?'ok':m>0&&r>=m*.7?'warn':'bad';
+  // Update the 3 KPI cards
+  const kpiEls=el.querySelectorAll('.track-kpi');
+  [[realMes,metaMes],[realTri,metaTri],[realAno,metaAno]].forEach(([r,m],ki)=>{
+    if(!kpiEls[ki])return;
+    kpiEls[ki].querySelector('.track-kpi-real').textContent=fmt(r);
+    kpiEls[ki].querySelector('.track-kpi-meta').textContent=fmt(m);
+    kpiEls[ki].querySelector('.track-kpi-fill').style.width=pctBar(r,m);
+    const pctEl=kpiEls[ki].querySelector('.track-kpi-pct');
+    pctEl.textContent=pctLbl(r,m)+' atingido';
+    pctEl.className='track-kpi-pct '+pctCls(r,m);
+  });
+  // Also update the bar for this month's cell
+  const cells=el.querySelectorAll('.track-mes-cell');
+  if(cells[mesIdx]){
+    const metas=getMetasMensais(p,grp);
+    const mt=metas[mesIdx]||0;
+    const pct=mt>0?Math.min(parseFloat(val)||0/mt,1):0;
+    const fill=cells[mesIdx].querySelector('.track-mes-fill');
+    if(fill)fill.style.width=(pct*100).toFixed(1)+'%';
+  }
+}
+
+function setTrackMes(grp,idx,mesIdx){
+  if(grp==='hc')hcMesAtual[idx]=mesIdx;
+  renderTrackPanel(grp,idx);
+}
+
+function showTrackForPerson(grp,idx){
+  renderTrackPanel(grp,idx);
+}
+
+function renderPeopleList(grp){
+  const listEl=document.getElementById(grp+'-people-list');
+  const selectorEl=document.getElementById(grp+'-person-selector');
+  const list=people[grp];
+
+  if(!listEl)return;
+  if(list.length===0){
+    listEl.innerHTML='<div class="empty-state">Nenhuma pessoa cadastrada ainda.<br>Adicione pessoas abaixo para carregar rapidamente no simulador.</div>';
+  } else {
+    listEl.innerHTML=list.map((p,i)=>{
+      const isOpen=selectedPerson[grp]===i;
+      return`<div class="person-track-card${isOpen?' open':''}" id="ptc-${grp}-${i}">
+        <div class="person-track-header" onclick="toggleTrackCard('${grp}',${i})">
+          <div class="person-track-avatar">${ini(p.nome)}</div>
+          <div class="person-track-info">
+            <div class="person-track-name">${p.nome}</div>
+            <div class="person-track-role">${p.cargo||''}</div>
+          </div>
+          <div class="person-track-summary" id="pts-${grp}-${i}"></div>
+          <div style="display:flex;gap:4px;margin-left:8px;flex-shrink:0" onclick="event.stopPropagation()">
+            <button class="btn-sm load" onclick="loadPerson('${grp}',${i})">Simular</button>
+            <button class="btn-sm" onclick="removePerson('${grp}',${i})">Remover</button>
+          </div>
+          <div class="person-track-chevron">&#9662;</div>
+        </div>
+        <div class="person-track-body">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Digite o valor realizado de cada m&#234;s abaixo</div>
+          <div class="track-mes-grid" id="track-grid-${grp}-${i}"></div>
+          <div class="track-summary" id="track-sum-${grp}-${i}"></div>
+        </div>
+      </div>`;}).join('');
+    list.forEach((_,i)=>{
+      updateTrackBody(grp,i);
+      updatePTSSummary(grp,i);
+    });
+  }
+
+  if(!selectorEl)return;
+  if(list.length===0){selectorEl.innerHTML='';return;}
+  selectorEl.innerHTML=`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm)">
+    <span style="font-size:11px;color:var(--text-3);font-weight:500">Carregar no simulador:</span>
+    ${list.map((p,i)=>`<button class="btn-sm load${selectedPerson[grp]===i?' sel':''}" style="${selectedPerson[grp]===i?'background:var(--accent);color:white;border-color:var(--accent)':''}" onclick="loadPerson('${grp}',${i})">${p.nome.split(' ')[0]}</button>`).join('')}
+  </div>`;
+}
+
+function getMetas12(grp,idx){
+  const list=people[grp];
+  if(!list||!list[idx]) return new Array(12).fill(0);
+  const p=list[idx];
+  if(p.metas&&p.metas.m) return p.metas.m;
+  return new Array(12).fill(p.meta||0);
+}
+
+function updatePTSSummary(grp,i){
+  const el=document.getElementById(`pts-${grp}-${i}`);
+  if(!el)return;
+  const reals=getTrack(grp,i);
+  const metas=getMetas12(grp,i);
+  const realAno=reals.reduce((a,b)=>a+b,0);
+  const metaAno=metas.reduce((a,b)=>a+b,0);
+  if(metaAno===0||realAno===0){el.innerHTML='';return;}
+  const pct=realAno/metaAno;
+  const cls=pct>=1?'ok':pct>=0.7?'warn':'bad';
+  el.innerHTML=`<div class="pts-item">
+    <div class="pts-label">Realizado anual</div>
+    <div class="pts-val">${fmt(realAno)}</div>
+    <div class="pts-pct ${cls}">${(pct*100).toFixed(0)}% da meta</div>
+  </div>`;
+}
+
+function buildTrackGrid(grp,i){
+  // Called ONCE when card opens — builds the input grid
+  const gridEl=document.getElementById(`track-grid-${grp}-${i}`);
+  if(!gridEl||gridEl.dataset.built==='1')return;
+  const metas=getMetas12(grp,i);
+  const reals=getTrack(grp,i);
+  gridEl.innerHTML=MESES_ABREV.map((m,mi)=>{
+    const meta=metas[mi]||0;
+    const real=reals[mi]||0;
+    const pct=meta>0?Math.min(real/meta,1):0;
+    const barColor=pct>=1?'var(--accent)':pct>=0.7?'#1A4D8A':'#8A5E00';
+    return`<div class="track-mes-cell" id="tmc-${grp}-${i}-${mi}">
+      <div class="track-mes-label">${m}</div>
+      <input class="track-mes-input" type="number" value="${real||''}" placeholder="0"
+        onchange="setTrackValBody('${grp}',${i},${mi},this.value)"
+        oninput="setTrackValBody('${grp}',${i},${mi},this.value)">
+      <div class="track-mes-meta" id="tmm-${grp}-${i}-${mi}">${meta>0?fmt(meta).replace('R$ ',''):'—'}</div>
+      <div class="track-mes-bar"><div class="track-mes-fill" id="tmf-${grp}-${i}-${mi}" style="width:${(pct*100).toFixed(0)}%;background:${barColor}"></div></div>
+    </div>`;
+  }).join('');
+  gridEl.dataset.built='1';
+}
+
+function updateTrackSummary(grp,i){
+  // Updates only KPI cards and bar fills — never touches inputs
+  const sumEl=document.getElementById(`track-sum-${grp}-${i}`);
+  const metas=getMetas12(grp,i);
+  const reals=getTrack(grp,i);
+
+  // Update bar fills without touching inputs
+  MESES_ABREV.forEach((_,mi)=>{
+    const fill=document.getElementById(`tmf-${grp}-${i}-${mi}`);
+    if(!fill)return;
+    const meta=metas[mi]||0;
+    const real=reals[mi]||0;
+    const pct=meta>0?Math.min(real/meta,1):0;
+    fill.style.width=(pct*100).toFixed(0)+'%';
+    fill.style.background=pct>=1?'var(--accent)':pct>=0.7?'#1A4D8A':'#8A5E00';
+  });
+
+  if(!sumEl)return;
+  const mesFocus=reals.map((v,idx)=>v>0?idx:-1).filter(idx=>idx>=0);
+  const mesAtual=mesFocus.length>0?Math.max(...mesFocus):0;
+  const triIdx=Math.floor(mesAtual/3);
+  const triStart=triIdx*3;
+  const metaMes=metas[mesAtual]||0;
+  const realMes=reals[mesAtual]||0;
+  const metaTri=metas.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
+  const realTri=reals.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
+  const metaAno=metas.reduce((a,b)=>a+b,0);
+  const realAno=reals.reduce((a,b)=>a+b,0);
+  const mkKPI=(cls,label,meta,real)=>{
+    const pct=meta>0?real/meta:0;
+    const barW=Math.min(pct,1)*100;
+    const bc=pct>=1?'badge-green':pct>=0.7?'badge-blue':'badge-amber';
+    return`<div class="track-kpi ${cls}">
+      <div class="track-kpi-label">${label}</div>
+      <div class="track-kpi-nums"><span class="track-kpi-real">${fmt(real)}</span><span class="track-kpi-sep">/</span><span class="track-kpi-meta">${fmt(meta)}</span></div>
+      <div class="track-kpi-bar"><div class="track-kpi-fill" style="width:${barW.toFixed(1)}%"></div></div>
+      <span class="track-kpi-pct"><span class="badge ${bc}">${meta>0?(pct*100).toFixed(1)+'%':'—'} atingido</span></span>
+    </div>`;
+  };
+  sumEl.innerHTML=
+    mkKPI('mes',`M&#234;s (${MESES_ABREV[mesAtual]})`,metaMes,realMes)+
+    mkKPI('tri',`Q${triIdx+1} (${MESES_ABREV[triStart]}&#8211;${MESES_ABREV[triStart+2]})`,metaTri,realTri)+
+    mkKPI('ano','Ano completo',metaAno,realAno);
+}
+
+function updateTrackBody(grp,i){
+  buildTrackGrid(grp,i);
+  updateTrackSummary(grp,i);
+}
+
+function setTrackValBody(grp,idx,mes,val){
+  getTrack(grp,idx)[mes]=parseFloat(val)||0;
+  // Only update bars + summary — never rebuild the input grid
+  updateTrackSummary(grp,idx);
+  updatePTSSummary(grp,idx);
+  if(selectedPerson[grp]===idx) renderTrackPanel(grp,idx);
+}
+
+function toggleTrackCard(grp,i){
+  const card=document.getElementById(`ptc-${grp}-${i}`);
+  if(!card)return;
+  const wasOpen=card.classList.contains('open');
+  // close all others in same group
+  people[grp].forEach((_,j)=>{
+    const c=document.getElementById(`ptc-${grp}-${j}`);
+    if(c&&j!==i)c.classList.remove('open');
+  });
+  card.classList.toggle('open',!wasOpen);
+  if(!wasOpen){
+    // Reset built flag so grid rebuilds with current values
+    const gridEl=document.getElementById(`track-grid-${grp}-${i}`);
+    if(gridEl) gridEl.dataset.built='';
+    updateTrackBody(grp,i);
+    updatePTSSummary(grp,i);
+  }
+}
+
+function selectPerson(grp,i){
+  selectedPerson[grp]=i;
+  renderPeopleList(grp);
+}
+
+/* ===== META PERIOD PANEL ===== */
+// For B2B: metaAnual is the individual annual target, realizado = sum of quarters entered
+// For monthly profiles (B2C, LC, HC): metaMensal, realizado = fat entered, current quarter = fat*3 approximation
+function renderMetaPanel(panelId, opts){
+  const el=document.getElementById(panelId);
+  if(!el)return;
+  const {metaMensal,metaTrimestral,metaAnual,realMes,realTri,realAno}=opts;
+  if(!metaAnual&&!metaMensal){el.style.display='none';return;}
+  el.style.display='grid';
+
+  const mkPeriod=(cls,label,meta,real)=>{
+    const pct=meta>0?Math.min(real/meta,1.5):0;
+    const barW=Math.min(pct/1.5*100,100).toFixed(1);
+    const pctDisplay=(meta>0?(real/meta*100).toFixed(1):0)+'%';
+    return`<div class="meta-period ${cls}">
+      <div class="meta-period-label">${label}</div>
+      <div class="meta-period-meta">Meta: <span class="mono">${fmt(meta)}</span></div>
+      <div class="meta-period-val">${fmt(real)}</div>
+      <div class="meta-period-real">Realizado / projeção</div>
+      <div class="meta-period-bar"><div class="meta-period-fill" style="width:${barW}%"></div></div>
+      <div class="meta-period-pct">${pctDisplay} atingido</div>
+    </div>`;
+  };
+
+  el.innerHTML=
+    mkPeriod('mensal','Mês',metaMensal,realMes)+
+    mkPeriod('trimestral','Trimestre (acum.)',metaTrimestral,realTri)+
+    mkPeriod('anual','Ano',metaAnual,realAno);
+}
+
+const MESES_NOMES=MESES_ABREV;//['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// Qual trimestre (0-based) pertence cada mês (0-based)
+const mesTri=[0,0,0,1,1,1,2,2,2,3,3,3];
+
+// currentHCMes: mês selecionado (0-based) por pessoa HC
+const hcMesAtual={};
+
+function renderHCMesSelector(personIdx){
+  const el=document.getElementById('hc-mes-selector');
+  if(!el)return;
+  const p=people.hc[personIdx];
+  if(!p||!p.metas){el.style.display='none';return;}
+  el.style.display='block';
+  const mesAtual=hcMesAtual[personIdx]??0;
+  el.innerHTML=`<div style="font-size:11px;font-weight:500;color:var(--text-2);margin-bottom:6px">Mês para simulação:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+      ${MESES_ABREV.map((m,i)=>{
+        const sel=mesAtual===i;
+        return`<button onclick="selectHCMes(${personIdx},${i})" style="padding:3px 9px;border-radius:4px;border:1px solid ${sel?'var(--accent)':'var(--border-mid)'};background:${sel?'var(--accent)':'var(--surface)'};color:${sel?'white':'var(--text-2)'};font-size:11px;cursor:pointer;font-family:inherit">${m}</button>`;
+      }).join('')}
+    </div>`;
+}
+
+function selectHCMes(personIdx,mesIdx){
+  const p=people.hc[personIdx];
+  if(!p||!p.metas)return;
+  hcMesAtual[personIdx]=mesIdx;
+  // Meta do mês = valor da tabela para esse mês
+  const metaMes=p.metas.m[mesIdx];
+  document.getElementById('hc-meta').value=metaMes;
+  document.getElementById('hc-fat').value=metaMes; // padrão = meta (usuário ajusta realizado)
+  renderHCMesSelector(personIdx);
+  calcHC();
+}
+
+function showPersonBanner(grp, p){
+  const tabMap={b2b:'b2b',b2c:'b2c',lc:'b2c',hc:'hc'};
+  const bannerId=grp+'-banner';
+  const el=document.getElementById(bannerId);
+  if(!el)return;
+  const tagLabels={b2b:'KAM B2B',b2c:'B2C Academy',lc:'Líder Comercial',hc:'Head Comercial'};
+  el.innerHTML=`
+    <div class="person-banner-avatar">${ini(p.nome)}</div>
+    <div class="person-banner-info">
+      <div class="person-banner-name">${p.nome}</div>
+      <div class="person-banner-role">${p.cargo||tagLabels[grp]}</div>
+    </div>
+    <span class="person-banner-tag">${tagLabels[grp]}</span>
+    <button class="person-banner-clear" title="Limpar seleção" onclick="clearPersonBanner('${grp}')">×</button>`;
+  el.classList.add('visible');
+}
+
+function clearPersonBanner(grp){
+  const el=document.getElementById(grp+'-banner');
+  if(el){el.classList.remove('visible');el.innerHTML='';}
+  selectedPerson[grp]=null;
+  renderPeopleList(grp);
+}
+
+function loadPerson(grp,i){
+  const p=people[grp][i];
+  selectedPerson[grp]=i;
+  showPersonBanner(grp, p);
+  if(grp==='b2b'){
+    document.getElementById('b2b-nome').value=p.nome;
+    document.getElementById('b2b-salario').value=p.sal||0;
+    if(p.metaAnualBU) document.getElementById('b2b-meta-bu').value=p.metaAnualBU;
+    document.getElementById('b2b-q1').value=p.q1||0;
+    document.getElementById('b2b-q2').value=p.q2||0;
+    document.getElementById('b2b-q3').value=p.q3||0;
+    document.getElementById('b2b-q4').value=p.q4||0;
+    calcB2B();
+    showTrackForPerson('b2b',i);
+  } else if(grp==='b2c'){
+    document.getElementById('b2c-nome').value=p.nome;
+    document.getElementById('b2c-sal').value=p.sal||0;
+    document.getElementById('b2c-meta').value=p.meta||0;
+    document.getElementById('b2c-fat').value=p.fat||0;
+    calcB2C();
+    showTrackForPerson('b2c',i);
+  } else if(grp==='lc'){
+    document.getElementById('lc-nome').value=p.nome;
+    document.getElementById('lc-sal').value=p.sal||0;
+    document.getElementById('lc-meta').value=p.meta||0;
+    document.getElementById('lc-fat').value=p.fat||0;
+    calcLC();
+    showTrackForPerson('lc',i);
+  } else if(grp==='hc'){
+    document.getElementById('hc-nome').value=p.nome;
+    document.getElementById('hc-sal').value=p.sal||0;
+    if(p.metas){
+      // Inicia no mês 0 (Janeiro) ou mês já selecionado
+      const mes=hcMesAtual[i]??0;
+      hcMesAtual[i]=mes;
+      const metaMes=p.metas.m[mes];
+      document.getElementById('hc-meta').value=metaMes;
+      document.getElementById('hc-fat').value=metaMes;
+      renderHCMesSelector(i);
+    } else {
+      document.getElementById('hc-meta').value=p.meta||0;
+      document.getElementById('hc-fat').value=p.fat||0;
+    }
+    calcHC();
+    showTrackForPerson('hc',i);
+  }
+  renderPeopleList(grp);
+  const simBtn=document.querySelector(`#tab-${grp==='lc'?'lideres':grp==='hc'?'head':grp==='b2c'?'b2c':'b2b'} .stab`);
+  if(simBtn)simBtn.click();
+}
+
+function removePerson(grp,i){
+  people[grp].splice(i,1);
+  if(selectedPerson[grp]===i)selectedPerson[grp]=null;
+  else if(selectedPerson[grp]>i)selectedPerson[grp]--;
+  renderPeopleList(grp);
+}
+
+function addPerson(grp){
+  if(grp==='b2b'){
+    const nome=document.getElementById('b2b-p-nome').value.trim();
+    if(!nome)return;
+    people.b2b.push({
+      nome,cargo:document.getElementById('b2b-p-cargo').value.trim(),
+      sal:parseFloat(document.getElementById('b2b-p-sal').value)||0,
+      q1:parseFloat(document.getElementById('b2b-p-q1').value)||0,
+      q2:parseFloat(document.getElementById('b2b-p-q2').value)||0,
+      q3:parseFloat(document.getElementById('b2b-p-q3').value)||0,
+      q4:parseFloat(document.getElementById('b2b-p-q4').value)||0,
+      realizado:mkReal(),
+    });
+    ['b2b-p-nome','b2b-p-cargo','b2b-p-sal','b2b-p-q1','b2b-p-q2','b2b-p-q3','b2b-p-q4'].forEach(id=>{document.getElementById(id).value='';});
+  } else if(grp==='b2c'){
+    const nome=document.getElementById('b2c-p-nome').value.trim();
+    if(!nome)return;
+    people.b2c.push({
+      nome,cargo:document.getElementById('b2c-p-cargo').value.trim(),
+      sal:parseFloat(document.getElementById('b2c-p-sal').value)||0,
+      meta:parseFloat(document.getElementById('b2c-p-meta').value)||0,
+      fat:parseFloat(document.getElementById('b2c-p-fat').value)||0,
+      realizado:mkReal(),
+    });
+    ['b2c-p-nome','b2c-p-cargo','b2c-p-sal','b2c-p-meta','b2c-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+  } else if(grp==='lc'){
+    const nome=document.getElementById('lc-p-nome').value.trim();
+    if(!nome)return;
+    people.lc.push({
+      nome,cargo:document.getElementById('lc-p-cargo').value.trim(),
+      sal:parseFloat(document.getElementById('lc-p-sal').value)||0,
+      meta:parseFloat(document.getElementById('lc-p-meta').value)||0,
+      fat:parseFloat(document.getElementById('lc-p-fat').value)||0,
+      realizado:mkReal(),
+    });
+    ['lc-p-nome','lc-p-cargo','lc-p-sal','lc-p-meta','lc-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+  } else if(grp==='hc'){
+    const nome=document.getElementById('hc-p-nome').value.trim();
+    if(!nome)return;
+    people.hc.push({
+      nome,cargo:document.getElementById('hc-p-cargo').value.trim(),
+      sal:parseFloat(document.getElementById('hc-p-sal').value)||0,
+      meta:parseFloat(document.getElementById('hc-p-meta').value)||0,
+      fat:parseFloat(document.getElementById('hc-p-fat').value)||0,
+      realizado:mkReal(),
+    });
+    ['hc-p-nome','hc-p-cargo','hc-p-sal','hc-p-meta','hc-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+  }
+  renderPeopleList(grp);
+}
+
+/* ===== CALC B2B ===== */
+function calcB2B(){
+  const nome=document.getElementById('b2b-nome').value||'KAM';
+  const sal=parseFloat(document.getElementById('b2b-salario').value)||0;
+  const metaBU=parseFloat(document.getElementById('b2b-meta-bu').value)||55000000;
+  const imp=parseFloat(document.getElementById('b2b-imp').value)||.1175;
+  const pt=parseFloat(document.getElementById('b2b-pt').value)||.4;
+  const qvals=[1,2,3,4].map(i=>parseFloat(document.getElementById('b2b-q'+i).value)||0);
+  const metaKAM=metaBU/8;
+  let acum=0,totCom=0,totSAB=0;
+  const rows=qvals.map((bruto,qi)=>{
+    const liq=bruto*(1-imp),base=liq*(1-pt);
+    acum+=bruto;
+    const fi=getFaixaIdx(acum,qi);
+    const pctMeta=metaKAM>0?acum/metaKAM:0;
+    const comBase=base*FAIXAS[fi].pct;
+    const sab=calcSABBonus(SAB_KAM,base,pctMeta,'sab-b2b-grid');
+    totCom+=comBase;totSAB+=sab;
+    return{q:'Q'+(qi+1),bruto,liq,base,pctMeta,fi,pctCom:FAIXAS[fi].pct,comBase,sab,total:comBase+sab};
+  });
+  const grand=totCom+totSAB;
+  const pctT=qvals.reduce((a,b)=>a+b,0)/metaKAM;
+  const xSal=sal>0?grand/(sal*12):0;
+  const bc=pctT>=1.2?'badge-green':pctT>=.9?'badge-blue':pctT>=.7?'badge-amber':'badge-red';
+  const bl=pctT>=1.2?'Excelente':pctT>=.9?'Meta atingida':pctT>=.7?'Em desenvolvimento':'Abaixo da meta';
+
+  // Meta panel B2B — usa metas mensais reais se pessoa selecionada tiver o objeto metas
+  const b2bPerson=people.b2b[selectedPerson.b2b];
+  if(b2bPerson&&b2bPerson.metas){
+    const t=b2bPerson.metas;
+    // Detecta trimestre atual: último Q com valor nos inputs
+    const qAcums=[qvals[0],qvals[0]+qvals[1],qvals[0]+qvals[1]+qvals[2],qvals.reduce((a,b)=>a+b,0)];
+    const lastQFilled=[...qvals].reverse().findIndex(v=>v>0);
+    const qAtualIdx=lastQFilled>=0?3-lastQFilled:0;
+    const metasQ=[t.q1,t.q2,t.q3,t.q4];
+    const metaTri=metasQ[qAtualIdx]||0;
+    const realTri=qvals[qAtualIdx]||0;
+    const metaMensal=t.m[qAtualIdx*3]||0; // primeiro mês do trimestre atual como referência
+    renderMetaPanel('b2b-meta-panel',{
+      metaMensal, metaTrimestral:metaTri, metaAnual:t.anual,
+      realMes:realTri/3, realTri, realAno:qvals.reduce((a,b)=>a+b,0)
+    });
+  } else {
+    // Sem pessoa selecionada: usa metaKAM dividida uniformemente
+    const metaTri=metaKAM/4;
+    const lastQWithVal=[...qvals].reverse().findIndex(v=>v>0);
+    const qAtualIdx=lastQWithVal>=0?3-lastQWithVal:0;
+    const realTri=qvals[qAtualIdx]||0;
+    renderMetaPanel('b2b-meta-panel',{
+      metaMensal:metaKAM/12, metaTrimestral:metaTri, metaAnual:metaKAM,
+      realMes:realTri/3, realTri, realAno:qvals.reduce((a,b)=>a+b,0)
+    });
+  }
+
+  document.getElementById('b2b-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Comissão Total Anual</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
+    <div class="metric-card"><div class="metric-label">% Atingimento</div><div class="metric-value">${fmtPct(pctT)}</div><div class="metric-sub"><span class="badge ${bc}">${bl}</span></div></div>
+    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(totSAB)}</div><div class="metric-sub">no período</div></div>
+    <div class="metric-card"><div class="metric-label">x Salário anual</div><div class="metric-value">${xSal.toFixed(2)}x</div><div class="metric-sub">multiplicador</div></div>`;
+  document.getElementById('b2b-sab-total').textContent=fmt(totSAB);
+  document.querySelector('#b2b-detail tbody').innerHTML=rows.map(r=>`<tr>
+    <td><strong>${r.q}</strong></td><td class="mono">${fmt(r.bruto)}</td><td class="mono">${fmt(r.liq)}</td>
+    <td class="mono">${fmt(r.base)}</td>
+    <td><span class="badge ${r.pctMeta>=.9?'badge-green':r.pctMeta>=.7?'badge-amber':'badge-red'}">${fmtPct(r.pctMeta)}</span></td>
+    <td><span class="badge badge-blue">F${r.fi}</span></td>
+    <td class="mono">${fmtPct(r.pctCom)}</td><td class="mono">${fmt(r.comBase)}</td>
+    <td class="mono">${fmt(r.sab)}</td><td class="mono"><strong>${fmt(r.total)}</strong></td>
+  </tr>`).join('')+`<tr class="row-total"><td colspan="9" style="text-align:right">Total</td><td class="mono">${fmt(grand)}</td></tr>`;
+}
+
+/* ===== CALC MENSAL ===== */
+function calcMensal(fat,meta,sal,pcts){
+  const pct=meta>0?fat/meta:0;
+  let fi=pct<.5?0:pct<.7?1:pct<.9?2:pct<=1?3:pct<1.2?4:5;
+  const comBase=fi<=3?fat*pcts[fi]:fat*pcts[3];
+  const extra=[0,0,0,0,1,2][fi]*sal;
+  const total=comBase+extra;
+  return{pct,fi,comBase,extra,total,xSal:sal>0?total/sal:0,appliedPct:pcts[Math.min(fi,3)]};
+}
+function renderMensalResult(el,res,meta,sal){
+  const pctBar=Math.min(res.pct/1.5,1)*100;
+  const bc=res.pct>=1.2?'badge-green':res.pct>=.9?'badge-blue':res.pct>=.7?'badge-amber':'badge-red';
+  el.innerHTML=`<div style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+      <span style="color:var(--text-2)">Atingimento</span><span class="badge ${bc}">${fmtPct(res.pct)}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta: ${fmt(meta)}</div>
+  </div>
+  <div class="divider"></div>
+  <div class="result-block">
+    <div class="result-row"><span class="result-key">% aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
+    <div class="result-row"><span class="result-key">Comissão base</span><span class="result-val mono">${fmt(res.comBase)}</span></div>
+    <div class="result-row"><span class="result-key">Bônus extra (>100%)</span><span class="result-val mono">${fmt(res.extra)}</span></div>
+    <div class="result-total"><span>Comissão total</span><span class="mono">${fmt(res.total)}</span></div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:8px">${res.xSal.toFixed(2)}x o salário fixo mensal</div>
+  </div>`;
+}
+
+function calcB2C(){
+  const sal=parseFloat(document.getElementById('b2c-sal').value)||0;
+  const meta=parseFloat(document.getElementById('b2c-meta').value)||0;
+  const fat=parseFloat(document.getElementById('b2c-fat').value)||0;
+  const res=calcMensal(fat,meta,sal,[.01,.0125,.015,.02]);
+  renderMensalResult(document.getElementById('b2c-result'),res,meta,sal);
+  const pctMeta=meta>0?fat/meta:0;
+  const sab=calcSABBonus(SAB_B2C,fat,pctMeta,'sab-b2c-grid');
+  const sabEl=document.getElementById('b2c-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
+  // Meta panel
+  renderMetaPanel('b2c-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
+  const faixaLabels=['Até 49,9%','50–69,99%','70–89,99%','90–100%','100,01–119,99%','≥ 120%'];
+  const pcts=[.01,.0125,.015,.02];
+  const comEx=[fat*.01,fat*.0125,fat*.015,fat*.02,fat*.02+sal,fat*.02+2*sal];
+  document.querySelector('#b2c-faixas-tbl tbody').innerHTML=faixaLabels.map((lbl,i)=>`<tr class="${res.fi===i?'faixa-ativa':''}">
+    <td>${i+1}</td><td>${lbl}</td><td class="mono">${i<4?fmtPct(pcts[i]):'+'+(i-3)+' salário'}</td>
+    <td class="mono">${fmt(comEx[i])}</td><td class="mono">${sal>0?(comEx[i]/sal).toFixed(2)+'x':'—'}</td>
+  </tr>`).join('');
+}
+
+function calcLC(){
+  const sal=parseFloat(document.getElementById('lc-sal').value)||0;
+  const meta=parseFloat(document.getElementById('lc-meta').value)||0;
+  const fat=parseFloat(document.getElementById('lc-fat').value)||0;
+  const res=calcMensal(fat,meta,sal,[.025,.0275,.0285,.03]);
+  renderMensalResult(document.getElementById('lc-result'),res,meta,sal);
+  const pctMeta=meta>0?fat/meta:0;
+  const sab=calcSABBonus(SAB_LC,fat,pctMeta,'sab-lc-grid');
+  const sabEl=document.getElementById('lc-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
+  // Meta panel
+  renderMetaPanel('lc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
+}
+
+function calcHC(){
+  const nome=document.getElementById('hc-nome').value;
+  const sal=parseFloat(document.getElementById('hc-sal').value)||0;
+  const meta=parseFloat(document.getElementById('hc-meta').value)||0;
+  const fat=parseFloat(document.getElementById('hc-fat').value)||0;
+  const mbMeta=parseFloat(document.getElementById('hc-mb-meta').value)||0;
+  const mbReal=parseFloat(document.getElementById('hc-mb-real').value)||0;
+
+  // Margem bruta: piso = 40% da meta de receita
+  const piso=meta*0.4;
+  const mbPct=mbMeta>0?mbReal/mbMeta:0; // % atingimento da meta de margem
+  const pisoAtingido=mbMeta<=0||mbReal>=piso; // se não definiu meta MB, não bloqueia
+
+  // Fator de proporcionalidade: atingimento da margem / 100% (cap 1)
+  // Se abaixo do piso → fator 0; acima → proporcional ao % atingimento
+  const fatorMB=!pisoAtingido?0:Math.min(mbPct,1);
+
+  // Status margem bruta
+  const mbStatusEl=document.getElementById('hc-mb-status');
+  if(mbMeta>0){
+    if(!pisoAtingido){
+      mbStatusEl.innerHTML=`<div style="background:var(--red-light);border:1px solid rgba(179,48,0,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--red)">
+        <strong>Piso não atingido</strong> — Margem realizada (${fmt(mbReal)}) abaixo do piso mínimo de 40% da meta de receita (${fmt(piso)}). RV = R$ 0.
+      </div>`;
+    } else {
+      mbStatusEl.innerHTML=`<div style="background:var(--accent-light);border:1px solid rgba(29,107,78,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--accent-text)">
+        <strong>Piso atingido</strong> — Fator de margem: ${fmtPct(fatorMB)} · Comissão base × ${fatorMB.toFixed(2)}
+      </div>`;
+    }
+  } else {
+    mbStatusEl.innerHTML=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--text-3)">Meta de margem bruta não definida — fator de margem não aplicado.</div>`;
+  }
+
+  // Meta panel — usa metas mensais reais da tabela
+  const hcPerson=people.hc[selectedPerson.hc];
+  if(hcPerson&&hcPerson.metas){
+    const mesIdx=hcMesAtual[selectedPerson.hc]??0;
+    const t=hcPerson.metas;
+    const metaMes=t.m[mesIdx];
+    const triIdx=Math.floor(mesIdx/3); // 0=Q1..3=Q4
+    const metaTri=[t.q1,t.q2,t.q3,t.q4][triIdx];
+    // realizado trimestre = fat informado para o mês × posição no trimestre (parcial)
+    const posNoTri=(mesIdx%3)+1; // 1=primeiro mês do tri, 2=segundo, 3=terceiro
+    // meses anteriores no mesmo trimestre somam suas metas (como referência); fat = realizado do mês
+    const mesesAntTri=t.m.slice(triIdx*3, mesIdx).reduce((a,b)=>a+b,0);
+    const realTri=mesesAntTri+fat;
+    renderMetaPanel('hc-meta-panel',{
+      metaMensal:metaMes, metaTrimestral:metaTri, metaAnual:t.anual,
+      realMes:fat, realTri, realAno:fat // realAno = fat do mês atual como referência
+    });
+  } else {
+    renderMetaPanel('hc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
+  }
+
+  // Calcula comissão base (sem fator de margem ainda)
+  const res=calcMensal(fat,meta,sal,[.025,.028,.031,.035]);
+
+  // Aplica fator de margem sobre comissão base
+  const comComFator=res.total*fatorMB;
+
+  // SAB (também sofre fator de margem)
+  const pctMeta=meta>0?fat/meta:0;
+  const sabBruto=calcSABBonus(SAB_HEAD,fat,pctMeta,'sab-hc-grid');
+  const sab=sabBruto*fatorMB;
+  document.getElementById('hc-sab-total').textContent=fmt(sab);
+
+  const grand=comComFator+sab;
+  const xSal=sal>0?grand/sal:0;
+  const bc=pctMeta>=1.2?'badge-green':pctMeta>=.9?'badge-blue':pctMeta>=.7?'badge-amber':'badge-red';
+
+  // Render resultado (mostra comissão ajustada)
+  const pctBar=Math.min(pctMeta/1.5,1)*100;
+  const bcR=pctMeta>=1.2?'badge-green':pctMeta>=.9?'badge-blue':pctMeta>=.7?'badge-amber':'badge-red';
+  document.getElementById('hc-result').innerHTML=`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:var(--text-2)">Atingimento receita</span><span class="badge ${bcR}">${fmtPct(pctMeta)}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta: ${fmt(meta)}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="result-block">
+      <div class="result-row"><span class="result-key">% comissão aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
+      <div class="result-row"><span class="result-key">Comissão bruta (s/ fator MB)</span><span class="result-val mono">${fmt(res.total)}</span></div>
+      <div class="result-row"><span class="result-key">Fator margem bruta</span><span class="result-val mono">${fmtPct(fatorMB)}</span></div>
+      <div class="result-row"><span class="result-key">Comissão c/ fator MB</span><span class="result-val mono">${fmt(comComFator)}</span></div>
+      <div class="result-row"><span class="result-key">Bônus SAB (c/ fator MB)</span><span class="result-val mono">${fmt(sab)}</span></div>
+      <div class="result-total"><span>Total RV</span><span class="mono">${fmt(grand)}</span></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:8px">${xSal.toFixed(2)}x o salário fixo mensal</div>
+    </div>`;
+
+  document.getElementById('hc-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total RV</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
+    <div class="metric-card"><div class="metric-label">Fator Margem Bruta</div><div class="metric-value">${fmtPct(fatorMB)}</div><div class="metric-sub">${pisoAtingido||mbMeta<=0?'Piso atingido':'⚠ Abaixo do piso'}</div></div>
+    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(sab)}</div><div class="metric-sub">após fator MB</div></div>
+    <div class="metric-card"><div class="metric-label">x Salário mensal</div><div class="metric-value">${xSal.toFixed(2)}x</div><div class="metric-sub">multiplicador</div></div>`;
+}
+
+/* ===== RANKING ===== */
+function renderRanking(){
+  const sorted=people.b2b.map(k=>{
+    const imp=.1175,pt=.4;
+    const metaKAMind=(k.metaAnualBU||55000000)/8; // meta individual = BU / 8 KAMs
+    let acum=0,total=0;
+    [k.q1,k.q2,k.q3].forEach((bruto,qi)=>{
+      const base=bruto*(1-imp)*(1-pt);acum+=bruto;
+      total+=base*FAIXAS[getFaixaIdx(acum,qi)].pct;
+    });
+    const metaAnual=k.metaAnualBU||55000000;
+    return{...k,total,pct:acum/(metaAnual*.75),metaAnual};
+  }).sort((a,b)=>b.total-a.total);
+  document.getElementById('ranking-list').innerHTML=sorted.length===0
+    ?'<div class="empty-state">Adicione KAMs na aba B2B → Pessoas para ver o ranking.</div>'
+    :sorted.map((k,i)=>{
+      const bc=k.pct>=1.2?'badge-green':k.pct>=.9?'badge-blue':k.pct>=.7?'badge-amber':'badge-red';
+      return`<div class="kam-row">
+        <div class="kam-rank">#${i+1}</div>
+        <div class="kam-avatar">${ini(k.nome)}</div>
+        <div class="kam-info"><div class="kam-name">${k.nome}</div><div class="kam-sub">${k.cargo} · Meta anual: ${fmt(k.metaAnual||0)} · <span class="badge ${bc}">${fmtPct(k.pct)} YTD</span></div></div>
+        <div class="kam-right"><div class="kam-comissao mono">${fmt(k.total)}</div><div class="kam-pct">Comissão Q1–Q3</div></div>
+      </div>`;}).join('');
+}
+
+/* ===== ACOMPANHAMENTO — REALIZADOS MENSAIS ===== */
+// Armazena realizados por grupo e índice de pessoa: track[grp][personIdx][mes0..11]
+const track={b2b:{},b2c:{},lc:{},hc:{}};
+
+function getTrack(grp,idx){
+  if(!track[grp][idx]) track[grp][idx]=new Array(12).fill(0);
+  return track[grp][idx];
+}
+
+function setTrackVal(grp,idx,mes,val){
+  getTrack(grp,idx)[mes]=parseFloat(val)||0;
+  renderTrackPanel(grp,idx);
+}
+
+
+function renderTrackPanel(grp,idx){
+  const card=document.getElementById(grp+'-track-card');
+  const gridEl=document.getElementById(grp+'-track-grid');
+  const sumEl=document.getElementById(grp+'-track-summary');
+  if(!card||!gridEl||!sumEl) return;
+
+  const metas=getMetas12(grp,idx);
+  const reals=getTrack(grp,idx);
+
+  // Determine "current month" = last month with a meta > 0 or all 12
+  card.style.display='block';
+
+  // Render 12 month cells
+  gridEl.innerHTML=MESES_ABREV.map((m,i)=>{
+    const meta=metas[i]||0;
+    const real=reals[i]||0;
+    const pct=meta>0?Math.min(real/meta,1):0;
+    const barColor=pct>=1?'var(--accent)':pct>=0.7?'#1A4D8A':'#8A5E00';
+    return`<div class="track-mes-cell">
+      <div class="track-mes-label">${m}</div>
+      <input class="track-mes-input" type="number" value="${real||''}" placeholder="0"
+        oninput="setTrackVal('${grp}',${idx},${i},this.value)">
+      <div class="track-mes-meta">Meta: ${meta>0?fmt(meta).replace('R$ ',''):'—'}</div>
+      <div class="track-mes-bar"><div class="track-mes-fill" style="width:${(pct*100).toFixed(0)}%;background:${barColor}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Compute current month (last filled or month 0)
+  let mesFocus=reals.map((v,i)=>v>0?i:-1).filter(i=>i>=0);
+  const mesAtual=mesFocus.length>0?Math.max(...mesFocus):0;
+  const triIdx=Math.floor(mesAtual/3);
+
+  // Mês
+  const metaMes=metas[mesAtual]||0;
+  const realMes=reals[mesAtual]||0;
+
+  // Trimestre (acumulado do trimestre que contém o mês mais recente preenchido)
+  const triStart=triIdx*3;
+  const metaTri=metas.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
+  const realTri=reals.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
+
+  // Ano
+  const metaAno=metas.reduce((a,b)=>a+b,0);
+  const realAno=reals.reduce((a,b)=>a+b,0);
+
+  const mkKPI=(cls,label,meta,real)=>{
+    const pct=meta>0?real/meta:0;
+    const barW=Math.min(pct,1)*100;
+    const bc=pct>=1?'badge-green':pct>=0.7?'badge-blue':'badge-amber';
+    return`<div class="track-kpi ${cls}">
+      <div class="track-kpi-label">${label}</div>
+      <div class="track-kpi-nums">
+        <span class="track-kpi-real">${fmt(real)}</span>
+        <span class="track-kpi-sep">/</span>
+        <span class="track-kpi-meta">${fmt(meta)}</span>
+      </div>
+      <div class="track-kpi-bar"><div class="track-kpi-fill" style="width:${barW.toFixed(1)}%"></div></div>
+      <span class="track-kpi-pct"><span class="badge ${bc}">${meta>0?(pct*100).toFixed(1)+'%':'—'} atingido</span></span>
+    </div>`;
+  };
+
+  sumEl.innerHTML=
+    mkKPI('mes',`Mês (${MESES_ABREV[mesAtual]})`,metaMes,realMes)+
+    mkKPI('tri',`Q${triIdx+1} (${MESES_ABREV[triStart]}–${MESES_ABREV[triStart+2]})`,metaTri,realTri)+
+    mkKPI('ano','Ano completo',metaAno,realAno);
+}
+
+/* ===== INIT ===== */
+['b2b','b2c','lc','hc'].forEach(g=>renderPeopleList(g));
+renderSABGrid('sab-b2b-grid',SAB_KAM);
+renderSABGrid('sab-hc-grid',SAB_HEAD);
+renderSABGrid('sab-b2c-grid',SAB_B2C);
+renderSABGrid('sab-lc-grid',SAB_LC);
+calcB2B();calcB2C();calcLC();calcHC();renderRanking();
+
+/* ===== PDL — LÍDERES OUTRAS ÁREAS ===== */
+const STATUS_LABELS={pendente:'Pendente',andamento:'Em andamento',concluido:'Concluído'};
+
+const pdlPeople=[
+  {id:1,nome:'Pedro Segura',cargo:'Gerente Financeiro',
+   objs:[
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'}
+   ]},
+  {id:2,nome:'Vivian',cargo:'Gerente de RH',
+   objs:[
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'}
+   ]},
+  {id:3,nome:'Renê',cargo:'Desenvolvedor de Sistemas',
+   objs:[
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'}
+   ]},
+  {id:4,nome:'Franciel',cargo:'Desenvolvedor de Sistemas',
+   objs:[
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'},
+     {texto:'',status:'pendente'}
+   ]},
+];
+let pdlNextId=5;
+
+function pdlProgress(objs){
+  const done=objs.filter(o=>o.status==='concluido').length;
+  const prog=objs.filter(o=>o.status==='andamento').length;
+  return{done,prog,pct:Math.round((done/objs.length)*100+(prog/objs.length)*33)};
+}
+
+function renderPDL(){
+  const grid=document.getElementById('pdl-grid');
+  if(!grid)return;
+  if(pdlPeople.length===0){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1">Nenhum líder cadastrado ainda.</div>';
+    return;
+  }
+  grid.innerHTML=pdlPeople.map(p=>{
+    const {done,pct}=pdlProgress(p.objs);
+    const objsHtml=p.objs.map((o,oi)=>`
+      <div class="pdl-obj">
+        <div class="pdl-obj-header">
+          <span class="pdl-obj-num">Obj ${oi+1}</span>
+          <div class="pdl-obj-status">
+            ${['pendente','andamento','concluido'].map(s=>`
+              <button class="pdl-status-btn${o.status===s?' active-'+s:''}"
+                onclick="setPDLStatus(${p.id},${oi},'${s}')">${STATUS_LABELS[s]}</button>
+            `).join('')}
+          </div>
+        </div>
+        <textarea class="pdl-obj-text" rows="2"
+          placeholder="Descreva o objetivo aqui..."
+          oninput="setPDLText(${p.id},${oi},this.value)">${o.texto}</textarea>
+      </div>`).join('');
+    return`<div class="pdl-card">
+      <div class="pdl-card-header">
+        <div class="pdl-avatar">${ini(p.nome)}</div>
+        <div class="pdl-person-info">
+          <div class="pdl-name">${p.nome}</div>
+          <div class="pdl-role">${p.cargo}</div>
+        </div>
+        <button class="pdl-remove" onclick="removePDL(${p.id})" title="Remover">×</button>
+      </div>
+      <div class="pdl-obj-list">${objsHtml}</div>
+      <div class="pdl-progress">
+        <div class="pdl-progress-label">
+          <span>Progresso</span>
+          <span>${done} de ${p.objs.length} concluído${done!==1?'s':''}</span>
+        </div>
+        <div class="pdl-progress-bar">
+          <div class="pdl-progress-fill" style="width:${Math.min(pct,100)}%"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setPDLText(id,oi,val){
+  const p=pdlPeople.find(x=>x.id===id);
+  if(p)p.objs[oi].texto=val;
+}
+
+function setPDLStatus(id,oi,status){
+  const p=pdlPeople.find(x=>x.id===id);
+  if(p){p.objs[oi].status=status;renderPDL();}
+}
+
+function removePDL(id){
+  const idx=pdlPeople.findIndex(x=>x.id===id);
+  if(idx>=0){pdlPeople.splice(idx,1);renderPDL();}
+}
+
+function addPDL(){
+  const nome=document.getElementById('pdl-p-nome').value.trim();
+  if(!nome)return;
+  pdlPeople.push({
+    id:pdlNextId++,
+    nome,
+    cargo:document.getElementById('pdl-p-cargo').value.trim()||'—',
+    objs:[{texto:'',status:'pendente'},{texto:'',status:'pendente'},{texto:'',status:'pendente'}]
+  });
+  document.getElementById('pdl-p-nome').value='';
+  document.getElementById('pdl-p-cargo').value='';
+  renderPDL();
+}
+
+renderPDL();
+
+/* ===== DIRETÓRIO DE PESSOAS ===== */
+function allPeople(){
+  const groups=[
+    {grp:'b2b',label:'B2B — KAMs',      tagCls:'dir-tag-b2b',tab:'b2b'},
+    {grp:'b2c',label:'B2C — Academy',   tagCls:'dir-tag-b2c',tab:'b2c'},
+    {grp:'lc', label:'Líderes Comerciais',tagCls:'dir-tag-lc',tab:'lideres',tagLabel:'Líder Com.'},
+    {grp:'hc', label:'Head Comercial',  tagCls:'dir-tag-hc',tab:'head'},
+  ];
+  const result=[];
+  groups.forEach(g=>{
+    (people[g.grp]||[]).forEach((p,i)=>{
+      result.push({...g,nome:p.nome,cargo:p.cargo||g.label,idx:i,isPDL:false});
+    });
+  });
+  pdlPeople.forEach((p,i)=>{
+    result.push({grp:'pdl',label:'Líderes Outras Áreas',tagCls:'dir-tag-pdl',tab:'pdl',
+      nome:p.nome,cargo:p.cargo||'—',idx:i,isPDL:true});
+  });
+  return result;
+}
+
+function navigateToPerson(grp,idx,tab,isPDL){
+  const navBtn=document.querySelector(`.nav-item[onclick*="showTab('${tab}'"]`);
+  if(navBtn){showTab(tab,navBtn);}
+
+  if(isPDL){
+    setTimeout(()=>{
+      const card=document.getElementById(`ptc-pdl-${idx}`);
+      if(card&&!card.classList.contains('open'))toggleTrackCard('pdl',idx);
+      card?.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+    return;
+  }
+
+  // Switch to Pessoas sub-tab
+  const tabEl=document.getElementById('tab-'+tab);
+  const pessoasBtn=tabEl?.querySelector('.stab:nth-child(2)');
+  const subPrefix=grp==='lc'?'lc':grp==='hc'?'hc':grp==='b2c'?'b2c':'b2b';
+  if(pessoasBtn)showSub(subPrefix,'pessoas',pessoasBtn);
+
+  setTimeout(()=>{
+    const card=document.getElementById(`ptc-${grp}-${idx}`);
+    if(card&&!card.classList.contains('open'))toggleTrackCard(grp,idx);
+    card?.scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
+}
+
+function renderDiretorio(filter){
+  const el=document.getElementById('dir-grid');
+  if(!el)return;
+  const q=(filter||'').toLowerCase();
+  const all=allPeople().filter(p=>
+    !q||p.nome.toLowerCase().includes(q)||p.cargo.toLowerCase().includes(q)||p.label.toLowerCase().includes(q)
+  );
+
+  if(all.length===0){
+    el.innerHTML=`<div class="dir-empty">Nenhuma pessoa encontrada${q?' para "'+filter+'"':''}.</div>`;
+    return;
+  }
+
+  const sections={};
+  all.forEach(p=>{if(!sections[p.label])sections[p.label]=[];sections[p.label].push(p);});
+
+  el.innerHTML=Object.entries(sections).map(([label,persons])=>`
+    <div class="dir-section-title">${label} <span style="font-weight:400;opacity:.6">(${persons.length})</span></div>
+    <div class="dir-grid">
+      ${persons.map(p=>`
+        <div class="dir-card" onclick="navigateToPerson('${p.grp}',${p.idx},'${p.tab}',${p.isPDL})">
+          <div class="dir-card-avatar">${ini(p.nome)}</div>
+          <div class="dir-card-info">
+            <div class="dir-card-name">${p.nome}</div>
+            <div class="dir-card-role">${p.cargo}</div>
+          </div>
+          <span class="dir-card-tag ${p.tagCls}">${p.tagLabel||p.label.split('—')[0].trim()}</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+// Intercept showTab to refresh directory when opened
+const _showTabOrig=showTab;
+window.showTab=function(id,btn){
+  _showTabOrig(id,btn);
+  if(id==='dir')renderDiretorio(document.getElementById('dir-search')?.value||'');
+};
+
+/* ===== PERSISTÊNCIA — NETLIFY BLOBS ===== */
+const API = '/.netlify/functions/data';
+let _saveTimer = null;
+let _writePassword = null; // null = não autenticado
+
+/* ── Status helper ── */
+function setSaveStatus(msg, color){
+  const el=document.getElementById('save-status');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.color=color||'var(--text-3)';
+}
+
+/* ── Captura TUDO ── */
+function getAppState(){
+  return {
+    v: 2,
+    track,
+    people: {
+      b2b: people.b2b,
+      b2c: people.b2c,
+      lc:  people.lc,
+      hc:  people.hc,
+    },
+    pdlPeopleData: pdlPeople.map(p=>({id:p.id,nome:p.nome,cargo:p.cargo,objs:p.objs})),
+  };
+}
+
+/* ── Aplica estado carregado ── */
+function applyAppState(state){
+  if(!state||!state.v)return;
+
+  // Realizados mensais
+  if(state.track){
+    Object.keys(state.track).forEach(grp=>{
+      if(track[grp]){
+        Object.keys(state.track[grp]).forEach(idx=>{
+          track[grp][idx]=state.track[grp][idx];
+        });
+      }
+    });
+  }
+
+  // Pessoas adicionadas em todos os blocos (mesclando com as pré-cadastradas)
+  if(state.people){
+    ['b2b','b2c','lc','hc'].forEach(grp=>{
+      if(state.people[grp]&&state.people[grp].length>0){
+        // Para B2B e HC, mantém as pré-cadastradas + adiciona novas (que não existam ainda)
+        const preNomes=people[grp].map(p=>p.nome);
+        state.people[grp].forEach(p=>{
+          if(!preNomes.includes(p.nome)) people[grp].push(p);
+          else {
+            // Atualiza dados da pessoa pré-cadastrada se houver metas salvas
+            const existing=people[grp].find(x=>x.nome===p.nome);
+            if(existing&&p.metas) existing.metas=p.metas;
+          }
+        });
+      }
+    });
+  }
+
+  // PDL — objetivos
+  if(state.pdlPeopleData){
+    state.pdlPeopleData.forEach(saved=>{
+      const p=pdlPeople.find(x=>x.id===saved.id||x.nome===saved.nome);
+      if(p) p.objs=saved.objs;
+      else if(!pdlPeople.find(x=>x.nome===saved.nome)){
+        pdlPeople.push({id:saved.id,nome:saved.nome,cargo:saved.cargo,objs:saved.objs});
+      }
+    });
+    renderPDL();
+  }
+
+  ['b2b','b2c','lc','hc'].forEach(g=>renderPeopleList(g));
+}
+
+/* ── Salvar (requer senha) ── */
+async function saveState(){
+  if(!_writePassword){
+    setSaveStatus('🔒 Não autenticado','var(--red)');
+    return;
+  }
+  setSaveStatus('Salvando…','var(--amber)');
+  try{
+    const res=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Write-Password':_writePassword},
+      body:JSON.stringify(getAppState()),
+    });
+    const data=await res.json();
+    if(data.ok){
+      setSaveStatus('✓ Salvo','var(--accent-text)');
+    } else if(res.status===401){
+      setSaveStatus('🔒 Senha incorreta','var(--red)');
+      _writePassword=null;
+      renderAuthUI();
+    } else {
+      setSaveStatus('Erro ao salvar','var(--red)');
+    }
+  }catch{
+    setSaveStatus('Sem conexão','var(--red)');
+  }
+}
+
+/* ── Carregar (público) ── */
+async function loadState(){
+  setSaveStatus('Carregando…','var(--text-3)');
+  try{
+    const res=await fetch(API);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const state=await res.json();
+    applyAppState(state);
+    setSaveStatus('✓ Carregado','var(--accent-text)');
+    setTimeout(()=>setSaveStatus(_writePassword?'✓ Autenticado':'🔒 Modo leitura','var(--text-3)'),2000);
+  }catch{
+    setSaveStatus('Sem conexão','var(--amber)');
+  }
+}
+
+/* ── UI de autenticação na sidebar ── */
+function renderAuthUI(){
+  let el=document.getElementById('auth-ui');
+  if(!el){
+    el=document.createElement('div');
+    el.id='auth-ui';
+    el.style.cssText='padding:10px 18px 14px;border-top:1px solid var(--border);margin-top:auto';
+    document.querySelector('.sidebar').appendChild(el);
+  }
+  if(_writePassword){
+    el.innerHTML=`
+      <div style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Acesso</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:12px;color:var(--accent-text);flex:1">✓ Editor ativo</span>
+        <button onclick="logoutWrite()" style="font-size:11px;padding:3px 8px;border:1px solid var(--border-mid);border-radius:4px;background:none;cursor:pointer;color:var(--text-3)">Sair</button>
+      </div>`;
+  } else {
+    el.innerHTML=`
+      <div style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Acesso de edição</div>
+      <div style="display:flex;gap:6px">
+        <input type="password" id="auth-pwd" placeholder="Senha" style="flex:1;height:28px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')loginWrite()">
+        <button onclick="loginWrite()" style="height:28px;padding:0 10px;background:var(--accent);color:white;border:none;border-radius:4px;font-size:12px;cursor:pointer;font-weight:500">OK</button>
+      </div>
+      <div id="auth-err" style="font-size:10px;color:var(--red);margin-top:4px;min-height:14px"></div>`;
+  }
+}
+
+async function loginWrite(){
+  const pwd=document.getElementById('auth-pwd')?.value||'';
+  if(!pwd)return;
+  // Test password by attempting a save with current state
+  setSaveStatus('Verificando…','var(--amber)');
+  try{
+    const res=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Write-Password':pwd},
+      body:JSON.stringify(getAppState()),
+    });
+    const data=await res.json();
+    if(data.ok){
+      _writePassword=pwd;
+      renderAuthUI();
+      setSaveStatus('✓ Autenticado — edição ativa','var(--accent-text)');
+    } else {
+      const err=document.getElementById('auth-err');
+      if(err)err.textContent='Senha incorreta.';
+      setSaveStatus('','');
+    }
+  }catch{
+    setSaveStatus('Sem conexão','var(--red)');
+  }
+}
+
+function logoutWrite(){
+  _writePassword=null;
+  renderAuthUI();
+  setSaveStatus('🔒 Modo leitura','var(--text-3)');
+}
+
+/* ── Auto-save com debounce ── */
+function scheduleSave(){
+  if(!_writePassword)return; // não tenta salvar sem senha
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(saveState,1500);
+}
+
+/* ── Patches para disparar salvamento ── */
+const _origSetTrack=setTrackValBody;
+window.setTrackValBody=function(grp,idx,mes,val){_origSetTrack(grp,idx,mes,val);scheduleSave();};
+
+const _origPDLStatus=setPDLStatus;
+window.setPDLStatus=function(id,oi,status){_origPDLStatus(id,oi,status);scheduleSave();};
+
+const _origPDLText=setPDLText;
+window.setPDLText=function(id,oi,val){_origPDLText(id,oi,val);scheduleSave();};
+
+const _origAddPerson=addPerson;
+window.addPerson=function(grp){_origAddPerson(grp);scheduleSave();};
+
+const _origRemovePerson=removePerson;
+window.removePerson=function(grp,i){_origRemovePerson(grp,i);scheduleSave();};
+
+const _origAddPDL=addPDL;
+window.addPDL=function(){_origAddPDL();scheduleSave();};
+
+const _origRemovePDL=removePDL;
+window.removePDL=function(id){_origRemovePDL(id);scheduleSave();};
+
+/* ── Inicialização ── */
+loadState();
+renderAuthUI();
+</script>
+</body>
+</html>
