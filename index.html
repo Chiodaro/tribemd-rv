@@ -353,11 +353,27 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="b2b-p-nome" placeholder="Ex: Vanessa Victorello"></div>
             <div class="field"><label>Cargo / Código</label><input type="text" id="b2b-p-cargo" placeholder="Ex: KAM - VV"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2b-p-sal" placeholder="0"></div>
-            <div class="field"><label>Regra de RV</label>
-              <select id="b2b-p-regra">
-                <option value="kam" selected>kam</option>
-              </select>
-              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            <div class="field" id="b2b-regra-wrap">
+              <label>Regra de RV</label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+                <button id="b2b-btn-alocar" class="btn-sm load sel" onclick="setRegraMode('b2b','alocar')" style="background:var(--accent);color:white;border-color:var(--accent)">Alocar</button>
+                <button id="b2b-btn-definir" class="btn-sm" onclick="setRegraMode('b2b','definir')">Definir</button>
+              </div>
+              <!-- Modo alocar -->
+              <div id="b2b-regra-alocar">
+                <select id="b2b-p-regra"><option value="kam">kam</option></select>
+              </div>
+              <!-- Modo definir -->
+              <div id="b2b-regra-definir" style="display:none">
+                <div style="display:flex;gap:6px;margin-bottom:8px">
+                  <button id="b2b-base-margem" class="btn-sm" onclick="setBaseCalc('b2b','margem')">Base: Margem</button>
+                  <button id="b2b-base-fat" class="btn-sm" onclick="setBaseCalc('b2b','fat')">Base: Faturamento</button>
+                </div>
+                <div id="b2b-definir-campos" style="display:none">
+                  <div class="field" style="margin-bottom:6px"><label>Valor de referência (R$ ou %)</label><input type="number" id="b2b-def-valor" placeholder="0"></div>
+                  <div class="field" style="margin-bottom:0"><label>Regulador</label><input type="text" id="b2b-def-regulador" placeholder="Ex: NPS, audiência, churn, entregas etc"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div>
@@ -423,11 +439,27 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="b2c-p-nome" placeholder="Ex: João Vitor Gonçalves"></div>
             <div class="field"><label>Cargo</label><input type="text" id="b2c-p-cargo" placeholder="Ex: Analista de Vendas Jr"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2c-p-sal" placeholder="0"></div>
-            <div class="field"><label>Regra de RV</label>
-              <select id="b2c-p-regra">
-                <option value="b2c" selected>b2c</option>
-              </select>
-              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            <div class="field" id="b2c-regra-wrap">
+              <label>Regra de RV</label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+                <button id="b2c-btn-alocar" class="btn-sm load sel" onclick="setRegraMode('b2c','alocar')" style="background:var(--accent);color:white;border-color:var(--accent)">Alocar</button>
+                <button id="b2c-btn-definir" class="btn-sm" onclick="setRegraMode('b2c','definir')">Definir</button>
+              </div>
+              <!-- Modo alocar -->
+              <div id="b2c-regra-alocar">
+                <select id="b2c-p-regra"><option value="b2c">b2c</option></select>
+              </div>
+              <!-- Modo definir -->
+              <div id="b2c-regra-definir" style="display:none">
+                <div style="display:flex;gap:6px;margin-bottom:8px">
+                  <button id="b2c-base-margem" class="btn-sm" onclick="setBaseCalc('b2c','margem')">Base: Margem</button>
+                  <button id="b2c-base-fat" class="btn-sm" onclick="setBaseCalc('b2c','fat')">Base: Faturamento</button>
+                </div>
+                <div id="b2c-definir-campos" style="display:none">
+                  <div class="field" style="margin-bottom:6px"><label>Valor de referência (R$ ou %)</label><input type="number" id="b2c-def-valor" placeholder="0"></div>
+                  <div class="field" style="margin-bottom:0"><label>Regulador</label><input type="text" id="b2c-def-regulador" placeholder="Ex: NPS, audiência, churn, entregas etc"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div>
@@ -484,11 +516,27 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="lc-p-nome" placeholder="Ex: Danielle da Silva"></div>
             <div class="field"><label>Cargo</label><input type="text" id="lc-p-cargo" placeholder="Ex: Diretor(a) Comercial"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="lc-p-sal" placeholder="0"></div>
-            <div class="field"><label>Regra de RV</label>
-              <select id="lc-p-regra">
-                <option value="buh-com" selected>buh-com</option>
-              </select>
-              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            <div class="field" id="lc-regra-wrap">
+              <label>Regra de RV</label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+                <button id="lc-btn-alocar" class="btn-sm load sel" onclick="setRegraMode('lc','alocar')" style="background:var(--accent);color:white;border-color:var(--accent)">Alocar</button>
+                <button id="lc-btn-definir" class="btn-sm" onclick="setRegraMode('lc','definir')">Definir</button>
+              </div>
+              <!-- Modo alocar -->
+              <div id="lc-regra-alocar">
+                <select id="lc-p-regra"><option value="buh-com">buh-com</option></select>
+              </div>
+              <!-- Modo definir -->
+              <div id="lc-regra-definir" style="display:none">
+                <div style="display:flex;gap:6px;margin-bottom:8px">
+                  <button id="lc-base-margem" class="btn-sm" onclick="setBaseCalc('lc','margem')">Base: Margem</button>
+                  <button id="lc-base-fat" class="btn-sm" onclick="setBaseCalc('lc','fat')">Base: Faturamento</button>
+                </div>
+                <div id="lc-definir-campos" style="display:none">
+                  <div class="field" style="margin-bottom:6px"><label>Valor de referência (R$ ou %)</label><input type="number" id="lc-def-valor" placeholder="0"></div>
+                  <div class="field" style="margin-bottom:0"><label>Regulador</label><input type="text" id="lc-def-regulador" placeholder="Ex: NPS, audiência, churn, entregas etc"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div>
@@ -551,11 +599,27 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="hc-p-nome" placeholder="Ex: Hugo Santa Cruz"></div>
             <div class="field"><label>Cargo</label><input type="text" id="hc-p-cargo" placeholder="Ex: Diretor Comercial"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="hc-p-sal" placeholder="0"></div>
-            <div class="field"><label>Regra de RV</label>
-              <select id="hc-p-regra">
-                <option value="buo-knd" selected>buo-knd</option>
-              </select>
-              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            <div class="field" id="hc-regra-wrap">
+              <label>Regra de RV</label>
+              <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+                <button id="hc-btn-alocar" class="btn-sm load sel" onclick="setRegraMode('hc','alocar')" style="background:var(--accent);color:white;border-color:var(--accent)">Alocar</button>
+                <button id="hc-btn-definir" class="btn-sm" onclick="setRegraMode('hc','definir')">Definir</button>
+              </div>
+              <!-- Modo alocar -->
+              <div id="hc-regra-alocar">
+                <select id="hc-p-regra"><option value="buo-knd">buo-knd</option></select>
+              </div>
+              <!-- Modo definir -->
+              <div id="hc-regra-definir" style="display:none">
+                <div style="display:flex;gap:6px;margin-bottom:8px">
+                  <button id="hc-base-margem" class="btn-sm" onclick="setBaseCalc('hc','margem')">Base: Margem</button>
+                  <button id="hc-base-fat" class="btn-sm" onclick="setBaseCalc('hc','fat')">Base: Faturamento</button>
+                </div>
+                <div id="hc-definir-campos" style="display:none">
+                  <div class="field" style="margin-bottom:6px"><label>Valor de referência (R$ ou %)</label><input type="number" id="hc-def-valor" placeholder="0"></div>
+                  <div class="field" style="margin-bottom:0"><label>Regulador</label><input type="text" id="hc-def-regulador" placeholder="Ex: NPS, audiência, churn, entregas etc"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div>
@@ -1493,50 +1557,54 @@ function addPerson(grp){
     people.b2b.push({
       nome,cargo:document.getElementById('b2b-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('b2b-p-sal').value)||0,
-      regraId:document.getElementById('b2b-p-regra').value||'kam',
+      regraId:getRegraIdForGrp('b2b'),
       q1:parseFloat(document.getElementById('b2b-p-q1').value)||0,
       q2:parseFloat(document.getElementById('b2b-p-q2').value)||0,
       q3:parseFloat(document.getElementById('b2b-p-q3').value)||0,
       q4:parseFloat(document.getElementById('b2b-p-q4').value)||0,
       realizado:mkReal(),
     });
-    ['b2b-p-nome','b2b-p-cargo','b2b-p-sal','b2b-p-q1','b2b-p-q2','b2b-p-q3','b2b-p-q4'].forEach(id=>{document.getElementById(id).value='';});
+    ['b2b-p-nome','b2b-p-cargo','b2b-p-sal','b2b-p-q1','b2b-p-q2','b2b-p-q3','b2b-p-q4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    clearRegraForm('b2b');
   } else if(grp==='b2c'){
     const nome=document.getElementById('b2c-p-nome').value.trim();
     if(!nome)return;
     people.b2c.push({
       nome,cargo:document.getElementById('b2c-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('b2c-p-sal').value)||0,
-      regraId:document.getElementById('b2c-p-regra').value||'b2c',
+      regraId:getRegraIdForGrp('b2c'),
       meta:parseFloat(document.getElementById('b2c-p-meta').value)||0,
       fat:parseFloat(document.getElementById('b2c-p-fat').value)||0,
       realizado:mkReal(),
     });
-    ['b2c-p-nome','b2c-p-cargo','b2c-p-sal','b2c-p-meta','b2c-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+    ['b2c-p-nome','b2c-p-cargo','b2c-p-sal','b2c-p-meta','b2c-p-fat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    clearRegraForm('b2c');
   } else if(grp==='lc'){
     const nome=document.getElementById('lc-p-nome').value.trim();
     if(!nome)return;
     people.lc.push({
       nome,cargo:document.getElementById('lc-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('lc-p-sal').value)||0,
-      regraId:document.getElementById('lc-p-regra').value||'buh-com',
+      regraId:getRegraIdForGrp('lc'),
       meta:parseFloat(document.getElementById('lc-p-meta').value)||0,
       fat:parseFloat(document.getElementById('lc-p-fat').value)||0,
       realizado:mkReal(),
     });
-    ['lc-p-nome','lc-p-cargo','lc-p-sal','lc-p-meta','lc-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+    ['lc-p-nome','lc-p-cargo','lc-p-sal','lc-p-meta','lc-p-fat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    clearRegraForm('lc');
   } else if(grp==='hc'){
     const nome=document.getElementById('hc-p-nome').value.trim();
     if(!nome)return;
     people.hc.push({
       nome,cargo:document.getElementById('hc-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('hc-p-sal').value)||0,
-      regraId:document.getElementById('hc-p-regra').value||'buo-knd',
+      regraId:getRegraIdForGrp('hc'),
       meta:parseFloat(document.getElementById('hc-p-meta').value)||0,
       fat:parseFloat(document.getElementById('hc-p-fat').value)||0,
       realizado:mkReal(),
     });
-    ['hc-p-nome','hc-p-cargo','hc-p-sal','hc-p-meta','hc-p-fat'].forEach(id=>{document.getElementById(id).value='';});
+    ['hc-p-nome','hc-p-cargo','hc-p-sal','hc-p-meta','hc-p-fat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    clearRegraForm('hc');
   }
   renderPeopleList(grp);
 }
@@ -1964,7 +2032,81 @@ function addPessoaDiretorio(){
   scheduleSave();
 }
 
-/* ===== MOVER PESSOA ENTRE GRUPOS ===== */
+/* ===== SELECTOR DE REGRA — ALOCAR / DEFINIR ===== */
+const _regraModes   = {}; // grp → 'alocar' | 'definir'
+const _baseCalcModes = {}; // grp → 'margem' | 'fat'
+
+function setRegraMode(grp, mode){
+  _regraModes[grp] = mode;
+  const alocarDiv = document.getElementById(grp+'-regra-alocar');
+  const definirDiv = document.getElementById(grp+'-regra-definir');
+  const btnAlocar  = document.getElementById(grp+'-btn-alocar');
+  const btnDefinir = document.getElementById(grp+'-btn-definir');
+  if(!alocarDiv||!definirDiv) return;
+  if(mode === 'alocar'){
+    alocarDiv.style.display = 'block';
+    definirDiv.style.display = 'none';
+    if(btnAlocar){ btnAlocar.style.background='var(--accent)'; btnAlocar.style.color='white'; btnAlocar.style.borderColor='var(--accent)'; }
+    if(btnDefinir){ btnDefinir.style.background=''; btnDefinir.style.color=''; btnDefinir.style.borderColor=''; }
+  } else {
+    alocarDiv.style.display = 'none';
+    definirDiv.style.display = 'block';
+    if(btnDefinir){ btnDefinir.style.background='var(--accent)'; btnDefinir.style.color='white'; btnDefinir.style.borderColor='var(--accent)'; }
+    if(btnAlocar){ btnAlocar.style.background=''; btnAlocar.style.color=''; btnAlocar.style.borderColor=''; }
+  }
+}
+
+function setBaseCalc(grp, base){
+  _baseCalcModes[grp] = base;
+  const btnMargem = document.getElementById(grp+'-base-margem');
+  const btnFat    = document.getElementById(grp+'-base-fat');
+  const campos    = document.getElementById(grp+'-definir-campos');
+  if(btnMargem){ btnMargem.style.background = base==='margem'?'var(--accent)':''; btnMargem.style.color = base==='margem'?'white':''; btnMargem.style.borderColor = base==='margem'?'var(--accent)':''; }
+  if(btnFat){    btnFat.style.background    = base==='fat'?'var(--accent)':'';    btnFat.style.color    = base==='fat'?'white':'';    btnFat.style.borderColor    = base==='fat'?'var(--accent)':'';    }
+  if(campos) campos.style.display = 'block';
+}
+
+function getRegraIdForGrp(grp){
+  const mode = _regraModes[grp] || 'alocar';
+  if(mode === 'alocar'){
+    return document.getElementById(grp+'-p-regra')?.value || '';
+  }
+  // Definir — criar regra customizada inline
+  const base      = _baseCalcModes[grp] || 'fat';
+  const valor     = parseFloat(document.getElementById(grp+'-def-valor')?.value) || 0;
+  const regulador = document.getElementById(grp+'-def-regulador')?.value?.trim() || '';
+  const nome      = document.getElementById(grp+'-p-nome')?.value?.trim() || 'Pessoa';
+  const regraId   = 'custom-'+Date.now()+'-'+grp;
+  extraRegras[regraId] = {
+    id: regraId,
+    nome: nome + ' — ' + (base==='margem'?'Margem':'Faturamento'),
+    tipo: base,
+    periodo: 'mensal',
+    piso: 0,
+    valorRef: valor,
+    regulador: regulador,
+    faixas: [{de:0, ate:999, pct: valor>1 ? valor/100 : valor}]
+  };
+  renderFaixasList();
+  return regraId;
+}
+
+function clearRegraForm(grp){
+  setRegraMode(grp, 'alocar');
+  const valEl = document.getElementById(grp+'-def-valor');
+  const regEl = document.getElementById(grp+'-def-regulador');
+  const campos = document.getElementById(grp+'-definir-campos');
+  if(valEl) valEl.value = '';
+  if(regEl) regEl.value = '';
+  if(campos) campos.style.display = 'none';
+  const btnM = document.getElementById(grp+'-base-margem');
+  const btnF = document.getElementById(grp+'-base-fat');
+  if(btnM){ btnM.style.background=''; btnM.style.color=''; btnM.style.borderColor=''; }
+  if(btnF){ btnF.style.background=''; btnF.style.color=''; btnF.style.borderColor=''; }
+  delete _baseCalcModes[grp];
+}
+
+
 const GRP_LABELS={hc:'BU Owner',lc:'BU Head',b2b:'B2B KAMs',b2c:'B2C Academy'};
 
 function toggleMoverMenu(grp,i,evt){
@@ -2367,11 +2509,12 @@ window.showTab=function(id,btn){
     setDirRegraMode('alocar');
   }
   if(id==='faixas')renderFaixasList();
-  // Populate regra selectors in add-person forms
-  populateRegraSelector('b2b-p-regra','kam');
-  populateRegraSelector('b2c-p-regra','b2c');
-  populateRegraSelector('lc-p-regra','buh-com');
-  populateRegraSelector('hc-p-regra','buo-knd');
+  // Init regra selectors for all add-person forms
+  ['b2b','b2c','lc','hc'].forEach(grp => {
+    populateRegraSelector(grp+'-p-regra',
+      grp==='b2b'?'kam':grp==='b2c'?'b2c':grp==='lc'?'buh-com':'buo-knd');
+    setRegraMode(grp, _regraModes[grp]||'alocar');
+  });
 };
 
 /* ===== PERSISTÊNCIA — NETLIFY BLOBS ===== */
