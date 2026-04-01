@@ -122,29 +122,6 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 .btn-sm.load:hover{background:var(--accent);color:white}
 .empty-state{text-align:center;padding:24px;color:var(--text-3);font-size:13px;border:1px dashed var(--border-mid);border-radius:var(--radius-sm)}
 
-/* SAB */
-.sab-grid{display:grid;gap:10px;margin-top:4px}
-.sab-item{border:1px solid var(--border-mid);border-radius:var(--radius-sm);padding:10px 12px;background:var(--surface);transition:border-color .15s,background .15s}
-.sab-item.active{border-color:var(--accent);background:var(--accent-light)}
-.sab-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.sab-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1}
-.sab-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-mid);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.sab-item.active .sab-check{background:var(--accent);border-color:var(--accent)}
-.sab-check-inner{width:8px;height:8px;background:white;border-radius:2px;opacity:0;transition:opacity .15s}
-.sab-item.active .sab-check-inner{opacity:1}
-.sab-name{font-size:13px;font-weight:500;color:var(--text)}
-.sab-tag{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:var(--surface2);color:var(--text-3)}
-.sab-weight-row{display:flex;align-items:center;gap:8px;opacity:.45;transition:opacity .15s;pointer-events:none;flex-wrap:wrap;margin-top:4px}
-.sab-item.active .sab-weight-row{opacity:1;pointer-events:auto}
-.sab-weight-label{font-size:11px;color:var(--text-2);white-space:nowrap}
-.sab-weight-btns{display:flex;gap:4px}
-.w-btn{width:28px;height:22px;border-radius:4px;border:1px solid var(--border-mid);background:var(--surface);font-size:12px;font-weight:500;cursor:pointer;color:var(--text-2);transition:all .12s;display:flex;align-items:center;justify-content:center}
-.w-btn.sel{background:var(--accent);border-color:var(--accent);color:white}
-.sab-desc{font-size:11px;color:var(--text-3);margin-top:4px;line-height:1.4}
-.sab-total-row{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-top:10px}
-.sab-total-label{color:var(--text-2);font-size:12px}
-.sab-total-val{font-weight:600;font-variant-numeric:tabular-nums}
-
 /* RESULT */
 .result-block{background:var(--surface2);border-radius:var(--radius);padding:16px}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px}
@@ -337,17 +314,11 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
         <div class="field"><label>Q4</label><input type="number" id="b2b-q4" value="2667087" oninput="calcB2B()"></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">Special Achievements — KAM</div>
-      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3). O peso pondera a distribuição do bônus SAB entre os achievements ativos.</div>
-      <div class="sab-grid" id="sab-b2b-grid"></div>
-      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no período</span><span class="sab-total-val" id="b2b-sab-total">R$ 0</span></div>
-    </div>
     <div class="grid4" id="b2b-metrics"></div>
     <div class="card">
       <div class="card-title">Detalhamento por trimestre</div>
       <div class="tbl-wrap"><table id="b2b-detail">
-        <thead><tr><th>Trim.</th><th>Fat. Bruto</th><th>Fat. Líquido</th><th>Base Cálculo</th><th>% Ating.</th><th>Faixa</th><th>% Com.</th><th>Com. Base</th><th>SAB</th><th>Total</th></tr></thead>
+        <thead><tr><th>Trim.</th><th>Fat. Bruto</th><th>Fat. Líquido</th><th>Base Cálculo</th><th>% Ating.</th><th>Faixa</th><th>% Com.</th><th>Com. Base</th><th>Total</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
@@ -421,12 +392,6 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
         <tbody></tbody>
       </table></div>
     </div>
-    <div class="card">
-      <div class="card-title">Special Achievements — B2C</div>
-      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um.</div>
-      <div class="sab-grid" id="sab-b2c-grid"></div>
-      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="b2c-sab-total">R$ 0</span></div>
-    </div>
     <div class="card" id="b2c-track-card" style="display:none">
       <div class="card-title">Acompanhamento — Realizado vs Meta</div>
       <div class="track-mes-grid" id="b2c-track-grid"></div>
@@ -487,12 +452,6 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
         <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="lc-fat" value="655305" oninput="calcLC()"></div>
       </div>
       <div class="card"><div class="card-title">Resultado</div><div id="lc-result"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Special Achievements — BU Owners</div>
-      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um.</div>
-      <div class="sab-grid" id="sab-lc-grid"></div>
-      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="lc-sab-total">R$ 0</span></div>
     </div>
     <div class="card" id="lc-track-card" style="display:none">
       <div class="card-title">Acompanhamento — Realizado vs Meta</div>
@@ -559,12 +518,6 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
         <div id="hc-mb-status" style="margin-top:4px"></div>
       </div>
       <div class="card"><div class="card-title">Resultado</div><div id="hc-result"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Special Achievements — BU Owner</div>
-      <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um. A remuneração variável base já depende do atingimento de margem bruta definido acima.</div>
-      <div class="sab-grid" id="sab-hc-grid"></div>
-      <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="hc-sab-total">R$ 0</span></div>
     </div>
     <div class="grid4" id="hc-metrics"></div>
     <div class="card" id="hc-track-card" style="display:none">
@@ -633,6 +586,75 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
     <div><div class="page-title">Diretório de Pessoas</div>
     <div class="page-meta">Todos os participantes cadastrados · clique para ir à página da pessoa</div></div>
   </div>
+
+  <!-- Card de cadastro rápido -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Cadastrar Pessoa</div>
+    <div class="grid2" style="margin-bottom:14px">
+      <div>
+        <div class="field"><label>Nome completo</label><input type="text" id="dir-p-nome" placeholder="Ex: Maria Silva"></div>
+        <div class="field"><label>Cargo / Função</label><input type="text" id="dir-p-cargo" placeholder="Ex: KAM, BU Head…"></div>
+      </div>
+      <div>
+        <div class="field"><label>Grupo</label>
+          <select id="dir-p-grupo" onchange="toggleDirCadastroExtra()">
+            <option value="hc">BU Owner</option>
+            <option value="lc">BU Head</option>
+            <option value="b2b">B2B — KAMs</option>
+            <option value="b2c">B2C Academy</option>
+            <option value="pdl">Líderes</option>
+          </select>
+        </div>
+        <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="dir-p-sal" placeholder="0"></div>
+      </div>
+    </div>
+
+    <!-- Botões Alocar / Cadastrar -->
+    <div id="dir-regra-modo-wrap" style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Regra de remuneração variável</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="dir-btn-alocar" class="btn-action" onclick="setDirRegraMode('alocar')" style="background:var(--accent)">Alocar regra existente</button>
+        <button id="dir-btn-cadastrar" class="btn-outline" onclick="setDirRegraMode('cadastrar')">Cadastrar nova regra</button>
+      </div>
+    </div>
+
+    <!-- Modo: Alocar (dropdown de regras existentes) -->
+    <div id="dir-regra-alocar-wrap" style="margin-bottom:14px">
+      <div class="field"><label>Selecionar regra</label>
+        <select id="dir-p-regra"></select>
+      </div>
+    </div>
+
+    <!-- Modo: Cadastrar nova regra simples -->
+    <div id="dir-regra-cadastrar-wrap" style="display:none;margin-bottom:14px">
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px">
+        <div class="field">
+          <label>Objectivo / base de cálculo</label>
+          <input type="text" id="dir-nr-objetivo" placeholder="Ex: Margem realizada, Receita MDLife, NPS…">
+        </div>
+        <div class="field">
+          <label>Bônus anual — múltiplos de salário</label>
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:8px">Seleccione os múltiplos que definem o intervalo do bônus (mín. → máx.)</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="dir-nr-multiplos">
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);background:var(--surface)"><input type="checkbox" value="0.5" id="dir-nr-mult-0_5" onchange="updateDirNrBonus()" style="accent-color:var(--accent)"> 0.5×</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);background:var(--surface)"><input type="checkbox" value="1" id="dir-nr-mult-1" onchange="updateDirNrBonus()" style="accent-color:var(--accent)"> 1×</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);background:var(--surface)"><input type="checkbox" value="1.5" id="dir-nr-mult-1_5" onchange="updateDirNrBonus()" style="accent-color:var(--accent)"> 1.5×</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);background:var(--surface)"><input type="checkbox" value="2" id="dir-nr-mult-2" onchange="updateDirNrBonus()" style="accent-color:var(--accent)"> 2×</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:5px 10px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);background:var(--surface)"><input type="checkbox" value="2.5" id="dir-nr-mult-2_5" onchange="updateDirNrBonus()" style="accent-color:var(--accent)"> 2.5×</label>
+          </div>
+          <div id="dir-nr-bonus-preview" style="margin-top:8px;font-size:12px;color:var(--accent-text);font-weight:500;min-height:18px"></div>
+        </div>
+        <div class="field">
+          <label>Acelerador / Redutor</label>
+          <input type="text" id="dir-nr-acelerador" placeholder="Ex: NPS como acelerador e redutor, custo da área como redutor…">
+          <div style="font-size:10px;color:var(--text-3);margin-top:4px">Descreva o que aproxima o bônus do teto (acelerador) ou do piso (redutor)</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-action" onclick="addPessoaDiretorio()">+ Cadastrar pessoa</button>
+  </div>
+
   <div id="dir-search-wrap" style="margin-bottom:16px">
     <input type="text" id="dir-search" placeholder="Buscar por nome ou cargo…"
       style="width:100%;height:38px;padding:0 14px;border:1px solid var(--border-mid);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s"
@@ -743,72 +765,6 @@ function showSub(prefix,sub,btn){
 
 /* FAIXAS B2B e getFaixaIdx definidos abaixo junto com calcB2B */
 
-/* ===== SAB CONFIG ===== */
-const mkSAB=(tag)=>[
-  {id:'nat',label:'Nova Área Terap. / Novo Cliente',desc:'Abertura de nova área terapêutica ou primeiro pedido de novo cliente.',tag,active:false,weight:1,pcts:{50:.0025,70:.005,80:.0075,90:.01}},
-  {id:'exp',label:'Expansão (BR + 1)',desc:'Expansão geográfica para novo estado ou país adicional.',tag,active:false,weight:1,pcts:{50:.0025,70:.005,80:.0075,90:.01}},
-  {id:'dig',label:'Portfólio Digital',desc:'Inclusão de produtos ou serviços digitais.',tag,active:false,weight:2,pcts:{50:.005,70:.01,80:.015,90:.02}},
-  {id:'mba',label:'Atingimento de Margem Bruta-Alvo',desc:'Gatilho: margem bruta realizada ≥ alvo definida. % sobre faturamento líquido.',tag:'Todos',active:false,weight:2,pcts:{50:.005,70:.0075,80:.01,90:.015},useMargemAlvo:true},
-];
-
-const SAB_KAM=mkSAB('KAM');
-const SAB_B2C=mkSAB('B2C');
-const SAB_LC=mkSAB('BU Head');
-const SAB_HEAD=mkSAB('BU Owner');
-
-const sabExtras={
-  'sab-b2b-grid':{margemAlvo:0,margemRealizada:0},
-  'sab-hc-grid': {margemAlvo:0,margemRealizada:0},
-  'sab-b2c-grid':{margemAlvo:0,margemRealizada:0},
-  'sab-lc-grid': {margemAlvo:0,margemRealizada:0},
-};
-
-function getSABList(cid){return cid.includes('b2b')?SAB_KAM:cid.includes('hc')?SAB_HEAD:cid.includes('b2c')?SAB_B2C:SAB_LC;}
-function getCalcFn(cid){return cid.includes('b2b')?calcB2B:cid.includes('hc')?calcHC:cid.includes('b2c')?calcB2C:calcLC;}
-
-function getSABPct(s,pctMeta){const p=s.pcts;if(pctMeta>=.9)return p[90];if(pctMeta>=.8)return p[80];if(pctMeta>=.7)return p[70];if(pctMeta>=.5)return p[50];return 0;}
-
-function calcSABBonus(list,base,pctMeta,cid){
-  const ex=sabExtras[cid]||{};
-  const actives=list.filter(s=>{
-    if(!s.active)return false;
-    if(s.useMargemAlvo){const a=ex.margemAlvo||0,r=ex.margemRealizada||0;if(a<=0||r<a)return false;}
-    return true;
-  });
-  if(!actives.length)return 0;
-  const tw=actives.reduce((a,s)=>a+s.weight,0);
-  return actives.reduce((sum,s)=>{
-    const share=s.weight/tw,pct=getSABPct(s,pctMeta);
-    const cb=base;
-    return sum+cb*pct*share;
-  },0);
-}
-
-function renderSABGrid(cid,list){
-  const ex=sabExtras[cid]||{};
-  const grid=document.getElementById(cid);
-  if(!grid)return;
-  grid.innerHTML=list.map((s,idx)=>{
-    const mbBlocked=s.useMargemAlvo&&s.active&&((ex.margemAlvo||0)<=0||(ex.margemRealizada||0)<(ex.margemAlvo||0));
-    return`<div class="sab-item${s.active?' active':''}">
-      <div class="sab-top">
-        <div class="sab-toggle" onclick="toggleSAB('${cid}',${idx})">
-          <div class="sab-check"><div class="sab-check-inner"></div></div>
-          <span class="sab-name">${s.label}</span>
-        </div>
-        <span class="sab-tag">${s.tag}</span>
-        ${mbBlocked?'<span class="badge badge-amber" style="font-size:10px">Margem-alvo não atingida</span>':''}
-      </div>
-      <div class="sab-weight-row">
-        <span class="sab-weight-label">Peso:</span>
-        <div class="sab-weight-btns">${[1,2,3].map(w=>`<button class="w-btn${s.weight===w?' sel':''}" onclick="setWeight('${cid}',${idx},${w})">${w}</button>`).join('')}</div>
-        ${s.useMargemAlvo?`<span class="sab-weight-label" style="margin-left:10px">Alvo (R$):</span><input type="number" value="${ex.margemAlvo||0}" style="width:110px;height:26px;padding:0 8px;font-size:12px;border:1px solid var(--border-mid);border-radius:4px;background:var(--surface);color:var(--text)" oninput="sabExtras['${cid}'].margemAlvo=parseFloat(this.value)||0;renderSABGrid('${cid}',getSABList('${cid}'));getCalcFn('${cid}')()"><span class="sab-weight-label" style="margin-left:6px">Realizada (R$):</span><input type="number" value="${ex.margemRealizada||0}" style="width:110px;height:26px;padding:0 8px;font-size:12px;border:1px solid var(--border-mid);border-radius:4px;background:var(--surface);color:var(--text)" oninput="sabExtras['${cid}'].margemRealizada=parseFloat(this.value)||0;renderSABGrid('${cid}',getSABList('${cid}'));getCalcFn('${cid}')()">`:''}
-      </div>
-      <div class="sab-desc">${s.desc}</div>
-    </div>`}).join('');
-}
-function toggleSAB(cid,idx){const l=getSABList(cid);l[idx].active=!l[idx].active;renderSABGrid(cid,l);getCalcFn(cid)();}
-function setWeight(cid,idx,w){const l=getSABList(cid);l[idx].weight=w;renderSABGrid(cid,l);getCalcFn(cid)();}
 
 /* ===== PEOPLE DATA ===== */
 // Os valores mensais são as METAS de cada pessoa (fonte: tabela de vendas 2025)
@@ -982,7 +938,7 @@ function setRealizado(grp,idx,mesIdx,val){
     pctEl.textContent=pctLbl(r,m)+' atingido';
     pctEl.className='track-kpi-pct '+pctCls(r,m);
   });
-  // Also update the bar for this month's cell
+  // Also update the bar for this month cell
   const cells=el.querySelectorAll('.track-mes-cell');
   if(cells[mesIdx]){
     const metas=getMetasMensais(p,grp);
@@ -1635,7 +1591,7 @@ function rvSimCard(pctFat, pctCom, rv, fat, metaFat, pctMargem, mult, margemReal
     margemHtml = `<div class="result-row"><span class="result-key">Atingimento margem</span>
       <span class="result-val"><span class="badge ${bcM}">${fmtPct(pctMargem||0)}</span></span></div>
     <div class="result-row"><span class="result-key">Multiplicador de margem</span>
-      <span class="result-val mono">${(mult||0).toFixed(2)}×</span></div>`;
+      <span class="result-val mono">${(mult||0).toFixed(2)}x</span></div>`;
   }
   return `<div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
   <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:12px">
@@ -1644,361 +1600,10 @@ function rvSimCard(pctFat, pctCom, rv, fat, metaFat, pctMargem, mult, margemReal
   </div>
   <div class="result-block">
     <div class="result-row"><span class="result-key">Meta faturamento</span><span class="result-val mono">${fmt(metaFat||0)}</span></div>
-    <div class="result-row"><span class="result-key">% comissão aplicada</span><span class="result-val mono">${fmtPct(pctCom||0)}</span></div>
+    <div class="result-row"><span class="result-key">% comissao aplicada</span><span class="result-val mono">${fmtPct(pctCom||0)}</span></div>
     ${margemHtml}
     <div class="result-total"><span>RV estimada Q</span><span class="mono">${fmt(rv||0)}</span></div>
   </div>`;
-}
-
-function rvSimCardMargem(pctMargem, mult, rv, margemReal, metaMargem, salTri){
-  const pctBar = Math.min((pctMargem||0)/1.5,1)*100;
-  const bc = (pctMargem||0)>=1.2?'badge-green':(pctMargem||0)>=.9?'badge-blue':(pctMargem||0)>=.35?'badge-amber':'badge-red';
-  return `<div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
-  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:12px">
-    <span>${fmt(margemReal||0)} realizado</span>
-    <span class="badge ${bc}">${fmtPct(pctMargem||0)} da meta</span>
-  </div>
-  <div class="result-block">
-    <div class="result-row"><span class="result-key">Meta margem Q</span><span class="result-val mono">${fmt(metaMargem||0)}</span></div>
-    <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri||0)}</span></div>
-    <div class="result-row"><span class="result-key">Multiplicador</span><span class="result-val mono">${(mult||0).toFixed(2)}×</span></div>
-    <div class="result-total"><span>RV estimada Q</span><span class="mono">${fmt(rv||0)}</span></div>
-  </div>`;
-}
-
-function setPessoaMargemReal(grp, idx, val){
-  const p = (people[grp]||[])[idx];
-  if(p) p.margemRealTri = parseFloat(val)||0;
-  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
-  renderRVSimPanel(grp, idx, container);
-  scheduleSave();
-}
-function setPessoaMetaMargem(grp, idx, val){
-  const p = (people[grp]||[])[idx];
-  if(p) p.metaMargemTri = parseFloat(val)||0;
-  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
-  renderRVSimPanel(grp, idx, container);
-  scheduleSave();
-}
-
-/* ── Tabela de Faixas — render ── */
-function renderFaixasList(){
-  const el = document.getElementById('faixas-list');
-  if(!el) return;
-  const regras = getAllRegras();
-  el.innerHTML = Object.values(regras).map(r => {
-    const tipoLabel = r.tipo==='fat'?'Faturamento':r.tipo==='margem'?'Margem':'Combinado';
-    const periodLabel = r.periodo==='mensal'?'Mensal':r.periodo==='trimestral'?'Trimestral':'Anual';
-    const isCustom = !!extraRegras[r.id];
-    let tabelaHtml = '';
-    if(r.tipo==='margem'){
-      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">% Atingimento Margem</th>
-        <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">Multiplicador (× sal. tri.)</th></tr></thead>
-        <tbody>${r.faixas.map(f=>`<tr>
-          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
-          </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult}×</td>
-        </tr>`).join('')}</tbody></table>`;
-    } else {
-      const cols = r.tipo==='combinado' ? ['% Atingimento Fat.','% Comissão','Mult. Margem < Piso','Mult. Margem ≥ Piso'] : ['% Atingimento','% Comissão'];
-      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead><tr>${['% Atingimento Faturamento','% Comissão s/ Fat. Líquido'].map(h=>`<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
-        <tbody>${r.faixas.map(f=>`<tr>
-          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
-          </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace">${fmtPct(f.pct||0)}</td>
-        </tr>`).join('')}</tbody></table>`;
-      if(r.tipo==='combinado' && r.faixasMargem){
-        tabelaHtml += `<div style="margin-top:10px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Multiplicadores de Margem</div>
-        <table style="width:100%;border-collapse:collapse;font-size:12px">
-          <thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">% Margem Realizada</th>
-          <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">Multiplicador</th></tr></thead>
-          <tbody>${r.faixasMargem.map(f=>`<tr>
-            <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
-            </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult}×</td>
-          </tr>`).join('')}</tbody></table>`;
-      }
-    }
-    const pisoHtml = r.piso>0 ? `<span class="badge badge-amber" style="margin-left:8px">Piso: ${r.piso}%</span>` : '';
-    return `<div class="card" style="margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <div style="font-size:13px;font-weight:600;color:var(--text);flex:1">${r.nome}</div>
-        <span class="badge badge-blue">${tipoLabel}</span>
-        <span class="badge badge-gray">${periodLabel}</span>
-        ${pisoHtml}
-        ${isCustom?`<button onclick="deleteRegra('${r.id}')" class="btn-sm" style="margin-left:auto">Apagar</button>`:''}
-      </div>
-      <div class="tbl-wrap">${tabelaHtml}</div>
-    </div>`;
-  }).join('');
-}
-
-function deleteRegra(id){
-  delete extraRegras[id];
-  renderFaixasList();
-  scheduleSave();
-}
-
-/* ── Nova Regra ── */
-function toggleNrTipo(){
-  const tipo = document.getElementById('nr-tipo').value;
-  document.getElementById('nr-margem-mult-wrap').style.display = tipo==='combinado'?'block':'none';
-  document.getElementById('nr-fat-wrap').style.display = tipo==='margem'?'none':'block';
-}
-function addNrFaixa(){
-  const wrap = document.getElementById('nr-faixas-wrap');
-  const row = document.createElement('div');
-  row.className = 'nr-faixa-row';
-  row.style.cssText = 'display:grid;grid-template-columns:1fr 80px auto;gap:8px;margin-bottom:6px';
-  row.innerHTML = `<input type="number" placeholder="De (% meta)" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
-    <input type="number" placeholder="% com." step="0.01" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
-    <button onclick="removeNrFaixa(this)" style="height:30px;width:30px;border:1px solid var(--border-mid);border-radius:4px;background:none;cursor:pointer;color:var(--text-3);font-size:14px">×</button>`;
-  wrap.appendChild(row);
-}
-function removeNrFaixa(btn){ btn.parentElement.remove(); }
-function clearNrForm(){
-  document.getElementById('nr-nome').value='';
-  document.getElementById('nr-piso').value='0';
-  document.getElementById('nr-tipo').value='fat';
-  document.getElementById('nr-periodo').value='mensal';
-  document.getElementById('nr-faixas-wrap').innerHTML='';
-  toggleNrTipo();
-  addNrFaixa();
-}
-function saveNovaRegra(){
-  const nome = document.getElementById('nr-nome').value.trim();
-  if(!nome){alert('Dê um nome à regra.');return;}
-  const tipo = document.getElementById('nr-tipo').value;
-  const periodo = document.getElementById('nr-periodo').value;
-  const piso = parseFloat(document.getElementById('nr-piso').value)||0;
-  const rows = document.querySelectorAll('#nr-faixas-wrap .nr-faixa-row');
-  const faixas = [];
-  rows.forEach((row,i) => {
-    const inputs = row.querySelectorAll('input[type=number]');
-    const de = parseFloat(inputs[0].value)||0;
-    const pct = parseFloat(inputs[1].value)||0;
-    const ate = i<rows.length-1 ? (parseFloat(rows[i+1].querySelectorAll('input[type=number]')[0].value)||0)-0.01 : 999;
-    if(de>0||pct>0) faixas.push({de, ate, pct: pct/100});
-  });
-  if(faixas.length===0){alert('Adicione pelo menos uma faixa.');return;}
-  const id = 'custom-'+Date.now();
-  const regra = {id, nome, tipo, periodo, piso, faixas};
-  if(tipo==='combinado'){
-    regra.faixasMargem = [0,1,2,3,4,5].map(i=>({
-      de: [0,piso,25,30,35,40][i],
-      ate: [piso-0.01,24.99,29.99,34.99,39.99,999][i],
-      mult: parseFloat(document.getElementById('nr-mm'+i).value)||0
-    }));
-  }
-  extraRegras[id] = regra;
-  renderFaixasList();
-  clearNrForm();
-  scheduleSave();
-}
-
-/* ===== CALC B2B ===== */
-function getFaixaIdx(acum,qi){
-  const gatilhos=[[240000,360000,480000,600000,744000,864000],[400000,600000,800000,1000000,1240000,1440000],[620000,930000,1240000,1550000,1920000,2230000],[740000,1110000,1480000,1850000,2290000,2660000]];
-  const g=gatilhos[qi];let fi=0;
-  for(let i=g.length-1;i>=0;i--){if(acum>=g[i]){fi=i+1;break;}}
-  return fi;
-}
-const FAIXAS=[{pct:.01},{pct:.025},{pct:.0275},{pct:.03},{pct:.0325},{pct:.04},{pct:.05}];
-
-function calcB2B(){
-  const nome=document.getElementById('b2b-nome').value||'KAM';
-  const sal=parseFloat(document.getElementById('b2b-salario').value)||0;
-  const metaBU=parseFloat(document.getElementById('b2b-meta-bu').value)||55000000;
-  const imp=parseFloat(document.getElementById('b2b-imp').value)||.1175;
-  const pt=parseFloat(document.getElementById('b2b-pt').value)||.4;
-  const qvals=[1,2,3,4].map(i=>parseFloat(document.getElementById('b2b-q'+i).value)||0);
-  const metaKAM=metaBU/8;
-  let acum=0,totCom=0,totSAB=0;
-  const rows=qvals.map((bruto,qi)=>{
-    const liq=bruto*(1-imp),base=liq*(1-pt);
-    acum+=bruto;
-    const fi=getFaixaIdx(acum,qi);
-    const pctMeta=metaKAM>0?acum/metaKAM:0;
-    const comBase=base*FAIXAS[fi].pct;
-    const sab=calcSABBonus(SAB_KAM,base,pctMeta,'sab-b2b-grid');
-    totCom+=comBase;totSAB+=sab;
-    return{q:'Q'+(qi+1),bruto,liq,base,pctMeta,fi,pctCom:FAIXAS[fi].pct,comBase,sab,total:comBase+sab};
-  });
-  const grand=totCom+totSAB;
-  const pctT=qvals.reduce((a,b)=>a+b,0)/metaKAM;
-  const xSal=sal>0?grand/(sal*12):0;
-  const bc=pctT>=1.2?'badge-green':pctT>=.9?'badge-blue':pctT>=.7?'badge-amber':'badge-red';
-  const bl=pctT>=1.2?'Excelente':pctT>=.9?'Meta atingida':pctT>=.7?'Em desenvolvimento':'Abaixo da meta';
-  const b2bPerson=people.b2b[selectedPerson.b2b];
-  if(b2bPerson&&b2bPerson.metas){
-    const t=b2bPerson.metas;
-    const lastQFilled=[...qvals].reverse().findIndex(v=>v>0);
-    const qAtualIdx=lastQFilled>=0?3-lastQFilled:0;
-    const metasQ=[t.q1,t.q2,t.q3,t.q4];
-    const metaTri=metasQ[qAtualIdx]||0;
-    const realTri=qvals[qAtualIdx]||0;
-    const metaMensal=t.m[qAtualIdx*3]||0;
-    renderMetaPanel('b2b-meta-panel',{metaMensal,metaTrimestral:metaTri,metaAnual:t.anual,realMes:realTri/3,realTri,realAno:qvals.reduce((a,b)=>a+b,0)});
-  } else {
-    const metaTri=metaKAM/4;
-    const lastQWithVal=[...qvals].reverse().findIndex(v=>v>0);
-    const qAtualIdx=lastQWithVal>=0?3-lastQWithVal:0;
-    const realTri=qvals[qAtualIdx]||0;
-    renderMetaPanel('b2b-meta-panel',{metaMensal:metaKAM/12,metaTrimestral:metaTri,metaAnual:metaKAM,realMes:realTri/3,realTri,realAno:qvals.reduce((a,b)=>a+b,0)});
-  }
-  document.getElementById('b2b-metrics').innerHTML=`
-    <div class="metric-card"><div class="metric-label">Comissão Total Anual</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
-    <div class="metric-card"><div class="metric-label">% Atingimento</div><div class="metric-value">${fmtPct(pctT)}</div><div class="metric-sub"><span class="badge ${bc}">${bl}</span></div></div>
-    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(totSAB)}</div><div class="metric-sub">no período</div></div>
-    <div class="metric-card"><div class="metric-label">x Salário anual</div><div class="metric-value">${xSal.toFixed(2)}x</div><div class="metric-sub">multiplicador</div></div>`;
-  document.getElementById('b2b-sab-total').textContent=fmt(totSAB);
-  document.querySelector('#b2b-detail tbody').innerHTML=rows.map(r=>`<tr>
-    <td><strong>${r.q}</strong></td><td class="mono">${fmt(r.bruto)}</td><td class="mono">${fmt(r.liq)}</td>
-    <td class="mono">${fmt(r.base)}</td>
-    <td><span class="badge ${r.pctMeta>=.9?'badge-green':r.pctMeta>=.7?'badge-amber':'badge-red'}">${fmtPct(r.pctMeta)}</span></td>
-    <td><span class="badge badge-blue">F${r.fi}</span></td>
-    <td class="mono">${fmtPct(r.pctCom)}</td><td class="mono">${fmt(r.comBase)}</td>
-    <td class="mono">${fmt(r.sab)}</td><td class="mono"><strong>${fmt(r.total)}</strong></td>
-  </tr>`).join('')+`<tr class="row-total"><td colspan="9" style="text-align:right">Total</td><td class="mono">${fmt(grand)}</td></tr>`;
-}
-
-/* ===== CALC MENSAL (B2C e BU Heads comerciais) ===== */
-function calcMensal(fat,meta,sal,pcts){
-  const pct=meta>0?fat/meta:0;
-  let fi=pct<.7?0:pct<.9?1:pct<=1?2:pct<1.2?3:4;
-  const comBase=fat*(pcts[Math.min(fi,pcts.length-1)]||0);
-  const total=comBase;
-  return{pct,fi,comBase,extra:0,total,xSal:sal>0?total/sal:0,appliedPct:pcts[Math.min(fi,pcts.length-1)]||0};
-}
-function renderMensalResult(el,res,meta,sal){
-  const pctBar=Math.min(res.pct/1.5,1)*100;
-  const bc=res.pct>=1.2?'badge-green':res.pct>=.9?'badge-blue':res.pct>=.7?'badge-amber':'badge-red';
-  el.innerHTML=`<div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-      <span style="color:var(--text-2)">Atingimento</span><span class="badge ${bc}">${fmtPct(res.pct)}</span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
-    <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta: ${fmt(meta)}</div>
-  </div>
-  <div class="divider"></div>
-  <div class="result-block">
-    <div class="result-row"><span class="result-key">% aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
-    <div class="result-row"><span class="result-key">Comissão base</span><span class="result-val mono">${fmt(res.comBase)}</span></div>
-    <div class="result-total"><span>Comissão total</span><span class="mono">${fmt(res.total)}</span></div>
-    <div style="font-size:11px;color:var(--text-3);margin-top:8px">${res.xSal.toFixed(2)}x o salário fixo mensal</div>
-  </div>`;
-}
-
-function calcB2C(){
-  const sal=parseFloat(document.getElementById('b2c-sal').value)||0;
-  const meta=parseFloat(document.getElementById('b2c-meta').value)||0;
-  const fat=parseFloat(document.getElementById('b2c-fat').value)||0;
-  const res=calcMensal(fat,meta,sal,[0,.01,.0125,.015,.02]);
-  renderMensalResult(document.getElementById('b2c-result'),res,meta,sal);
-  const pctMeta=meta>0?fat/meta:0;
-  const sab=calcSABBonus(SAB_B2C,fat,pctMeta,'sab-b2c-grid');
-  const sabEl=document.getElementById('b2c-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
-  renderMetaPanel('b2c-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
-  const faixaLabels=['< 70%','70–89,99%','90–100%','100,01–119,99%','≥ 120%'];
-  const pcts=[0,.01,.0125,.015,.02];
-  document.querySelector('#b2c-faixas-tbl tbody').innerHTML=faixaLabels.map((lbl,i)=>`<tr class="${res.fi===i?'faixa-ativa':''}">
-    <td>${i+1}</td><td>${lbl}</td><td class="mono">${fmtPct(pcts[i])}</td>
-    <td class="mono">${fmt(fat*pcts[i])}</td><td class="mono">${sal>0?(fat*pcts[i]/sal).toFixed(2)+'x':'—'}</td>
-  </tr>`).join('');
-}
-
-function calcLC(){
-  const sal=parseFloat(document.getElementById('lc-sal').value)||0;
-  const meta=parseFloat(document.getElementById('lc-meta').value)||0;
-  const fat=parseFloat(document.getElementById('lc-fat').value)||0;
-  const res=calcMensal(fat,meta,sal,[0,.025,.03,.035,.04]);
-  renderMensalResult(document.getElementById('lc-result'),res,meta,sal);
-  const pctMeta=meta>0?fat/meta:0;
-  const sab=calcSABBonus(SAB_LC,fat,pctMeta,'sab-lc-grid');
-  const sabEl=document.getElementById('lc-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
-  renderMetaPanel('lc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
-}
-
-function calcHC(){
-  // BU Owner: trimestral, só margem, multiplicador de salário trimestral
-  const nome=document.getElementById('hc-nome').value;
-  const sal=parseFloat(document.getElementById('hc-sal').value)||0;
-  const meta=parseFloat(document.getElementById('hc-meta').value)||0; // meta trimestral de margem
-  const fat=parseFloat(document.getElementById('hc-fat').value)||0;   // realizado (usado p/ referência fat)
-  const mbMeta=parseFloat(document.getElementById('hc-mb-meta').value)||0; // meta margem tri
-  const mbReal=parseFloat(document.getElementById('hc-mb-real').value)||0; // margem realizada tri
-
-  // BU Owner usa margem trimestral e multiplicador de salário
-  const metaMargem = mbMeta || meta;
-  const pctMargem = metaMargem>0 ? mbReal/metaMargem : 0;
-  const pctPct = pctMargem*100;
-  // Piso 35% → abaixo = 0
-  const pisoAtingido = pctPct >= 35 || mbMeta<=0;
-  let mult = 0;
-  if(pisoAtingido && mbMeta>0){
-    if(pctPct<100) mult=1;
-    else if(pctPct<114.4) mult=1.5;
-    else if(pctPct<128.6) mult=2;
-    else mult=2.5;
-  }
-  const salTri = sal*3;
-  const rv = salTri * mult;
-  const sabBruto=calcSABBonus(SAB_HEAD,fat>0?fat:mbReal,meta>0?fat/meta:0,'sab-hc-grid');
-  const sab=sabBruto*(pisoAtingido?1:0);
-  document.getElementById('hc-sab-total').textContent=fmt(sab);
-  const grand=rv+sab;
-  const xSal=sal>0?rv/sal:0;
-
-  const mbStatusEl=document.getElementById('hc-mb-status');
-  if(mbMeta>0){
-    if(!pisoAtingido){
-      mbStatusEl.innerHTML=`<div style="background:var(--red-light);border:1px solid rgba(179,48,0,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--red)">
-        <strong>Piso não atingido (35%)</strong> — Margem realizada (${fmt(mbReal)}) = ${fmtPct(pctMargem)} da meta. RV = R$ 0.</div>`;
-    } else {
-      mbStatusEl.innerHTML=`<div style="background:var(--accent-light);border:1px solid rgba(29,107,78,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--accent-text)">
-        <strong>Piso atingido</strong> — ${fmtPct(pctMargem)} de atingimento · Multiplicador: ${mult}× · RV = ${mult}× salário trimestral</div>`;
-    }
-  } else {
-    mbStatusEl.innerHTML=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--text-3)">Informe a meta de margem e o realizado para calcular a RV do BU Owner.</div>`;
-  }
-
-  const hcPerson=people.hc[selectedPerson.hc];
-  if(hcPerson&&hcPerson.metas){
-    const mesIdx=hcMesAtual[selectedPerson.hc]??0;
-    const t=hcPerson.metas;
-    const metaMes=t.m[mesIdx];
-    const triIdx=Math.floor(mesIdx/3);
-    const metaTri=[t.q1,t.q2,t.q3,t.q4][triIdx];
-    const mesesAntTri=t.m.slice(triIdx*3,mesIdx).reduce((a,b)=>a+b,0);
-    const realTri=mesesAntTri+fat;
-    renderMetaPanel('hc-meta-panel',{metaMensal:metaMes,metaTrimestral:metaTri,metaAnual:t.anual,realMes:fat,realTri,realAno:fat});
-  } else {
-    renderMetaPanel('hc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:mbReal,realTri:mbReal,realAno:mbReal});
-  }
-
-  document.getElementById('hc-result').innerHTML=`
-    <div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-        <span style="color:var(--text-2)">Atingimento margem</span>
-        <span class="badge ${pctPct>=100?'badge-green':pctPct>=35?'badge-blue':'badge-red'}">${fmtPct(pctMargem)}</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pctPct/1.5,100).toFixed(1)}%"></div></div>
-      <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta margem: ${fmt(metaMargem)}</div>
-    </div>
-    <div class="divider"></div>
-    <div class="result-block">
-      <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri)}</span></div>
-      <div class="result-row"><span class="result-key">Multiplicador aplicado</span><span class="result-val mono">${mult}×</span></div>
-      <div class="result-row"><span class="result-key">RV base (margem)</span><span class="result-val mono">${fmt(rv)}</span></div>
-      <div class="result-row"><span class="result-key">Bônus SAB</span><span class="result-val mono">${fmt(sab)}</span></div>
-      <div class="result-total"><span>Total RV no trimestre</span><span class="mono">${fmt(grand)}</span></div>
-      <div style="font-size:11px;color:var(--text-3);margin-top:8px">${xSal.toFixed(2)}× o salário mensal fixo</div>
-    </div>`;
-
-  document.getElementById('hc-metrics').innerHTML=`
-    <div class="metric-card"><div class="metric-label">Total RV Tri.</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
-    <div class="metric-card"><div class="metric-label">Multiplicador</div><div class="metric-value">${mult}×</div><div class="metric-sub">${pisoAtingido||mbMeta<=0?'Piso atingido':'⚠ Abaixo do piso'}</div></div>
-    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(sab)}</div><div class="metric-sub">no trimestre</div></div>
-    <div class="metric-card"><div class="metric-label">x Salário mensal</div><div class="metric-value">${xSal.toFixed(2)}×</div><div class="metric-sub">multiplicador</div></div>`;
 }
 
 /* ===== RANKING ===== */
@@ -2041,71 +1646,137 @@ function setTrackVal(grp,idx,mes,val){
 }
 
 
-function renderTrackPanel(grp,idx){
-  const card=document.getElementById(grp+'-track-card');
-  const gridEl=document.getElementById(grp+'-track-grid');
-  const sumEl=document.getElementById(grp+'-track-summary');
-  if(!card||!gridEl||!sumEl) return;
 
-  const metas=getMetas12(grp,idx);
-  const reals=getTrack(grp,idx);
 
-  // Determine "current month" = last month with a meta > 0 or all 12
-  card.style.display='block';
+/* ===== DIRETÓRIO — CADASTRO RÁPIDO ===== */
+let _dirRegraMode = 'alocar'; // 'alocar' | 'cadastrar'
 
-  // Render 12 month cells
-  gridEl.innerHTML=MESES_ABREV.map((m,i)=>{
-    const meta=metas[i]||0;
-    const real=reals[i]||0;
-    const pct=meta>0?Math.min(real/meta,1):0;
-    const barColor=pct>=1?'var(--accent)':pct>=0.7?'#1A4D8A':'#8A5E00';
-    return`<div class="track-mes-cell">
-      <div class="track-mes-label">${m}</div>
-      <input class="track-mes-input" type="number" value="${real||''}" placeholder="0"
-        oninput="setTrackVal('${grp}',${idx},${i},this.value)">
-      <div class="track-mes-meta">Meta: ${meta>0?fmt(meta).replace('R$ ',''):'—'}</div>
-      <div class="track-mes-bar"><div class="track-mes-fill" style="width:${(pct*100).toFixed(0)}%;background:${barColor}"></div></div>
-    </div>`;
-  }).join('');
+function toggleDirCadastroExtra(){
+  const grp = document.getElementById('dir-p-grupo')?.value;
+  const isPDL = grp === 'pdl';
+  const modeWrap = document.getElementById('dir-regra-modo-wrap');
+  if(modeWrap) modeWrap.style.display = isPDL ? 'none' : 'block';
+  const alocarWrap = document.getElementById('dir-regra-alocar-wrap');
+  const cadWrap = document.getElementById('dir-regra-cadastrar-wrap');
+  if(isPDL){
+    if(alocarWrap) alocarWrap.style.display='none';
+    if(cadWrap) cadWrap.style.display='none';
+    return;
+  }
+  setDirRegraMode(_dirRegraMode);
+  const defaultRegra = {hc:'buo-knd',lc:'buh-com',b2b:'kam',b2c:'b2c'}[grp]||'kam';
+  populateRegraSelector('dir-p-regra', defaultRegra);
+}
 
-  // Compute current month (last filled or month 0)
-  let mesFocus=reals.map((v,i)=>v>0?i:-1).filter(i=>i>=0);
-  const mesAtual=mesFocus.length>0?Math.max(...mesFocus):0;
-  const triIdx=Math.floor(mesAtual/3);
+function setDirRegraMode(mode){
+  _dirRegraMode = mode;
+  const btnAlocar = document.getElementById('dir-btn-alocar');
+  const btnCad = document.getElementById('dir-btn-cadastrar');
+  const alocarWrap = document.getElementById('dir-regra-alocar-wrap');
+  const cadWrap = document.getElementById('dir-regra-cadastrar-wrap');
+  if(mode === 'alocar'){
+    if(btnAlocar){ btnAlocar.style.background='var(--accent)'; btnAlocar.className='btn-action'; }
+    if(btnCad){ btnCad.style.background=''; btnCad.className='btn-outline'; }
+    if(alocarWrap) alocarWrap.style.display='block';
+    if(cadWrap) cadWrap.style.display='none';
+  } else {
+    if(btnAlocar){ btnAlocar.className='btn-outline'; }
+    if(btnCad){ btnCad.className='btn-action'; btnCad.style.background='var(--accent)'; }
+    if(alocarWrap) alocarWrap.style.display='none';
+    if(cadWrap) cadWrap.style.display='block';
+  }
+}
 
-  // Mês
-  const metaMes=metas[mesAtual]||0;
-  const realMes=reals[mesAtual]||0;
+function updateDirNrBonus(){
+  const checked = [0.5,1,1.5,2,2.5].filter(m=>{
+    const id = 'dir-nr-mult-'+(m===0.5?'0_5':m===1?'1':m===1.5?'1_5':m===2?'2':'2_5');
+    return document.getElementById(id)?.checked;
+  }).sort((a,b)=>a-b);
+  const preview = document.getElementById('dir-nr-bonus-preview');
+  if(!preview) return;
+  if(checked.length === 0){ preview.textContent=''; return; }
+  if(checked.length === 1) preview.textContent=`Bônus fixo de ${checked[0]}× o salário`;
+  else preview.textContent=`Bônus entre ${checked[0]}× e ${checked[checked.length-1]}× o salário (${checked.map(x=>x+'×').join(', ')})`;
+}
 
-  // Trimestre (acumulado do trimestre que contém o mês mais recente preenchido)
-  const triStart=triIdx*3;
-  const metaTri=metas.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
-  const realTri=reals.slice(triStart,triStart+3).reduce((a,b)=>a+b,0);
+function addPessoaDiretorio(){
+  const nome = document.getElementById('dir-p-nome').value.trim();
+  if(!nome){ alert('Por favor insira o nome da pessoa.'); return; }
+  const cargo   = document.getElementById('dir-p-cargo').value.trim();
+  const grp     = document.getElementById('dir-p-grupo').value;
+  const sal     = parseFloat(document.getElementById('dir-p-sal').value)||0;
 
-  // Ano
-  const metaAno=metas.reduce((a,b)=>a+b,0);
-  const realAno=reals.reduce((a,b)=>a+b,0);
+  let regraId = '';
+  let regraCustom = null;
 
-  const mkKPI=(cls,label,meta,real)=>{
-    const pct=meta>0?real/meta:0;
-    const barW=Math.min(pct,1)*100;
-    const bc=pct>=1?'badge-green':pct>=0.7?'badge-blue':'badge-amber';
-    return`<div class="track-kpi ${cls}">
-      <div class="track-kpi-label">${label}</div>
-      <div class="track-kpi-nums">
-        <span class="track-kpi-real">${fmt(real)}</span>
-        <span class="track-kpi-sep">/</span>
-        <span class="track-kpi-meta">${fmt(meta)}</span>
-      </div>
-      <div class="track-kpi-bar"><div class="track-kpi-fill" style="width:${barW.toFixed(1)}%"></div></div>
-      <span class="track-kpi-pct"><span class="badge ${bc}">${meta>0?(pct*100).toFixed(1)+'%':'—'} atingido</span></span>
-    </div>`;
-  };
+  if(grp !== 'pdl'){
+    if(_dirRegraMode === 'alocar'){
+      regraId = document.getElementById('dir-p-regra')?.value||'';
+    } else {
+      // Cadastrar nova regra
+      const objetivo = document.getElementById('dir-nr-objetivo').value.trim();
+      const multiples = [0.5,1,1.5,2,2.5].filter(m=>document.getElementById('dir-nr-mult-'+(m===0.5?'0_5':m===1?'1':m===1.5?'1_5':m===2?'2':'2_5'))?.checked).sort((a,b)=>a-b);
+      const acelerador = document.getElementById('dir-nr-acelerador').value.trim();
+      if(!objetivo){ alert('Preencha o objectivo da regra.'); return; }
+      if(multiples.length===0){ alert('Seleccione pelo menos um múltiplo de salário.'); return; }
+      const piso = multiples[0];
+      const teto = multiples[multiples.length-1];
+      regraId = 'custom-'+Date.now();
+      regraCustom = {
+        id: regraId,
+        nome: `${nome} — ${objetivo.substring(0,30)}`,
+        tipo: 'margem',
+        periodo: 'anual',
+        piso: 0,
+        objetivo, acelerador,
+        multiplos: multiples,
+        descricao: `Bônus anual de ${piso}× a ${teto}× o salário. Base: ${objetivo}${acelerador?'. '+acelerador:''}`,
+        // faixas: piso/teto mapeados para multiplicadores
+        faixas: multiples.map((m,i)=>({
+          de: i===0?0:Math.round((i/multiples.length)*100),
+          ate: i===multiples.length-1?999:Math.round(((i+1)/multiples.length)*100)-0.01,
+          mult: m
+        }))
+      };
+      extraRegras[regraId] = regraCustom;
+      renderFaixasList();
+    }
+  }
 
-  sumEl.innerHTML=
-    mkKPI('mes',`Mês (${MESES_ABREV[mesAtual]})`,metaMes,realMes)+
-    mkKPI('tri',`Q${triIdx+1} (${MESES_ABREV[triStart]}–${MESES_ABREV[triStart+2]})`,metaTri,realTri)+
-    mkKPI('ano','Ano completo',metaAno,realAno);
+  if(grp === 'pdl'){
+    pdlPeople.push({
+      id: pdlNextId++, nome, cargo: cargo||'—',
+      objs:[{texto:'',status:'pendente'},{texto:'',status:'pendente'},{texto:'',status:'pendente'}]
+    });
+    renderPDL();
+  } else if(grp === 'b2b'){
+    people.b2b.push({nome,cargo,sal,regraId,q1:0,q2:0,q3:0,q4:0,metaAnualBU:44000000,realizado:mkReal()});
+    renderPeopleList('b2b');
+  } else if(grp === 'b2c'){
+    people.b2c.push({nome,cargo,sal,regraId,meta:0,fat:0,realizado:mkReal()});
+    renderPeopleList('b2c');
+  } else if(grp === 'lc'){
+    people.lc.push({nome,cargo,sal,regraId,meta:0,fat:0,realizado:mkReal()});
+    renderPeopleList('lc');
+  } else if(grp === 'hc'){
+    people.hc.push({nome,cargo,sal,regraId,meta:0,fat:0,realizado:mkReal()});
+    renderPeopleList('hc');
+  }
+
+  // Clear form
+  document.getElementById('dir-p-nome').value='';
+  document.getElementById('dir-p-cargo').value='';
+  document.getElementById('dir-p-sal').value='';
+  document.getElementById('dir-nr-objetivo').value='';
+  document.getElementById('dir-nr-acelerador').value='';
+  [0.5,1,1.5,2,2.5].forEach(m=>{
+    const el=document.getElementById('dir-nr-mult-'+(m===0.5?'0_5':m===1?'1':m===1.5?'1_5':m===2?'2':'2_5'));
+    if(el) el.checked=false;
+  });
+  updateDirNrBonus();
+
+  renderDiretorio(document.getElementById('dir-search')?.value||'');
+  scheduleSave();
 }
 
 /* ===== MOVER PESSOA ENTRE GRUPOS ===== */
@@ -2205,10 +1876,6 @@ function movePDLPerson(id,grpDestino){
 
 /* ===== INIT ===== */
 ['b2b','b2c','lc','hc'].forEach(g=>renderPeopleList(g));
-renderSABGrid('sab-b2b-grid',SAB_KAM);
-renderSABGrid('sab-hc-grid',SAB_HEAD);
-renderSABGrid('sab-b2c-grid',SAB_B2C);
-renderSABGrid('sab-lc-grid',SAB_LC);
 calcB2B();calcB2C();calcLC();calcHC();renderRanking();renderFaixasList();
 
 /* ===== PDL — LÍDERES OUTRAS ÁREAS ===== */
@@ -2416,7 +2083,11 @@ function renderDiretorio(filter){
 const _showTabOrig=showTab;
 window.showTab=function(id,btn){
   _showTabOrig(id,btn);
-  if(id==='dir')renderDiretorio(document.getElementById('dir-search')?.value||'');
+  if(id==='dir'){
+    renderDiretorio(document.getElementById('dir-search')?.value||'');
+    toggleDirCadastroExtra();
+    setDirRegraMode('alocar');
+  }
   if(id==='faixas')renderFaixasList();
   // Populate regra selectors in add-person forms
   populateRegraSelector('b2b-p-regra','kam');
