@@ -757,6 +757,15 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 const fmt = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
 const fmtPct = v => (v*100).toFixed(2).replace('.',',')+'%';
 const ini = n => n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+// ── Global state (hoisted to avoid TDZ errors) ──
+let pdlPeople=[];
+let pdlNextId=5;
+const hcMesAtual={};
+const track={b2b:{},b2c:{},lc:{},hc:{}};
+let _saveTimer=null;
+let _writePassword=null;
+let _dirRegraMode='alocar';
+
 
 function syncR(id,outId,isPct){
   const v=parseFloat(document.getElementById(id).value);
@@ -776,7 +785,170 @@ function showSub(prefix,sub,btn){
   btn.classList.add('active');
 }
 
-/* FAIXAS B2B e getFaixaIdx definidos abaixo junto com calcB2B */
+/* FAIXAS B2B e getFaixaIdx */
+const FAIXAS=[
+  {pct:.01,   g:[0,0,0,0]},
+  {pct:.025,  g:[240000,400000,620000,740000]},
+  {pct:.0275, g:[360000,600000,930000,1110000]},
+  {pct:.03,   g:[480000,800000,1240000,1480000]},
+  {pct:.0325, g:[600000,1000000,1550000,1850000]},
+  {pct:.04,   g:[744000,1240000,1922000,2294000]},
+  {pct:.05,   g:[864000,1440000,2232000,2664000]}
+];
+function getFaixaIdx(acum,qi){
+  for(let i=FAIXAS.length-1;i>=0;i--){
+    if(FAIXAS[i].g[qi]>0&&acum>=FAIXAS[i].g[qi])return i;
+  }
+  return 0;
+}
+
+/* ===== CALC B2B ===== */
+function calcB2B(){
+  const nome=document.getElementById('b2b-nome')?.value||'KAM';
+  const sal=parseFloat(document.getElementById('b2b-salario')?.value)||0;
+  const metaBU=parseFloat(document.getElementById('b2b-meta-bu')?.value)||55000000;
+  const imp=parseFloat(document.getElementById('b2b-imp')?.value)||.1175;
+  const pt=parseFloat(document.getElementById('b2b-pt')?.value)||.4;
+  const qvals=[1,2,3,4].map(i=>parseFloat(document.getElementById('b2b-q'+i)?.value)||0);
+  const metaKAM=metaBU/8;
+  let acum=0,totCom=0;
+  const rows=qvals.map((bruto,qi)=>{
+    const liq=bruto*(1-imp),base=liq*(1-pt);
+    acum+=bruto;
+    const fi=getFaixaIdx(acum,qi);
+    const pctMeta=metaKAM>0?acum/metaKAM:0;
+    const comBase=base*FAIXAS[fi].pct;
+    totCom+=comBase;
+    return{q:'Q'+(qi+1),bruto,liq,base,pctMeta,fi,pctCom:FAIXAS[fi].pct,comBase,total:comBase};
+  });
+  const grand=totCom;
+  const pctT=qvals.reduce((a,b)=>a+b,0)/metaKAM;
+  const xSal=sal>0?grand/(sal*12):0;
+  const bc=pctT>=1.2?'badge-green':pctT>=.9?'badge-blue':pctT>=.7?'badge-amber':'badge-red';
+  const bl=pctT>=1.2?'Excelente':pctT>=.9?'Meta atingida':pctT>=.7?'Em desenvolvimento':'Abaixo da meta';
+  const metricsEl=document.getElementById('b2b-metrics');
+  if(metricsEl) metricsEl.innerHTML=`
+    <div class="metric-card"><div class="metric-label">Comissão Total Anual</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
+    <div class="metric-card"><div class="metric-label">% Atingimento</div><div class="metric-value">${fmtPct(pctT)}</div><div class="metric-sub"><span class="badge ${bc}">${bl}</span></div></div>
+    <div class="metric-card"><div class="metric-label">x Salário anual</div><div class="metric-value">${xSal.toFixed(2)}x</div><div class="metric-sub">multiplicador</div></div>`;
+  const tbody=document.querySelector('#b2b-detail tbody');
+  if(tbody) tbody.innerHTML=rows.map(r=>`<tr>
+    <td><strong>${r.q}</strong></td><td class="mono">${fmt(r.bruto)}</td><td class="mono">${fmt(r.liq)}</td>
+    <td class="mono">${fmt(r.base)}</td>
+    <td><span class="badge ${r.pctMeta>=.9?'badge-green':r.pctMeta>=.7?'badge-amber':'badge-red'}">${fmtPct(r.pctMeta)}</span></td>
+    <td><span class="badge badge-blue">F${r.fi}</span></td>
+    <td class="mono">${fmtPct(r.pctCom)}</td><td class="mono">${fmt(r.comBase)}</td>
+    <td class="mono"><strong>${fmt(r.total)}</strong></td>
+  </tr>`).join('')+`<tr class="row-total"><td colspan="8" style="text-align:right">Total</td><td class="mono">${fmt(grand)}</td></tr>`;
+}
+
+/* ===== CALC MENSAL (B2C e BU Heads) ===== */
+function calcMensal(fat,meta,sal,pcts){
+  const pct=meta>0?fat/meta:0;
+  let fi=pct<.7?0:pct<.9?1:pct<=1?2:pct<1.2?3:4;
+  fi=Math.min(fi,pcts.length-1);
+  const comBase=fat*(pcts[fi]||0);
+  return{pct,fi,comBase,extra:0,total:comBase,xSal:sal>0?comBase/sal:0,appliedPct:pcts[fi]||0};
+}
+function renderMensalResult(el,res,meta){
+  if(!el)return;
+  const pctBar=Math.min(res.pct/1.5,1)*100;
+  const bc=res.pct>=1.2?'badge-green':res.pct>=.9?'badge-blue':res.pct>=.7?'badge-amber':'badge-red';
+  el.innerHTML=`<div style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+      <span style="color:var(--text-2)">Atingimento</span><span class="badge ${bc}">${fmtPct(res.pct)}</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta: ${fmt(meta)}</div>
+  </div>
+  <div class="divider"></div>
+  <div class="result-block">
+    <div class="result-row"><span class="result-key">% aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
+    <div class="result-row"><span class="result-key">Comissão base</span><span class="result-val mono">${fmt(res.comBase)}</span></div>
+    <div class="result-total"><span>Comissão total</span><span class="mono">${fmt(res.total)}</span></div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:8px">${res.xSal.toFixed(2)}x o salário fixo mensal</div>
+  </div>`;
+}
+
+function calcB2C(){
+  const sal=parseFloat(document.getElementById('b2c-sal')?.value)||0;
+  const meta=parseFloat(document.getElementById('b2c-meta')?.value)||0;
+  const fat=parseFloat(document.getElementById('b2c-fat')?.value)||0;
+  const res=calcMensal(fat,meta,sal,[0,.01,.0125,.015,.02]);
+  renderMensalResult(document.getElementById('b2c-result'),res,meta);
+  const faixaLabels=['< 70%','70–89,99%','90–100%','100,01–119,99%','≥ 120%'];
+  const pcts=[0,.01,.0125,.015,.02];
+  const tbody=document.querySelector('#b2c-faixas-tbl tbody');
+  if(tbody) tbody.innerHTML=faixaLabels.map((lbl,i)=>`<tr class="${res.fi===i?'faixa-ativa':''}">
+    <td>${i+1}</td><td>${lbl}</td><td class="mono">${fmtPct(pcts[i])}</td>
+    <td class="mono">${fmt(fat*pcts[i])}</td><td class="mono">${sal>0?(fat*pcts[i]/sal).toFixed(2)+'x':'—'}</td>
+  </tr>`).join('');
+}
+
+function calcLC(){
+  const sal=parseFloat(document.getElementById('lc-sal')?.value)||0;
+  const meta=parseFloat(document.getElementById('lc-meta')?.value)||0;
+  const fat=parseFloat(document.getElementById('lc-fat')?.value)||0;
+  const res=calcMensal(fat,meta,sal,[0,.025,.03,.035,.04]);
+  renderMensalResult(document.getElementById('lc-result'),res,meta);
+}
+
+function calcHC(){
+  const nome=document.getElementById('hc-nome')?.value||'BU Owner';
+  const sal=parseFloat(document.getElementById('hc-sal')?.value)||0;
+  const meta=parseFloat(document.getElementById('hc-meta')?.value)||0;
+  const fat=parseFloat(document.getElementById('hc-fat')?.value)||0;
+  const mbMeta=parseFloat(document.getElementById('hc-mb-meta')?.value)||0;
+  const mbReal=parseFloat(document.getElementById('hc-mb-real')?.value)||0;
+  const metaMargem=mbMeta||meta;
+  const pctMargem=metaMargem>0?mbReal/metaMargem:0;
+  const pctPct=pctMargem*100;
+  const pisoAtingido=pctPct>=35||mbMeta<=0;
+  let mult=0;
+  if(pisoAtingido&&mbMeta>0){
+    if(pctPct<100)mult=1;
+    else if(pctPct<114.4)mult=1.5;
+    else if(pctPct<128.6)mult=2;
+    else mult=2.5;
+  }
+  const salTri=sal*3;
+  const rv=salTri*mult;
+  const grand=rv;
+  const xSal=sal>0?rv/sal:0;
+  const mbStatusEl=document.getElementById('hc-mb-status');
+  if(mbStatusEl){
+    if(mbMeta>0){
+      mbStatusEl.innerHTML=!pisoAtingido
+        ?`<div style="background:var(--red-light);border:1px solid rgba(179,48,0,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--red)"><strong>Piso não atingido (35%)</strong> — ${fmtPct(pctMargem)} da meta. RV = R$ 0.</div>`
+        :`<div style="background:var(--accent-light);border:1px solid rgba(29,107,78,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--accent-text)"><strong>Piso atingido</strong> — ${fmtPct(pctMargem)} · Multiplicador: ${mult}× · RV = ${mult}× salário trimestral</div>`;
+    } else {
+      mbStatusEl.innerHTML=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--text-3)">Informe a meta de margem e o realizado para calcular a RV do BU Owner.</div>`;
+    }
+  }
+  const resEl=document.getElementById('hc-result');
+  if(resEl) resEl.innerHTML=`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:var(--text-2)">Atingimento margem</span>
+        <span class="badge ${pctPct>=100?'badge-green':pctPct>=35?'badge-blue':'badge-red'}">${fmtPct(pctMargem)}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pctPct/1.5,100).toFixed(1)}%"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta margem: ${fmt(metaMargem)}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="result-block">
+      <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri)}</span></div>
+      <div class="result-row"><span class="result-key">Multiplicador</span><span class="result-val mono">${mult}×</span></div>
+      <div class="result-total"><span>Total RV trimestre</span><span class="mono">${fmt(grand)}</span></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:8px">${xSal.toFixed(2)}× o salário mensal</div>
+    </div>`;
+  const metricsEl=document.getElementById('hc-metrics');
+  if(metricsEl) metricsEl.innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total RV Tri.</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
+    <div class="metric-card"><div class="metric-label">Multiplicador</div><div class="metric-value">${mult}×</div><div class="metric-sub">${pisoAtingido||mbMeta<=0?'Piso atingido':'⚠ Abaixo do piso'}</div></div>
+    <div class="metric-card"><div class="metric-label">x Salário mensal</div><div class="metric-value">${xSal.toFixed(2)}×</div><div class="metric-sub">multiplicador</div></div>`;
+}
+
 
 
 /* ===== PEOPLE DATA ===== */
@@ -1202,7 +1374,7 @@ const MESES_NOMES=MESES_ABREV;//['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago'
 const mesTri=[0,0,0,1,1,1,2,2,2,3,3,3];
 
 // currentHCMes: mês selecionado (0-based) por pessoa HC
-const hcMesAtual={};
+// hcMesAtual hoisted above
 
 function renderHCMesSelector(personIdx){
   const el=document.getElementById('hc-mes-selector');
@@ -1646,7 +1818,7 @@ function renderRanking(){
 
 /* ===== ACOMPANHAMENTO — REALIZADOS MENSAIS ===== */
 // Armazena realizados por grupo e índice de pessoa: track[grp][personIdx][mes0..11]
-const track={b2b:{},b2c:{},lc:{},hc:{}};
+// track hoisted above
 
 function getTrack(grp,idx){
   if(!track[grp][idx]) track[grp][idx]=new Array(12).fill(0);
@@ -1662,7 +1834,7 @@ function setTrackVal(grp,idx,mes,val){
 
 
 /* ===== DIRETÓRIO — CADASTRO RÁPIDO ===== */
-let _dirRegraMode = 'alocar'; // 'alocar' | 'cadastrar'
+// _dirRegraMode hoisted above
 
 function toggleDirCadastroExtra(){
   const grp = document.getElementById('dir-p-grupo')?.value;
@@ -1887,6 +2059,99 @@ function movePDLPerson(id,grpDestino){
   if(navBtn) showTab(tabMap[grpDestino],navBtn);
 }
 
+/* ===== FUNÇÕES EM FALTA ===== */
+
+function renderFaixasList(){
+  const el = document.getElementById('faixas-list');
+  if(!el) return;
+  const regras = getAllRegras();
+  el.innerHTML = Object.values(regras).map(r => {
+    const tipoLabel = r.tipo==='fat'?'Faturamento':r.tipo==='margem'?'Margem':'Combinado';
+    const periodLabel = r.periodo==='mensal'?'Mensal':r.periodo==='trimestral'?'Trimestral':'Anual';
+    const isCustom = !!extraRegras[r.id];
+    const pisoHtml = r.piso>0 ? `<span class="badge badge-amber" style="margin-left:8px">Piso: ${r.piso}%</span>` : '';
+
+    let tabelaHtml = '';
+    if(r.tipo==='margem'){
+      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr>
+          <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">% Atingimento Margem</th>
+          <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">Multiplicador</th>
+        </tr></thead>
+        <tbody>${(r.faixas||[]).map(f=>`<tr>
+          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
+          </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult||0}×</td>
+        </tr>`).join('')}</tbody></table>`;
+    } else {
+      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr>
+          <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">% Atingimento</th>
+          <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">% Comissão</th>
+        </tr></thead>
+        <tbody>${(r.faixas||[]).map(f=>`<tr>
+          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}</td>
+          <td style="padding:5px 8px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace">${fmtPct(f.pct||0)}</td>
+        </tr>`).join('')}</tbody></table>`;
+      if(r.tipo==='combinado' && r.faixasMargem){
+        tabelaHtml += `<div style="margin-top:10px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Multiplicadores de Margem</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">% Margem</th>
+            <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">Multiplicador</th>
+          </tr></thead>
+          <tbody>${r.faixasMargem.map(f=>`<tr>
+            <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}</td>
+            <td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult||0}×</td>
+          </tr>`).join('')}</tbody></table>`;
+      }
+    }
+    const descHtml = r.descricao ? `<div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.5">${r.descricao}</div>` : '';
+    return `<div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:13px;font-weight:600;color:var(--text);flex:1">${r.nome}</div>
+        <span class="badge badge-blue">${tipoLabel}</span>
+        <span class="badge badge-gray">${periodLabel}</span>
+        ${pisoHtml}
+        ${isCustom?`<button onclick="deleteRegra('${r.id}')" class="btn-sm" style="margin-left:auto">Apagar</button>`:''}
+      </div>
+      <div class="tbl-wrap">${tabelaHtml}</div>
+      ${descHtml}
+    </div>`;
+  }).join('');
+}
+
+function rvSimCardMargem(pctMargem, mult, rv, margemReal, metaMargem, salTri){
+  const pctBar = Math.min((pctMargem||0)/1.5,1)*100;
+  const bc = (pctMargem||0)>=1.2?'badge-green':(pctMargem||0)>=.9?'badge-blue':(pctMargem||0)>=.35?'badge-amber':'badge-red';
+  return `<div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:12px">
+    <span>${fmt(margemReal||0)} realizado</span>
+    <span class="badge ${bc}">${fmtPct(pctMargem||0)} da meta</span>
+  </div>
+  <div class="result-block">
+    <div class="result-row"><span class="result-key">Meta margem Q</span><span class="result-val mono">${fmt(metaMargem||0)}</span></div>
+    <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri||0)}</span></div>
+    <div class="result-row"><span class="result-key">Multiplicador</span><span class="result-val mono">${(mult||0).toFixed(2)}×</span></div>
+    <div class="result-total"><span>RV estimada Q</span><span class="mono">${fmt(rv||0)}</span></div>
+  </div>`;
+}
+
+function setPessoaMargemReal(grp, idx, val){
+  const p = (people[grp]||[])[idx];
+  if(p) p.margemRealTri = parseFloat(val)||0;
+  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
+  if(container) renderRVSimPanel(grp, idx, container);
+  scheduleSave();
+}
+
+function setPessoaMetaMargem(grp, idx, val){
+  const p = (people[grp]||[])[idx];
+  if(p) p.metaMargemTri = parseFloat(val)||0;
+  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
+  if(container) renderRVSimPanel(grp, idx, container);
+  scheduleSave();
+}
+
 /* ===== INIT ===== */
 ['b2b','b2c','lc','hc'].forEach(g=>renderPeopleList(g));
 calcB2B();calcB2C();calcLC();calcHC();renderRanking();renderFaixasList();
@@ -1894,7 +2159,7 @@ calcB2B();calcB2C();calcLC();calcHC();renderRanking();renderFaixasList();
 /* ===== PDL — LÍDERES OUTRAS ÁREAS ===== */
 const STATUS_LABELS={pendente:'Pendente',andamento:'Em andamento',concluido:'Concluído'};
 
-const pdlPeople=[
+pdlPeople=[
   {id:1,nome:'Pedro Segura',cargo:'Gerente Financeiro',
    objs:[
      {texto:'',status:'pendente'},
@@ -1920,7 +2185,7 @@ const pdlPeople=[
      {texto:'',status:'pendente'}
    ]},
 ];
-let pdlNextId=5;
+// pdlNextId hoisted above
 
 function pdlProgress(objs){
   const done=objs.filter(o=>o.status==='concluido').length;
@@ -2111,8 +2376,8 @@ window.showTab=function(id,btn){
 
 /* ===== PERSISTÊNCIA — NETLIFY BLOBS ===== */
 const API = '/api/data';
-let _saveTimer = null;
-let _writePassword = null; // null = não autenticado
+// _saveTimer hoisted above
+// _writePassword hoisted above
 
 /* ── Status helper ── */
 function setSaveStatus(msg, color){
