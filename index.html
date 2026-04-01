@@ -2123,7 +2123,7 @@ function toggleMoverMenu(grp,i,evt){
 
 // Close menus when clicking outside
 document.addEventListener('click',()=>{
-  document.querySelectorAll('.mover-menu').forEach(m=>m.style.display='none');
+  document.querySelectorAll('.mover-menu,[id^="pdl-mover-menu-"]').forEach(m=>m.style.display='none');
 });
 
 function movePerson(grpOrigem,idx,grpDestino){
@@ -2163,6 +2163,41 @@ function movePerson(grpOrigem,idx,grpDestino){
   scheduleSave();
 
   // Navega para o grupo destino
+  const tabMap={hc:'head',lc:'lideres',b2b:'b2b',b2c:'b2c'};
+  const navBtn=document.querySelector(`.nav-item[onclick*="showTab('${tabMap[grpDestino]}'"]`);
+  if(navBtn) showTab(tabMap[grpDestino],navBtn);
+}
+
+function togglePDLMoverMenu(id,evt){
+  evt.stopPropagation();
+  document.querySelectorAll('.mover-menu,[id^="pdl-mover-menu-"]').forEach(m=>{
+    if(m.id!==`pdl-mover-menu-${id}`) m.style.display='none';
+  });
+  const menu=document.getElementById(`pdl-mover-menu-${id}`);
+  if(menu) menu.style.display=menu.style.display==='none'?'block':'none';
+}
+
+function movePDLPerson(id,grpDestino){
+  const idx=pdlPeople.findIndex(x=>x.id===id);
+  if(idx<0) return;
+  const p=pdlPeople[idx];
+  // Build person object compatible with destination group
+  const novaPessoa={
+    nome:p.nome, cargo:p.cargo||'—', sal:0,
+    meta:0, fat:0, realizado:[],
+    regraId: grpDestino==='hc'?'buo-knd':grpDestino==='lc'?'buh-com':grpDestino==='b2b'?'kam':'b2c',
+  };
+  if(grpDestino==='b2b'){
+    novaPessoa.q1=0;novaPessoa.q2=0;novaPessoa.q3=0;novaPessoa.q4=0;
+    novaPessoa.metaAnualBU=44000000;
+  }
+  people[grpDestino].push(novaPessoa);
+  pdlPeople.splice(idx,1);
+  renderPDL();
+  renderPeopleList(grpDestino);
+  renderDiretorio();
+  scheduleSave();
+  // Navigate to destination group
   const tabMap={hc:'head',lc:'lideres',b2b:'b2b',b2c:'b2c'};
   const navBtn=document.querySelector(`.nav-item[onclick*="showTab('${tabMap[grpDestino]}'"]`);
   if(navBtn) showTab(tabMap[grpDestino],navBtn);
@@ -2244,7 +2279,15 @@ function renderPDL(){
           <div class="pdl-name">${p.nome}</div>
           <div class="pdl-role">${p.cargo}</div>
         </div>
-        <button class="pdl-remove" onclick="removePDL(${p.id})" title="Remover">×</button>
+        <div style="display:flex;gap:4px;align-items:center;margin-left:auto">
+          <div style="position:relative">
+            <button class="btn-sm" onclick="togglePDLMoverMenu(${p.id},event)">Mover ▾</button>
+            <div id="pdl-mover-menu-${p.id}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--surface);border:1px solid var(--border-mid);border-radius:var(--radius-sm);box-shadow:var(--shadow);z-index:100;min-width:160px;padding:4px 0">
+              ${[{g:'hc',l:'BU Owner'},{g:'lc',l:'BU Head'},{g:'b2b',l:'B2B KAMs'},{g:'b2c',l:'B2C Academy'}].map(x=>`<button onclick="movePDLPerson(${p.id},'${x.g}')" style="display:block;width:100%;text-align:left;padding:7px 14px;border:none;background:none;cursor:pointer;font-size:12px;color:var(--text);font-family:inherit" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">${x.l}</button>`).join('')}
+            </div>
+          </div>
+          <button class="pdl-remove" onclick="removePDL(${p.id})" title="Remover">×</button>
+        </div>
       </div>
       <div class="pdl-obj-list">${objsHtml}</div>
       <div class="pdl-progress">
