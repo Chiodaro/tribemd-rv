@@ -292,7 +292,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
   <button class="nav-item" onclick="showTab('b2c',this)"><span class="nav-dot"></span> B2C — Academy</button>
   <button class="nav-item" onclick="showTab('lideres',this)"><span class="nav-dot"></span> BU Heads</button>
   <button class="nav-item" onclick="showTab('head',this)"><span class="nav-dot"></span> BU Owners</button>
-  <button class="nav-item" onclick="showTab('pdl',this)"><span class="nav-dot"></span> Líderes Outras Áreas</button>
+  <button class="nav-item" onclick="showTab('pdl',this)"><span class="nav-dot"></span> Líderes</button>
   <div class="nav-section">Referência</div>
   <button class="nav-item" onclick="showTab('dir',this)"><span class="nav-dot"></span> Diretório de Pessoas</button>
   <button class="nav-item" onclick="showTab('faixas',this)"><span class="nav-dot"></span> Tabela de Faixas</button>
@@ -606,7 +606,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 <!-- ===== LÍDERES OUTRAS ÁREAS (PDL) ===== -->
 <div id="tab-pdl" class="section">
   <div class="page-header">
-    <div><div class="page-title">Líderes Outras Áreas</div>
+    <div><div class="page-title">Líderes</div>
     <div class="page-meta">Participantes do PDL · Registro de objetivos anuais</div></div>
   </div>
 
@@ -1021,8 +1021,19 @@ function renderPeopleList(grp){
             <div class="person-track-role">${p.cargo||''}</div>
           </div>
           <div class="person-track-summary" id="pts-${grp}-${i}"></div>
-          <div style="display:flex;gap:4px;margin-left:8px;flex-shrink:0" onclick="event.stopPropagation()">
+          <div style="display:flex;gap:4px;margin-left:8px;flex-shrink:0;align-items:center" onclick="event.stopPropagation()">
             <button class="btn-sm load" onclick="loadPerson('${grp}',${i})">Simular</button>
+            <div class="mover-wrap" id="mover-${grp}-${i}" style="position:relative">
+              <button class="btn-sm" onclick="toggleMoverMenu('${grp}',${i},event)">Mover ▾</button>
+              <div class="mover-menu" id="mover-menu-${grp}-${i}" style="display:none;position:absolute;right:0;top:100%;margin-top:2px;background:var(--surface);border:1px solid var(--border-mid);border-radius:var(--radius-sm);box-shadow:var(--shadow);z-index:100;min-width:160px;padding:4px 0">
+                ${[
+                  {g:'hc',l:'BU Owner'},
+                  {g:'lc',l:'BU Head'},
+                  {g:'b2b',l:'B2B KAMs'},
+                  {g:'b2c',l:'B2C Academy'},
+                ].filter(x=>x.g!==grp).map(x=>`<button onclick="movePerson('${grp}',${i},'${x.g}')" style="display:block;width:100%;text-align:left;padding:7px 14px;border:none;background:none;cursor:pointer;font-size:12px;color:var(--text);font-family:inherit" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">${x.l}</button>`).join('')}
+              </div>
+            </div>
             <button class="btn-sm" onclick="removePerson('${grp}',${i})">Remover</button>
           </div>
           <div class="person-track-chevron">&#9662;</div>
@@ -2097,6 +2108,66 @@ function renderTrackPanel(grp,idx){
     mkKPI('ano','Ano completo',metaAno,realAno);
 }
 
+/* ===== MOVER PESSOA ENTRE GRUPOS ===== */
+const GRP_LABELS={hc:'BU Owner',lc:'BU Head',b2b:'B2B KAMs',b2c:'B2C Academy'};
+
+function toggleMoverMenu(grp,i,evt){
+  evt.stopPropagation();
+  // Close all other menus first
+  document.querySelectorAll('.mover-menu').forEach(m=>{
+    if(m.id!==`mover-menu-${grp}-${i}`) m.style.display='none';
+  });
+  const menu=document.getElementById(`mover-menu-${grp}-${i}`);
+  if(menu) menu.style.display=menu.style.display==='none'?'block':'none';
+}
+
+// Close menus when clicking outside
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.mover-menu').forEach(m=>m.style.display='none');
+});
+
+function movePerson(grpOrigem,idx,grpDestino){
+  if(grpOrigem===grpDestino) return;
+  const lista=people[grpOrigem];
+  if(!lista||!lista[idx]) return;
+  const p={...lista[idx]};
+
+  // Remove da origem
+  lista.splice(idx,1);
+  if(selectedPerson[grpOrigem]===idx) selectedPerson[grpOrigem]=null;
+  else if(selectedPerson[grpOrigem]>idx) selectedPerson[grpOrigem]--;
+
+  // Adapta campos mínimos para o destino
+  if(grpDestino==='b2b'){
+    p.q1=p.q1||0; p.q2=p.q2||0; p.q3=p.q3||0; p.q4=p.q4||0;
+    p.metaAnualBU=p.metaAnualBU||44000000;
+    if(!p.regraId) p.regraId='kam';
+  } else if(grpDestino==='b2c'||grpDestino==='lc'){
+    p.meta=p.meta||0; p.fat=p.fat||0;
+    if(!p.regraId) p.regraId=grpDestino==='b2c'?'b2c':'buh-com';
+  } else if(grpDestino==='hc'){
+    p.meta=p.meta||0; p.fat=p.fat||0;
+    if(!p.regraId) p.regraId='buo-knd';
+  }
+
+  // Migra realizados
+  const realOrigem=getTrack(grpOrigem,idx);
+  people[grpDestino].push(p);
+  const novoIdx=people[grpDestino].length-1;
+  track[grpDestino][novoIdx]=realOrigem;
+
+  // Re-render ambos os grupos
+  renderPeopleList(grpOrigem);
+  renderPeopleList(grpDestino);
+  renderDiretorio();
+  scheduleSave();
+
+  // Navega para o grupo destino
+  const tabMap={hc:'head',lc:'lideres',b2b:'b2b',b2c:'b2c'};
+  const navBtn=document.querySelector(`.nav-item[onclick*="showTab('${tabMap[grpDestino]}'"]`);
+  if(navBtn) showTab(tabMap[grpDestino],navBtn);
+}
+
 /* ===== INIT ===== */
 ['b2b','b2c','lc','hc'].forEach(g=>renderPeopleList(g));
 renderSABGrid('sab-b2b-grid',SAB_KAM);
@@ -2223,10 +2294,10 @@ renderPDL();
 /* ===== DIRETÓRIO DE PESSOAS ===== */
 function allPeople(){
   const groups=[
-    {grp:'b2b',label:'B2B — KAMs',      tagCls:'dir-tag-b2b',tab:'b2b'},
-    {grp:'b2c',label:'B2C — Academy',   tagCls:'dir-tag-b2c',tab:'b2c'},
-    {grp:'lc', label:'BU Heads',tagCls:'dir-tag-lc',tab:'lideres',tagLabel:'BU Head'},
-    {grp:'hc', label:'BU Owners',  tagCls:'dir-tag-hc',tab:'head'},
+    {grp:'hc', label:'BU Owners',        tagCls:'dir-tag-hc', tab:'head',    tagLabel:'BU Owner'},
+    {grp:'lc', label:'BU Heads',         tagCls:'dir-tag-lc', tab:'lideres', tagLabel:'BU Head'},
+    {grp:'b2b',label:'B2B — KAMs',       tagCls:'dir-tag-b2b',tab:'b2b'},
+    {grp:'b2c',label:'B2C — Academy',    tagCls:'dir-tag-b2c',tab:'b2c'},
   ];
   const result=[];
   groups.forEach(g=>{
@@ -2235,7 +2306,7 @@ function allPeople(){
     });
   });
   pdlPeople.forEach((p,i)=>{
-    result.push({grp:'pdl',label:'Líderes Outras Áreas',tagCls:'dir-tag-pdl',tab:'pdl',
+    result.push({grp:'pdl',label:'Líderes',tagCls:'dir-tag-pdl',tab:'pdl',
       nome:p.nome,cargo:p.cargo||'—',idx:i,isPDL:true});
   });
   return result;
