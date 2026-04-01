@@ -290,8 +290,8 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
   <div class="nav-section">Módulos</div>
   <button class="nav-item active" onclick="showTab('b2b',this)"><span class="nav-dot"></span> B2B — KAMs</button>
   <button class="nav-item" onclick="showTab('b2c',this)"><span class="nav-dot"></span> B2C — Academy</button>
-  <button class="nav-item" onclick="showTab('lideres',this)"><span class="nav-dot"></span> Líderes Comerciais</button>
-  <button class="nav-item" onclick="showTab('head',this)"><span class="nav-dot"></span> Head Comercial</button>
+  <button class="nav-item" onclick="showTab('lideres',this)"><span class="nav-dot"></span> BU Heads</button>
+  <button class="nav-item" onclick="showTab('head',this)"><span class="nav-dot"></span> BU Owners</button>
   <button class="nav-item" onclick="showTab('pdl',this)"><span class="nav-dot"></span> Líderes Outras Áreas</button>
   <div class="nav-section">Referência</div>
   <button class="nav-item" onclick="showTab('dir',this)"><span class="nav-dot"></span> Diretório de Pessoas</button>
@@ -369,6 +369,12 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="b2b-p-nome" placeholder="Ex: Vanessa Victorello"></div>
             <div class="field"><label>Cargo / Código</label><input type="text" id="b2b-p-cargo" placeholder="Ex: KAM - VV"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2b-p-sal" placeholder="0"></div>
+            <div class="field"><label>Regra de RV</label>
+              <select id="b2b-p-regra">
+                <option value="kam" selected>kam</option>
+              </select>
+              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            </div>
           </div>
           <div>
             <div class="field"><label>Faturamento Q1 (R$)</label><input type="number" id="b2b-p-q1" placeholder="0"></div>
@@ -439,6 +445,12 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="b2c-p-nome" placeholder="Ex: João Vitor Gonçalves"></div>
             <div class="field"><label>Cargo</label><input type="text" id="b2c-p-cargo" placeholder="Ex: Analista de Vendas Jr"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="b2c-p-sal" placeholder="0"></div>
+            <div class="field"><label>Regra de RV</label>
+              <select id="b2c-p-regra">
+                <option value="b2c" selected>b2c</option>
+              </select>
+              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            </div>
           </div>
           <div>
             <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="b2c-p-meta" placeholder="0"></div>
@@ -454,7 +466,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 <!-- ===== LÍDERES ===== -->
 <div id="tab-lideres" class="section">
   <div class="page-header">
-    <div><div class="page-title">Líderes Comerciais</div>
+    <div><div class="page-title">BU Heads</div>
     <div class="page-meta">Apuração mensal · Base: Faturamento Líquido</div></div>
   </div>
   <div class="subtabs">
@@ -469,7 +481,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
       <div class="card">
         <div class="card-title">Dados do Líder</div>
         <div id="lc-person-selector" style="margin-bottom:12px"></div>
-        <div class="field"><label>Nome</label><input type="text" id="lc-nome" value="Líder Comercial" oninput="calcLC()"></div>
+        <div class="field"><label>Nome</label><input type="text" id="lc-nome" value="BU Head" oninput="calcLC()"></div>
         <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="lc-sal" value="2249" oninput="calcLC()"></div>
         <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="lc-meta" value="655305" oninput="calcLC()"></div>
         <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="lc-fat" value="655305" oninput="calcLC()"></div>
@@ -477,7 +489,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
       <div class="card"><div class="card-title">Resultado</div><div id="lc-result"></div></div>
     </div>
     <div class="card">
-      <div class="card-title">Special Achievements — Líderes Comerciais</div>
+      <div class="card-title">Special Achievements — BU Owners</div>
       <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um.</div>
       <div class="sab-grid" id="sab-lc-grid"></div>
       <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="lc-sab-total">R$ 0</span></div>
@@ -491,7 +503,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 
   <div id="lc-sub-pessoas" class="subpanel">
     <div class="card">
-      <div class="card-title">Cadastro de Líderes Comerciais</div>
+      <div class="card-title">Cadastro de BU Heads</div>
       <div id="lc-people-list" class="people-list"></div>
       <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
         <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
@@ -500,6 +512,12 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="lc-p-nome" placeholder="Ex: Danielle da Silva"></div>
             <div class="field"><label>Cargo</label><input type="text" id="lc-p-cargo" placeholder="Ex: Diretor(a) Comercial"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="lc-p-sal" placeholder="0"></div>
+            <div class="field"><label>Regra de RV</label>
+              <select id="lc-p-regra">
+                <option value="buh-com" selected>buh-com</option>
+              </select>
+              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            </div>
           </div>
           <div>
             <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="lc-p-meta" placeholder="0"></div>
@@ -515,8 +533,8 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 <!-- ===== HEAD ===== -->
 <div id="tab-head" class="section">
   <div class="page-header">
-    <div><div class="page-title">Head Comercial</div>
-    <div class="page-meta">Apuração mensal · Base: Faturamento Líquido · Piso de margem bruta: 40% da meta de receita</div></div>
+    <div><div class="page-title">BU Owners</div>
+    <div class="page-meta">Apuração trimestral · Margem de contribuição · Piso mínimo: 35%</div></div>
   </div>
   <div class="subtabs">
     <button class="stab active" onclick="showSub('hc','sim',this)">Simulador</button>
@@ -531,7 +549,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
         <div class="card-title">Dados do Head</div>
         <div id="hc-person-selector" style="margin-bottom:12px"></div>
         <div id="hc-mes-selector" style="margin-bottom:12px;display:none"></div>
-        <div class="field"><label>Nome</label><input type="text" id="hc-nome" value="Head Comercial" oninput="calcHC()"></div>
+        <div class="field"><label>Nome</label><input type="text" id="hc-nome" value="BU Owner" oninput="calcHC()"></div>
         <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="hc-sal" value="15000" oninput="calcHC()"></div>
         <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="hc-meta" value="936150" oninput="calcHC()"></div>
         <div class="field"><label>Faturamento Líquido Realizado (R$)</label><input type="number" id="hc-fat" value="936150" oninput="calcHC()"></div>
@@ -543,7 +561,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
       <div class="card"><div class="card-title">Resultado</div><div id="hc-result"></div></div>
     </div>
     <div class="card">
-      <div class="card-title">Special Achievements — BU Head</div>
+      <div class="card-title">Special Achievements — BU Owner</div>
       <div class="info-block">Ative os achievements e ajuste o <strong>peso</strong> (1–3) de cada um. A remuneração variável base já depende do atingimento de margem bruta definido acima.</div>
       <div class="sab-grid" id="sab-hc-grid"></div>
       <div class="sab-total-row"><span class="sab-total-label">Bônus SAB total no mês</span><span class="sab-total-val" id="hc-sab-total">R$ 0</span></div>
@@ -558,7 +576,7 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 
   <div id="hc-sub-pessoas" class="subpanel">
     <div class="card">
-      <div class="card-title">Cadastro de Heads Comerciais</div>
+      <div class="card-title">Cadastro de BU Owners</div>
       <div id="hc-people-list" class="people-list"></div>
       <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
         <div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px">Adicionar Pessoa</div>
@@ -567,6 +585,12 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
             <div class="field"><label>Nome completo</label><input type="text" id="hc-p-nome" placeholder="Ex: Hugo Santa Cruz"></div>
             <div class="field"><label>Cargo</label><input type="text" id="hc-p-cargo" placeholder="Ex: Diretor Comercial"></div>
             <div class="field"><label>Salário fixo mensal (R$)</label><input type="number" id="hc-p-sal" placeholder="0"></div>
+            <div class="field"><label>Regra de RV</label>
+              <select id="hc-p-regra">
+                <option value="buo-knd" selected>buo-knd</option>
+              </select>
+              <div style="font-size:10px;color:var(--text-3);margin-top:3px">Seleccione a regra de remuneração variável desta pessoa</div>
+            </div>
           </div>
           <div>
             <div class="field"><label>Meta mensal Fat. Líquido (R$)</label><input type="number" id="hc-p-meta" placeholder="0"></div>
@@ -618,75 +642,72 @@ table tr.faixa-ativa td{background:var(--accent-light);font-weight:500;color:var
 </div>
 
 <div id="tab-faixas" class="section">
-  <div class="page-header"><div><div class="page-title">Tabela de Faixas</div><div class="page-meta">Referência completa do plano de incentivo 2025</div></div></div>
-  <div class="card">
-    <div class="card-title">Faixas KAM B2B — Meta Anual de Vendas</div>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>Faixa</th><th>Volume Anual</th><th>Gatilho Q1</th><th>Gatilho Q2</th><th>Gatilho Q3</th><th>Gatilho Q4</th><th>% Comissão</th></tr></thead>
-      <tbody>
-        <tr><td>0</td><td>R$ 0–R$ 1,9MM</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="mono">1,00%</td></tr>
-        <tr><td>1</td><td>R$ 2MM–R$ 2,9MM</td><td class="mono">R$ 240k</td><td class="mono">R$ 400k</td><td class="mono">R$ 620k</td><td class="mono">R$ 740k</td><td class="mono">2,50%</td></tr>
-        <tr><td>2</td><td>R$ 3MM–R$ 3,9MM</td><td class="mono">R$ 360k</td><td class="mono">R$ 600k</td><td class="mono">R$ 930k</td><td class="mono">R$ 1,11MM</td><td class="mono">2,75%</td></tr>
-        <tr><td>3</td><td>R$ 4MM–R$ 4,9MM</td><td class="mono">R$ 480k</td><td class="mono">R$ 800k</td><td class="mono">R$ 1,24MM</td><td class="mono">R$ 1,48MM</td><td class="mono">3,00%</td></tr>
-        <tr><td>4</td><td>R$ 5MM–R$ 6,1MM</td><td class="mono">R$ 600k</td><td class="mono">R$ 1,0MM</td><td class="mono">R$ 1,55MM</td><td class="mono">R$ 1,85MM</td><td class="mono">3,25%</td></tr>
-        <tr><td>5</td><td>R$ 6,2MM–R$ 7,2MM</td><td class="mono">R$ 744k</td><td class="mono">R$ 1,24MM</td><td class="mono">R$ 1,92MM</td><td class="mono">R$ 2,29MM</td><td class="mono">4,00%</td></tr>
-        <tr><td>6</td><td>≥ R$ 7,2MM</td><td class="mono">R$ 864k</td><td class="mono">R$ 1,44MM</td><td class="mono">R$ 2,23MM</td><td class="mono">R$ 2,66MM</td><td class="mono">5,00%</td></tr>
-      </tbody>
-    </table></div>
+  <div class="page-header">
+    <div><div class="page-title">Tabela de Faixas</div>
+    <div class="page-meta">Regras de RV 2025–2026 · clique em + para criar nova regra</div></div>
   </div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Vendedores B2C Academy</div>
-      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento</th><th>% Fat. Líquido</th></tr></thead><tbody>
-        <tr><td>1</td><td>Até 49,9%</td><td class="mono">1,00%</td></tr>
-        <tr><td>2</td><td>50%–69,99%</td><td class="mono">1,25%</td></tr>
-        <tr><td>3</td><td>70%–89,99%</td><td class="mono">1,50%</td></tr>
-        <tr><td>4</td><td>90%–100%</td><td class="mono">2,00%</td></tr>
-        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
-        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
-      </tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Líderes Comerciais</div>
-      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento</th><th>% Fat. Líquido</th></tr></thead><tbody>
-        <tr><td>1</td><td>Até 49,9%</td><td class="mono">2,50%</td></tr>
-        <tr><td>2</td><td>50%–69,99%</td><td class="mono">2,75%</td></tr>
-        <tr><td>3</td><td>70%–89,99%</td><td class="mono">2,85%</td></tr>
-        <tr><td>4</td><td>90%–100%</td><td class="mono">3,00%</td></tr>
-        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
-        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
-      </tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Head Comercial</div>
-      <div class="tbl-wrap"><table><thead><tr><th>#</th><th>% Atingimento Receita</th><th>% Fat. Líquido</th></tr></thead><tbody>
-        <tr><td>1</td><td>Até 49,9%</td><td class="mono">2,50%</td></tr>
-        <tr><td>2</td><td>50%–69,99%</td><td class="mono">2,80%</td></tr>
-        <tr><td>3</td><td>70%–89,99%</td><td class="mono">3,10%</td></tr>
-        <tr><td>4</td><td>90%–100%</td><td class="mono">3,50%</td></tr>
-        <tr><td>5</td><td>100,01%–119,99%</td><td>+1 salário extra</td></tr>
-        <tr><td>6</td><td>≥ 120%</td><td>+2 salários extras</td></tr>
-      </tbody></table></div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Condição de Margem Bruta</div>
-        <div style="background:var(--amber-light);border:1px solid rgba(138,94,0,.18);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.6;margin-bottom:8px">
-          <strong>Piso mínimo:</strong> Para que qualquer remuneração variável seja paga ao Head Comercial, a margem bruta absoluta realizada no período deve ser de, no mínimo, <strong>40% da meta de receita</strong>. Abaixo desse piso, a RV é zero, independentemente do atingimento de receita.
+
+  <!-- ── REGRAS EXISTENTES ── -->
+  <div id="faixas-list"></div>
+
+  <!-- ── CRIAR NOVA REGRA ── -->
+  <div class="card" style="margin-top:8px">
+    <div class="card-title">Criar Nova Regra de RV</div>
+    <div class="grid2">
+      <div>
+        <div class="field"><label>Nome da regra</label><input type="text" id="nr-nome" placeholder="Ex: KAM Onco 2026"></div>
+        <div class="field"><label>Tipo de apuração</label>
+          <select id="nr-tipo" onchange="toggleNrTipo()">
+            <option value="fat">Faturamento</option>
+            <option value="margem">Margem</option>
+            <option value="combinado">Combinado (Margem + Faturamento)</option>
+          </select>
         </div>
-        <div style="background:var(--blue-light);border:1px solid rgba(26,77,138,.15);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--blue);line-height:1.6">
-          <strong>Proporcionalidade:</strong> Atingido o piso, o percentual de RV da faixa correspondente é multiplicado pelo percentual de atingimento da meta de margem bruta. Exemplo: faixa de 2,80% de RV + atingimento de 40% da meta de margem → RV efetiva = 2,80% × 40% = <strong>1,12%</strong>. O mesmo fator proporcional aplica-se aos bônus de Special Achievement.
+        <div class="field"><label>Periodicidade</label>
+          <select id="nr-periodo">
+            <option value="mensal">Mensal</option>
+            <option value="trimestral">Trimestral</option>
+            <option value="anual">Anual</option>
+          </select>
+        </div>
+      </div>
+      <div id="nr-piso-wrap">
+        <div class="field"><label>Piso mínimo (% da meta)</label><input type="number" id="nr-piso" value="0" min="0" max="100" step="1" placeholder="Ex: 35"> <span style="font-size:11px;color:var(--text-3)">% — abaixo disso RV = 0</span></div>
+        <div id="nr-margem-mult-wrap" style="display:none">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px">Multiplicadores de Margem</div>
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:8px">Ao atingir cada faixa de margem, o % de faturamento é multiplicado pelo índice abaixo:</div>
+          <div class="grid2" style="gap:6px">
+            <div class="field" style="margin-bottom:6px"><label>< Piso → mult.</label><input type="number" id="nr-mm0" value="0" step="0.1"></div>
+            <div class="field" style="margin-bottom:6px"><label>Piso–24,9% → mult.</label><input type="number" id="nr-mm1" value="0.8" step="0.1"></div>
+            <div class="field" style="margin-bottom:6px"><label>25–29,9% → mult.</label><input type="number" id="nr-mm2" value="1" step="0.1"></div>
+            <div class="field" style="margin-bottom:6px"><label>30–34,9% → mult.</label><input type="number" id="nr-mm3" value="1.25" step="0.1"></div>
+            <div class="field" style="margin-bottom:6px"><label>35–39,9% → mult.</label><input type="number" id="nr-mm4" value="1.5" step="0.1"></div>
+            <div class="field" style="margin-bottom:6px"><label>≥ 40% → mult.</label><input type="number" id="nr-mm5" value="2" step="0.1"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">SAB — Percentuais por faixa</div>
-      <div class="tbl-wrap"><table><thead><tr><th>Achievement</th><th>50–69%</th><th>70–79%</th><th>80–89%</th><th>90–100%</th></tr></thead><tbody>
-        <tr><td>Nova Área / Cliente</td><td class="mono">0,25%</td><td class="mono">0,50%</td><td class="mono">0,75%</td><td class="mono">1,00%</td></tr>
-        <tr><td>Expansão (BR+1)</td><td class="mono">0,25%</td><td class="mono">0,50%</td><td class="mono">0,75%</td><td class="mono">1,00%</td></tr>
-        <tr><td>Portfólio Digital</td><td class="mono">0,50%</td><td class="mono">1,00%</td><td class="mono">1,50%</td><td class="mono">2,00%</td></tr>
-      </tbody></table></div>
+
+    <!-- Faixas de faturamento/margem -->
+    <div id="nr-fat-wrap">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin:14px 0 8px">Faixas de comissão</div>
+      <div id="nr-faixas-wrap">
+        <div class="nr-faixa-row" style="display:grid;grid-template-columns:1fr 80px auto;gap:8px;margin-bottom:6px">
+          <input type="number" placeholder="De (% meta, ex: 70)" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
+          <input type="number" placeholder="% com." step="0.01" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
+          <button onclick="removeNrFaixa(this)" style="height:30px;width:30px;border:1px solid var(--border-mid);border-radius:4px;background:none;cursor:pointer;color:var(--text-3);font-size:14px">×</button>
+        </div>
+      </div>
+      <button class="btn-outline" onclick="addNrFaixa()" style="font-size:11px;height:28px;margin-top:4px">+ Adicionar faixa</button>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn-action" onclick="saveNovaRegra()">Salvar Regra</button>
+      <button class="btn-outline" onclick="clearNrForm()">Limpar</button>
     </div>
   </div>
 </div>
+
 
 <!-- ===== RANKING ===== -->
 <div id="tab-ranking" class="section">
@@ -720,17 +741,7 @@ function showSub(prefix,sub,btn){
   btn.classList.add('active');
 }
 
-/* ===== FAIXAS B2B ===== */
-const FAIXAS=[
-  {pct:.01,   g:[0,0,0,0]},
-  {pct:.025,  g:[240000,400000,620000,740000]},
-  {pct:.0275, g:[360000,600000,930000,1110000]},
-  {pct:.03,   g:[480000,800000,1240000,1480000]},
-  {pct:.0325, g:[600000,1000000,1550000,1850000]},
-  {pct:.04,   g:[744000,1240000,1922000,2294000]},
-  {pct:.05,   g:[864000,1440000,2232000,2664000]}
-];
-function getFaixaIdx(acum,qi){for(let i=FAIXAS.length-1;i>=0;i--){if(FAIXAS[i].g[qi]>0&&acum>=FAIXAS[i].g[qi])return i;}return 0;}
+/* FAIXAS B2B e getFaixaIdx definidos abaixo junto com calcB2B */
 
 /* ===== SAB CONFIG ===== */
 const mkSAB=(tag)=>[
@@ -742,8 +753,8 @@ const mkSAB=(tag)=>[
 
 const SAB_KAM=mkSAB('KAM');
 const SAB_B2C=mkSAB('B2C');
-const SAB_LC=mkSAB('Líder');
-const SAB_HEAD=mkSAB('Head');
+const SAB_LC=mkSAB('BU Head');
+const SAB_HEAD=mkSAB('BU Owner');
 
 const sabExtras={
   'sab-b2b-grid':{margemAlvo:0,margemRealizada:0},
@@ -1020,6 +1031,7 @@ function renderPeopleList(grp){
           <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Digite o valor realizado de cada m&#234;s abaixo</div>
           <div class="track-mes-grid" id="track-grid-${grp}-${i}"></div>
           <div class="track-summary" id="track-sum-${grp}-${i}"></div>
+          <div id="rv-sim-${grp}-${i}" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"></div>
         </div>
       </div>`;}).join('');
     list.forEach((_,i)=>{
@@ -1146,19 +1158,28 @@ function toggleTrackCard(grp,i){
   const card=document.getElementById(`ptc-${grp}-${i}`);
   if(!card)return;
   const wasOpen=card.classList.contains('open');
-  // close all others in same group
   people[grp].forEach((_,j)=>{
     const c=document.getElementById(`ptc-${grp}-${j}`);
     if(c&&j!==i)c.classList.remove('open');
   });
   card.classList.toggle('open',!wasOpen);
   if(!wasOpen){
-    // Reset built flag so grid rebuilds with current values
     const gridEl=document.getElementById(`track-grid-${grp}-${i}`);
     if(gridEl) gridEl.dataset.built='';
     updateTrackBody(grp,i);
     updatePTSSummary(grp,i);
+    // Render RV sim panel
+    renderRVSimPanel(grp,i,document.getElementById(`rv-sim-${grp}-${i}`));
   }
+}
+
+function populateRegraSelector(selectId, defaultVal){
+  const sel = document.getElementById(selectId);
+  if(!sel) return;
+  const regras = getAllRegras();
+  sel.innerHTML = Object.values(regras).map(r =>
+    `<option value="${r.id}"${r.id===defaultVal?' selected':''}>${r.nome}</option>`
+  ).join('');
 }
 
 function selectPerson(grp,i){
@@ -1236,7 +1257,7 @@ function showPersonBanner(grp, p){
   const bannerId=grp+'-banner';
   const el=document.getElementById(bannerId);
   if(!el)return;
-  const tagLabels={b2b:'KAM B2B',b2c:'B2C Academy',lc:'Líder Comercial',hc:'Head Comercial'};
+  const tagLabels={b2b:'KAM B2B',b2c:'B2C Academy',lc:'BU Head',hc:'BU Owner'};
   el.innerHTML=`
     <div class="person-banner-avatar">${ini(p.nome)}</div>
     <div class="person-banner-info">
@@ -1320,6 +1341,7 @@ function addPerson(grp){
     people.b2b.push({
       nome,cargo:document.getElementById('b2b-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('b2b-p-sal').value)||0,
+      regraId:document.getElementById('b2b-p-regra').value||'kam',
       q1:parseFloat(document.getElementById('b2b-p-q1').value)||0,
       q2:parseFloat(document.getElementById('b2b-p-q2').value)||0,
       q3:parseFloat(document.getElementById('b2b-p-q3').value)||0,
@@ -1333,6 +1355,7 @@ function addPerson(grp){
     people.b2c.push({
       nome,cargo:document.getElementById('b2c-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('b2c-p-sal').value)||0,
+      regraId:document.getElementById('b2c-p-regra').value||'b2c',
       meta:parseFloat(document.getElementById('b2c-p-meta').value)||0,
       fat:parseFloat(document.getElementById('b2c-p-fat').value)||0,
       realizado:mkReal(),
@@ -1344,6 +1367,7 @@ function addPerson(grp){
     people.lc.push({
       nome,cargo:document.getElementById('lc-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('lc-p-sal').value)||0,
+      regraId:document.getElementById('lc-p-regra').value||'buh-com',
       meta:parseFloat(document.getElementById('lc-p-meta').value)||0,
       fat:parseFloat(document.getElementById('lc-p-fat').value)||0,
       realizado:mkReal(),
@@ -1355,6 +1379,7 @@ function addPerson(grp){
     people.hc.push({
       nome,cargo:document.getElementById('hc-p-cargo').value.trim(),
       sal:parseFloat(document.getElementById('hc-p-sal').value)||0,
+      regraId:document.getElementById('hc-p-regra').value||'buo-knd',
       meta:parseFloat(document.getElementById('hc-p-meta').value)||0,
       fat:parseFloat(document.getElementById('hc-p-fat').value)||0,
       realizado:mkReal(),
@@ -1364,7 +1389,410 @@ function addPerson(grp){
   renderPeopleList(grp);
 }
 
+/* ===== REGRAS DE RV e CALC ===== */
+// Regras pré-definidas (podem ser expandidas pelo utilizador)
+const REGRAS_RV = {
+  // ── KAMs B2B ── faturamento trimestral, % sobre fat. líquido x (1-pass-through)
+  'kam': {
+    id:'kam', nome:'KAMs B2B', tipo:'fat', periodo:'trimestral', piso:0,
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:79.99, pct:0.02},
+      {de:80,  ate:89.99, pct:0.03},
+      {de:90,  ate:100,   pct:0.04},
+      {de:100.01, ate:119.99, pct:0.05},
+      {de:120, ate:999,   pct:0.06},
+    ]
+  },
+  // ── BU Head Onco ── combinado (margem×multiplicador → sobre faturamento)
+  'buh-onco': {
+    id:'buh-onco', nome:'BU Head — Onco', tipo:'combinado', periodo:'trimestral', piso:20,
+    faixasMargem:[
+      {de:0,   ate:19.99, mult:0},
+      {de:20,  ate:24.99, mult:0.8},
+      {de:25,  ate:29.99, mult:1},
+      {de:30,  ate:34.99, mult:1.25},
+      {de:35,  ate:39.99, mult:1.5},
+      {de:40,  ate:999,   mult:2},
+    ],
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:79.99, pct:0.01},
+      {de:80,  ate:89.99, pct:0.015},
+      {de:90,  ate:100,   pct:0.02},
+      {de:100.01, ate:119.99, pct:0.025},
+      {de:120, ate:999,   pct:0.03},
+    ]
+  },
+  // ── BU Head TA ── mesma lógica, metas diferentes
+  'buh-ta': {
+    id:'buh-ta', nome:'BU Head — TA', tipo:'combinado', periodo:'trimestral', piso:20,
+    faixasMargem:[
+      {de:0,   ate:19.99, mult:0},
+      {de:20,  ate:24.99, mult:0.8},
+      {de:25,  ate:29.99, mult:1},
+      {de:30,  ate:34.99, mult:1.25},
+      {de:35,  ate:39.99, mult:1.5},
+      {de:40,  ate:999,   mult:2},
+    ],
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:79.99, pct:0.01},
+      {de:80,  ate:89.99, pct:0.015},
+      {de:90,  ate:100,   pct:0.02},
+      {de:100.01, ate:119.99, pct:0.025},
+      {de:120, ate:999,   pct:0.03},
+    ]
+  },
+  // ── BU Head GenMed ── mesma lógica
+  'buh-genmed': {
+    id:'buh-genmed', nome:'BU Head — GenMed', tipo:'combinado', periodo:'trimestral', piso:20,
+    faixasMargem:[
+      {de:0,   ate:19.99, mult:0},
+      {de:20,  ate:24.99, mult:0.8},
+      {de:25,  ate:29.99, mult:1},
+      {de:30,  ate:34.99, mult:1.25},
+      {de:35,  ate:39.99, mult:1.5},
+      {de:40,  ate:999,   mult:2},
+    ],
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:79.99, pct:0.01},
+      {de:80,  ate:89.99, pct:0.015},
+      {de:90,  ate:100,   pct:0.02},
+      {de:100.01, ate:119.99, pct:0.025},
+      {de:120, ate:999,   pct:0.03},
+    ]
+  },
+  // ── BU Owner (Knowledge + Academy) ── só margem, multiplicador de salário
+  'buo-knd': {
+    id:'buo-knd', nome:'BU Owner — Knowledge+Academy', tipo:'margem', periodo:'trimestral', piso:35,
+    metaAnualMargem: 24150000,
+    // Multiplicadores de salário trimestral conforme atingimento de margem
+    faixas:[
+      {de:0,   ate:34.99, mult:0},    // abaixo do piso = 0
+      {de:35,  ate:99.99, mult:1},    // meta = 1×
+      {de:100, ate:114.3, mult:1.5},
+      {de:114.4, ate:128.5, mult:2},
+      {de:128.6, ate:999, mult:2.5},
+    ]
+  },
+  // ── B2C Academy ── faturamento mensal
+  'b2c': {
+    id:'b2c', nome:'B2C Academy', tipo:'fat', periodo:'mensal', piso:0,
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:89.99, pct:0.01},
+      {de:90,  ate:100,   pct:0.0125},
+      {de:100.01, ate:119.99, pct:0.015},
+      {de:120, ate:999,   pct:0.02},
+    ]
+  },
+  // ── BU Heads comerciais (ex-Líderes) ── faturamento mensal
+  'buh-com': {
+    id:'buh-com', nome:'BU Head Comercial', tipo:'fat', periodo:'mensal', piso:0,
+    faixas:[
+      {de:0,   ate:69.99, pct:0.00},
+      {de:70,  ate:89.99, pct:0.025},
+      {de:90,  ate:100,   pct:0.03},
+      {de:100.01, ate:119.99, pct:0.035},
+      {de:120, ate:999,   pct:0.04},
+    ]
+  },
+};
+
+// Regras adicionadas pelo utilizador
+let extraRegras = {};
+
+function getAllRegras(){ return {...REGRAS_RV, ...extraRegras}; }
+
+function getFaixaPct(regra, pctMeta){
+  // Returns {pct, mult} for a given % atingimento (0-based, i.e. 0.9 = 90%)
+  const pctPct = pctMeta * 100;
+  if(regra.tipo === 'margem'){
+    const f = regra.faixas.find(f => pctPct >= f.de && pctPct <= f.ate) || regra.faixas[0];
+    return {mult: f.mult || 0, pct: 0};
+  }
+  const f = regra.faixas.find(f => pctPct >= f.de && pctPct <= f.ate) || regra.faixas[0];
+  return {pct: f.pct || 0, mult: 1};
+}
+
+function getMargemMult(regra, margemPct){
+  // Returns multiplier for combined rules based on % of margin achieved
+  if(!regra.faixasMargem) return 1;
+  const pctPct = margemPct * 100;
+  const f = regra.faixasMargem.find(f => pctPct >= f.de && pctPct <= f.ate) || regra.faixasMargem[0];
+  return f.mult || 0;
+}
+
+/* ── Calc helpers ── */
+function calcRVFat(fat, meta, regra){
+  if(!meta) return {rv:0, pctMeta:0, pct:0, atingimento:0};
+  const pctMeta = fat/meta;
+  const {pct} = getFaixaPct(regra, pctMeta);
+  return {rv: fat*pct, pctMeta, pct, atingimento: pctMeta};
+}
+
+function calcRVCombinado(fat, metaFat, margemReal, metaMargem, regra){
+  if(!metaFat) return {rv:0, pctFat:0, pctMargem:0, pct:0, mult:1};
+  const pctFat = fat/metaFat;
+  const pctMargem = metaMargem>0 ? margemReal/metaMargem : 0;
+  const {pct} = getFaixaPct(regra, pctFat);
+  const mult = getMargemMult(regra, pctMargem);
+  const rv = fat * pct * mult;
+  return {rv, pctFat, pctMargem, pct, mult};
+}
+
+function calcRVMargem(margemReal, metaMargem, salTrimes, regra){
+  if(!metaMargem) return {rv:0, pctMargem:0, mult:0};
+  const pctMargem = margemReal/metaMargem;
+  const {mult} = getFaixaPct(regra, pctMargem);
+  const rv = salTrimes * mult;
+  return {rv, pctMargem, mult};
+}
+
+/* ── Render simulação RV para o tracking panel ── */
+function renderRVSimPanel(grp, personIdx, containerEl){
+  if(!containerEl) return;
+  const p = (people[grp]||[])[personIdx];
+  if(!p) return;
+  const regra = getAllRegras()[p.regraId];
+  if(!regra){
+    containerEl.innerHTML = `<div class="info-block" style="margin:0">Nenhuma regra de RV vinculada a esta pessoa. Edite o cadastro e seleccione uma regra.</div>`;
+    return;
+  }
+
+  const reals = getTrack(grp, personIdx);
+  const metas = getMetas12(grp, personIdx);
+
+  // Determine current Q (last quarter with any value)
+  const mesComValor = reals.map((v,i) => v>0 ? i : -1).filter(i=>i>=0);
+  const ultimoMes = mesComValor.length > 0 ? Math.max(...mesComValor) : 0;
+  const triIdx = Math.floor(ultimoMes/3);
+  const qStart = triIdx*3;
+
+  // Aggregate Q values
+  const fatQ = reals.slice(qStart, qStart+3).reduce((a,b)=>a+b,0);
+  const metaFatQ = metas.slice(qStart, qStart+3).reduce((a,b)=>a+b,0);
+  const metaMargemQ = p.metaMargemTri || 0;
+  const margemRealQ = p.margemRealTri || 0;
+
+  let html = `<div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">
+    Simulação RV — ${regra.nome} · Q${triIdx+1}</div>`;
+
+  if(regra.tipo === 'fat'){
+    const r = calcRVFat(fatQ, metaFatQ, regra);
+    html += rvSimCard(r.pctMeta, r.pct, r.rv, fatQ, metaFatQ, null, null, null, null);
+  } else if(regra.tipo === 'combinado'){
+    html += `<div class="grid2" style="gap:8px;margin-bottom:10px">
+      <div class="field"><label>Margem realizada Q${triIdx+1} (R$)</label>
+        <input type="number" class="rv-sim-input" value="${margemRealQ||''}" placeholder="0"
+          oninput="setPessoaMargemReal('${grp}',${personIdx},this.value)">
+      </div>
+      <div class="field"><label>Meta de margem Q${triIdx+1} (R$)</label>
+        <input type="number" class="rv-sim-input" value="${metaMargemQ||''}" placeholder="0"
+          oninput="setPessoaMetaMargem('${grp}',${personIdx},this.value)">
+      </div>
+    </div>`;
+    const r = calcRVCombinado(fatQ, metaFatQ, margemRealQ, metaMargemQ, regra);
+    html += rvSimCard(r.pctFat, r.pct, r.rv, fatQ, metaFatQ, r.pctMargem, r.mult, margemRealQ, metaMargemQ);
+  } else if(regra.tipo === 'margem'){
+    html += `<div class="grid2" style="gap:8px;margin-bottom:10px">
+      <div class="field"><label>Margem realizada Q${triIdx+1} (R$)</label>
+        <input type="number" class="rv-sim-input" value="${margemRealQ||''}" placeholder="0"
+          oninput="setPessoaMargemReal('${grp}',${personIdx},this.value)">
+      </div>
+      <div class="field"><label>Meta de margem Q${triIdx+1} (R$)</label>
+        <input type="number" class="rv-sim-input" value="${metaMargemQ||''}" placeholder="0"
+          oninput="setPessoaMetaMargem('${grp}',${personIdx},this.value)">
+      </div>
+    </div>`;
+    const salTri = (p.sal||0)*3;
+    const r = calcRVMargem(margemRealQ, metaMargemQ, salTri, regra);
+    html += rvSimCardMargem(r.pctMargem, r.mult, r.rv, margemRealQ, metaMargemQ, salTri);
+  }
+
+  containerEl.innerHTML = html;
+}
+
+function rvSimCard(pctFat, pctCom, rv, fat, metaFat, pctMargem, mult, margemReal, metaMargem){
+  const pctBar = Math.min((pctFat||0)/1.5,1)*100;
+  const bc = (pctFat||0)>=1.2?'badge-green':(pctFat||0)>=.9?'badge-blue':(pctFat||0)>=.7?'badge-amber':'badge-red';
+  let margemHtml = '';
+  if(pctMargem !== null){
+    const bcM = (pctMargem||0)>=.4?'badge-green':(pctMargem||0)>=.2?'badge-blue':'badge-red';
+    margemHtml = `<div class="result-row"><span class="result-key">Atingimento margem</span>
+      <span class="result-val"><span class="badge ${bcM}">${fmtPct(pctMargem||0)}</span></span></div>
+    <div class="result-row"><span class="result-key">Multiplicador de margem</span>
+      <span class="result-val mono">${(mult||0).toFixed(2)}×</span></div>`;
+  }
+  return `<div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:12px">
+    <span>${fmt(fat)} realizado</span>
+    <span class="badge ${bc}">${fmtPct(pctFat||0)} da meta</span>
+  </div>
+  <div class="result-block">
+    <div class="result-row"><span class="result-key">Meta faturamento</span><span class="result-val mono">${fmt(metaFat||0)}</span></div>
+    <div class="result-row"><span class="result-key">% comissão aplicada</span><span class="result-val mono">${fmtPct(pctCom||0)}</span></div>
+    ${margemHtml}
+    <div class="result-total"><span>RV estimada Q</span><span class="mono">${fmt(rv||0)}</span></div>
+  </div>`;
+}
+
+function rvSimCardMargem(pctMargem, mult, rv, margemReal, metaMargem, salTri){
+  const pctBar = Math.min((pctMargem||0)/1.5,1)*100;
+  const bc = (pctMargem||0)>=1.2?'badge-green':(pctMargem||0)>=.9?'badge-blue':(pctMargem||0)>=.35?'badge-amber':'badge-red';
+  return `<div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:12px">
+    <span>${fmt(margemReal||0)} realizado</span>
+    <span class="badge ${bc}">${fmtPct(pctMargem||0)} da meta</span>
+  </div>
+  <div class="result-block">
+    <div class="result-row"><span class="result-key">Meta margem Q</span><span class="result-val mono">${fmt(metaMargem||0)}</span></div>
+    <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri||0)}</span></div>
+    <div class="result-row"><span class="result-key">Multiplicador</span><span class="result-val mono">${(mult||0).toFixed(2)}×</span></div>
+    <div class="result-total"><span>RV estimada Q</span><span class="mono">${fmt(rv||0)}</span></div>
+  </div>`;
+}
+
+function setPessoaMargemReal(grp, idx, val){
+  const p = (people[grp]||[])[idx];
+  if(p) p.margemRealTri = parseFloat(val)||0;
+  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
+  renderRVSimPanel(grp, idx, container);
+  scheduleSave();
+}
+function setPessoaMetaMargem(grp, idx, val){
+  const p = (people[grp]||[])[idx];
+  if(p) p.metaMargemTri = parseFloat(val)||0;
+  const container = document.getElementById(`rv-sim-${grp}-${idx}`);
+  renderRVSimPanel(grp, idx, container);
+  scheduleSave();
+}
+
+/* ── Tabela de Faixas — render ── */
+function renderFaixasList(){
+  const el = document.getElementById('faixas-list');
+  if(!el) return;
+  const regras = getAllRegras();
+  el.innerHTML = Object.values(regras).map(r => {
+    const tipoLabel = r.tipo==='fat'?'Faturamento':r.tipo==='margem'?'Margem':'Combinado';
+    const periodLabel = r.periodo==='mensal'?'Mensal':r.periodo==='trimestral'?'Trimestral':'Anual';
+    const isCustom = !!extraRegras[r.id];
+    let tabelaHtml = '';
+    if(r.tipo==='margem'){
+      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">% Atingimento Margem</th>
+        <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">Multiplicador (× sal. tri.)</th></tr></thead>
+        <tbody>${r.faixas.map(f=>`<tr>
+          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
+          </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult}×</td>
+        </tr>`).join('')}</tbody></table>`;
+    } else {
+      const cols = r.tipo==='combinado' ? ['% Atingimento Fat.','% Comissão','Mult. Margem < Piso','Mult. Margem ≥ Piso'] : ['% Atingimento','% Comissão'];
+      tabelaHtml = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr>${['% Atingimento Faturamento','% Comissão s/ Fat. Líquido'].map(h=>`<th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px;text-transform:uppercase">${h}</th>`).join('')}</tr></thead>
+        <tbody>${r.faixas.map(f=>`<tr>
+          <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
+          </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace">${fmtPct(f.pct||0)}</td>
+        </tr>`).join('')}</tbody></table>`;
+      if(r.tipo==='combinado' && r.faixasMargem){
+        tabelaHtml += `<div style="margin-top:10px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px">Multiplicadores de Margem</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">% Margem Realizada</th>
+          <th style="text-align:center;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text-3);font-size:10px">Multiplicador</th></tr></thead>
+          <tbody>${r.faixasMargem.map(f=>`<tr>
+            <td style="padding:5px 8px;border-bottom:1px solid var(--border)">${f.de}%${f.ate<999?' – '+f.ate+'%':'+'}
+            </td><td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace">${f.mult}×</td>
+          </tr>`).join('')}</tbody></table>`;
+      }
+    }
+    const pisoHtml = r.piso>0 ? `<span class="badge badge-amber" style="margin-left:8px">Piso: ${r.piso}%</span>` : '';
+    return `<div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:13px;font-weight:600;color:var(--text);flex:1">${r.nome}</div>
+        <span class="badge badge-blue">${tipoLabel}</span>
+        <span class="badge badge-gray">${periodLabel}</span>
+        ${pisoHtml}
+        ${isCustom?`<button onclick="deleteRegra('${r.id}')" class="btn-sm" style="margin-left:auto">Apagar</button>`:''}
+      </div>
+      <div class="tbl-wrap">${tabelaHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function deleteRegra(id){
+  delete extraRegras[id];
+  renderFaixasList();
+  scheduleSave();
+}
+
+/* ── Nova Regra ── */
+function toggleNrTipo(){
+  const tipo = document.getElementById('nr-tipo').value;
+  document.getElementById('nr-margem-mult-wrap').style.display = tipo==='combinado'?'block':'none';
+  document.getElementById('nr-fat-wrap').style.display = tipo==='margem'?'none':'block';
+}
+function addNrFaixa(){
+  const wrap = document.getElementById('nr-faixas-wrap');
+  const row = document.createElement('div');
+  row.className = 'nr-faixa-row';
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 80px auto;gap:8px;margin-bottom:6px';
+  row.innerHTML = `<input type="number" placeholder="De (% meta)" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
+    <input type="number" placeholder="% com." step="0.01" style="height:30px;padding:0 8px;border:1px solid var(--border-mid);border-radius:4px;font-size:12px;background:var(--surface);color:var(--text)">
+    <button onclick="removeNrFaixa(this)" style="height:30px;width:30px;border:1px solid var(--border-mid);border-radius:4px;background:none;cursor:pointer;color:var(--text-3);font-size:14px">×</button>`;
+  wrap.appendChild(row);
+}
+function removeNrFaixa(btn){ btn.parentElement.remove(); }
+function clearNrForm(){
+  document.getElementById('nr-nome').value='';
+  document.getElementById('nr-piso').value='0';
+  document.getElementById('nr-tipo').value='fat';
+  document.getElementById('nr-periodo').value='mensal';
+  document.getElementById('nr-faixas-wrap').innerHTML='';
+  toggleNrTipo();
+  addNrFaixa();
+}
+function saveNovaRegra(){
+  const nome = document.getElementById('nr-nome').value.trim();
+  if(!nome){alert('Dê um nome à regra.');return;}
+  const tipo = document.getElementById('nr-tipo').value;
+  const periodo = document.getElementById('nr-periodo').value;
+  const piso = parseFloat(document.getElementById('nr-piso').value)||0;
+  const rows = document.querySelectorAll('#nr-faixas-wrap .nr-faixa-row');
+  const faixas = [];
+  rows.forEach((row,i) => {
+    const inputs = row.querySelectorAll('input[type=number]');
+    const de = parseFloat(inputs[0].value)||0;
+    const pct = parseFloat(inputs[1].value)||0;
+    const ate = i<rows.length-1 ? (parseFloat(rows[i+1].querySelectorAll('input[type=number]')[0].value)||0)-0.01 : 999;
+    if(de>0||pct>0) faixas.push({de, ate, pct: pct/100});
+  });
+  if(faixas.length===0){alert('Adicione pelo menos uma faixa.');return;}
+  const id = 'custom-'+Date.now();
+  const regra = {id, nome, tipo, periodo, piso, faixas};
+  if(tipo==='combinado'){
+    regra.faixasMargem = [0,1,2,3,4,5].map(i=>({
+      de: [0,piso,25,30,35,40][i],
+      ate: [piso-0.01,24.99,29.99,34.99,39.99,999][i],
+      mult: parseFloat(document.getElementById('nr-mm'+i).value)||0
+    }));
+  }
+  extraRegras[id] = regra;
+  renderFaixasList();
+  clearNrForm();
+  scheduleSave();
+}
+
 /* ===== CALC B2B ===== */
+function getFaixaIdx(acum,qi){
+  const gatilhos=[[240000,360000,480000,600000,744000,864000],[400000,600000,800000,1000000,1240000,1440000],[620000,930000,1240000,1550000,1920000,2230000],[740000,1110000,1480000,1850000,2290000,2660000]];
+  const g=gatilhos[qi];let fi=0;
+  for(let i=g.length-1;i>=0;i--){if(acum>=g[i]){fi=i+1;break;}}
+  return fi;
+}
+const FAIXAS=[{pct:.01},{pct:.025},{pct:.0275},{pct:.03},{pct:.0325},{pct:.04},{pct:.05}];
+
 function calcB2B(){
   const nome=document.getElementById('b2b-nome').value||'KAM';
   const sal=parseFloat(document.getElementById('b2b-salario').value)||0;
@@ -1389,35 +1817,23 @@ function calcB2B(){
   const xSal=sal>0?grand/(sal*12):0;
   const bc=pctT>=1.2?'badge-green':pctT>=.9?'badge-blue':pctT>=.7?'badge-amber':'badge-red';
   const bl=pctT>=1.2?'Excelente':pctT>=.9?'Meta atingida':pctT>=.7?'Em desenvolvimento':'Abaixo da meta';
-
-  // Meta panel B2B — usa metas mensais reais se pessoa selecionada tiver o objeto metas
   const b2bPerson=people.b2b[selectedPerson.b2b];
   if(b2bPerson&&b2bPerson.metas){
     const t=b2bPerson.metas;
-    // Detecta trimestre atual: último Q com valor nos inputs
-    const qAcums=[qvals[0],qvals[0]+qvals[1],qvals[0]+qvals[1]+qvals[2],qvals.reduce((a,b)=>a+b,0)];
     const lastQFilled=[...qvals].reverse().findIndex(v=>v>0);
     const qAtualIdx=lastQFilled>=0?3-lastQFilled:0;
     const metasQ=[t.q1,t.q2,t.q3,t.q4];
     const metaTri=metasQ[qAtualIdx]||0;
     const realTri=qvals[qAtualIdx]||0;
-    const metaMensal=t.m[qAtualIdx*3]||0; // primeiro mês do trimestre atual como referência
-    renderMetaPanel('b2b-meta-panel',{
-      metaMensal, metaTrimestral:metaTri, metaAnual:t.anual,
-      realMes:realTri/3, realTri, realAno:qvals.reduce((a,b)=>a+b,0)
-    });
+    const metaMensal=t.m[qAtualIdx*3]||0;
+    renderMetaPanel('b2b-meta-panel',{metaMensal,metaTrimestral:metaTri,metaAnual:t.anual,realMes:realTri/3,realTri,realAno:qvals.reduce((a,b)=>a+b,0)});
   } else {
-    // Sem pessoa selecionada: usa metaKAM dividida uniformemente
     const metaTri=metaKAM/4;
     const lastQWithVal=[...qvals].reverse().findIndex(v=>v>0);
     const qAtualIdx=lastQWithVal>=0?3-lastQWithVal:0;
     const realTri=qvals[qAtualIdx]||0;
-    renderMetaPanel('b2b-meta-panel',{
-      metaMensal:metaKAM/12, metaTrimestral:metaTri, metaAnual:metaKAM,
-      realMes:realTri/3, realTri, realAno:qvals.reduce((a,b)=>a+b,0)
-    });
+    renderMetaPanel('b2b-meta-panel',{metaMensal:metaKAM/12,metaTrimestral:metaTri,metaAnual:metaKAM,realMes:realTri/3,realTri,realAno:qvals.reduce((a,b)=>a+b,0)});
   }
-
   document.getElementById('b2b-metrics').innerHTML=`
     <div class="metric-card"><div class="metric-label">Comissão Total Anual</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
     <div class="metric-card"><div class="metric-label">% Atingimento</div><div class="metric-value">${fmtPct(pctT)}</div><div class="metric-sub"><span class="badge ${bc}">${bl}</span></div></div>
@@ -1434,14 +1850,13 @@ function calcB2B(){
   </tr>`).join('')+`<tr class="row-total"><td colspan="9" style="text-align:right">Total</td><td class="mono">${fmt(grand)}</td></tr>`;
 }
 
-/* ===== CALC MENSAL ===== */
+/* ===== CALC MENSAL (B2C e BU Heads comerciais) ===== */
 function calcMensal(fat,meta,sal,pcts){
   const pct=meta>0?fat/meta:0;
-  let fi=pct<.5?0:pct<.7?1:pct<.9?2:pct<=1?3:pct<1.2?4:5;
-  const comBase=fi<=3?fat*pcts[fi]:fat*pcts[3];
-  const extra=[0,0,0,0,1,2][fi]*sal;
-  const total=comBase+extra;
-  return{pct,fi,comBase,extra,total,xSal:sal>0?total/sal:0,appliedPct:pcts[Math.min(fi,3)]};
+  let fi=pct<.7?0:pct<.9?1:pct<=1?2:pct<1.2?3:4;
+  const comBase=fat*(pcts[Math.min(fi,pcts.length-1)]||0);
+  const total=comBase;
+  return{pct,fi,comBase,extra:0,total,xSal:sal>0?total/sal:0,appliedPct:pcts[Math.min(fi,pcts.length-1)]||0};
 }
 function renderMensalResult(el,res,meta,sal){
   const pctBar=Math.min(res.pct/1.5,1)*100;
@@ -1457,7 +1872,6 @@ function renderMensalResult(el,res,meta,sal){
   <div class="result-block">
     <div class="result-row"><span class="result-key">% aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
     <div class="result-row"><span class="result-key">Comissão base</span><span class="result-val mono">${fmt(res.comBase)}</span></div>
-    <div class="result-row"><span class="result-key">Bônus extra (>100%)</span><span class="result-val mono">${fmt(res.extra)}</span></div>
     <div class="result-total"><span>Comissão total</span><span class="mono">${fmt(res.total)}</span></div>
     <div style="font-size:11px;color:var(--text-3);margin-top:8px">${res.xSal.toFixed(2)}x o salário fixo mensal</div>
   </div>`;
@@ -1467,19 +1881,17 @@ function calcB2C(){
   const sal=parseFloat(document.getElementById('b2c-sal').value)||0;
   const meta=parseFloat(document.getElementById('b2c-meta').value)||0;
   const fat=parseFloat(document.getElementById('b2c-fat').value)||0;
-  const res=calcMensal(fat,meta,sal,[.01,.0125,.015,.02]);
+  const res=calcMensal(fat,meta,sal,[0,.01,.0125,.015,.02]);
   renderMensalResult(document.getElementById('b2c-result'),res,meta,sal);
   const pctMeta=meta>0?fat/meta:0;
   const sab=calcSABBonus(SAB_B2C,fat,pctMeta,'sab-b2c-grid');
   const sabEl=document.getElementById('b2c-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
-  // Meta panel
   renderMetaPanel('b2c-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
-  const faixaLabels=['Até 49,9%','50–69,99%','70–89,99%','90–100%','100,01–119,99%','≥ 120%'];
-  const pcts=[.01,.0125,.015,.02];
-  const comEx=[fat*.01,fat*.0125,fat*.015,fat*.02,fat*.02+sal,fat*.02+2*sal];
+  const faixaLabels=['< 70%','70–89,99%','90–100%','100,01–119,99%','≥ 120%'];
+  const pcts=[0,.01,.0125,.015,.02];
   document.querySelector('#b2c-faixas-tbl tbody').innerHTML=faixaLabels.map((lbl,i)=>`<tr class="${res.fi===i?'faixa-ativa':''}">
-    <td>${i+1}</td><td>${lbl}</td><td class="mono">${i<4?fmtPct(pcts[i]):'+'+(i-3)+' salário'}</td>
-    <td class="mono">${fmt(comEx[i])}</td><td class="mono">${sal>0?(comEx[i]/sal).toFixed(2)+'x':'—'}</td>
+    <td>${i+1}</td><td>${lbl}</td><td class="mono">${fmtPct(pcts[i])}</td>
+    <td class="mono">${fmt(fat*pcts[i])}</td><td class="mono">${sal>0?(fat*pcts[i]/sal).toFixed(2)+'x':'—'}</td>
   </tr>`).join('');
 }
 
@@ -1487,112 +1899,95 @@ function calcLC(){
   const sal=parseFloat(document.getElementById('lc-sal').value)||0;
   const meta=parseFloat(document.getElementById('lc-meta').value)||0;
   const fat=parseFloat(document.getElementById('lc-fat').value)||0;
-  const res=calcMensal(fat,meta,sal,[.025,.0275,.0285,.03]);
+  const res=calcMensal(fat,meta,sal,[0,.025,.03,.035,.04]);
   renderMensalResult(document.getElementById('lc-result'),res,meta,sal);
   const pctMeta=meta>0?fat/meta:0;
   const sab=calcSABBonus(SAB_LC,fat,pctMeta,'sab-lc-grid');
   const sabEl=document.getElementById('lc-sab-total');if(sabEl)sabEl.textContent=fmt(sab);
-  // Meta panel
   renderMetaPanel('lc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
 }
 
 function calcHC(){
+  // BU Owner: trimestral, só margem, multiplicador de salário trimestral
   const nome=document.getElementById('hc-nome').value;
   const sal=parseFloat(document.getElementById('hc-sal').value)||0;
-  const meta=parseFloat(document.getElementById('hc-meta').value)||0;
-  const fat=parseFloat(document.getElementById('hc-fat').value)||0;
-  const mbMeta=parseFloat(document.getElementById('hc-mb-meta').value)||0;
-  const mbReal=parseFloat(document.getElementById('hc-mb-real').value)||0;
+  const meta=parseFloat(document.getElementById('hc-meta').value)||0; // meta trimestral de margem
+  const fat=parseFloat(document.getElementById('hc-fat').value)||0;   // realizado (usado p/ referência fat)
+  const mbMeta=parseFloat(document.getElementById('hc-mb-meta').value)||0; // meta margem tri
+  const mbReal=parseFloat(document.getElementById('hc-mb-real').value)||0; // margem realizada tri
 
-  // Margem bruta: piso = 40% da meta de receita
-  const piso=meta*0.4;
-  const mbPct=mbMeta>0?mbReal/mbMeta:0; // % atingimento da meta de margem
-  const pisoAtingido=mbMeta<=0||mbReal>=piso; // se não definiu meta MB, não bloqueia
+  // BU Owner usa margem trimestral e multiplicador de salário
+  const metaMargem = mbMeta || meta;
+  const pctMargem = metaMargem>0 ? mbReal/metaMargem : 0;
+  const pctPct = pctMargem*100;
+  // Piso 35% → abaixo = 0
+  const pisoAtingido = pctPct >= 35 || mbMeta<=0;
+  let mult = 0;
+  if(pisoAtingido && mbMeta>0){
+    if(pctPct<100) mult=1;
+    else if(pctPct<114.4) mult=1.5;
+    else if(pctPct<128.6) mult=2;
+    else mult=2.5;
+  }
+  const salTri = sal*3;
+  const rv = salTri * mult;
+  const sabBruto=calcSABBonus(SAB_HEAD,fat>0?fat:mbReal,meta>0?fat/meta:0,'sab-hc-grid');
+  const sab=sabBruto*(pisoAtingido?1:0);
+  document.getElementById('hc-sab-total').textContent=fmt(sab);
+  const grand=rv+sab;
+  const xSal=sal>0?rv/sal:0;
 
-  // Fator de proporcionalidade: atingimento da margem / 100% (cap 1)
-  // Se abaixo do piso → fator 0; acima → proporcional ao % atingimento
-  const fatorMB=!pisoAtingido?0:Math.min(mbPct,1);
-
-  // Status margem bruta
   const mbStatusEl=document.getElementById('hc-mb-status');
   if(mbMeta>0){
     if(!pisoAtingido){
       mbStatusEl.innerHTML=`<div style="background:var(--red-light);border:1px solid rgba(179,48,0,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--red)">
-        <strong>Piso não atingido</strong> — Margem realizada (${fmt(mbReal)}) abaixo do piso mínimo de 40% da meta de receita (${fmt(piso)}). RV = R$ 0.
-      </div>`;
+        <strong>Piso não atingido (35%)</strong> — Margem realizada (${fmt(mbReal)}) = ${fmtPct(pctMargem)} da meta. RV = R$ 0.</div>`;
     } else {
       mbStatusEl.innerHTML=`<div style="background:var(--accent-light);border:1px solid rgba(29,107,78,.2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--accent-text)">
-        <strong>Piso atingido</strong> — Fator de margem: ${fmtPct(fatorMB)} · Comissão base × ${fatorMB.toFixed(2)}
-      </div>`;
+        <strong>Piso atingido</strong> — ${fmtPct(pctMargem)} de atingimento · Multiplicador: ${mult}× · RV = ${mult}× salário trimestral</div>`;
     }
   } else {
-    mbStatusEl.innerHTML=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--text-3)">Meta de margem bruta não definida — fator de margem não aplicado.</div>`;
+    mbStatusEl.innerHTML=`<div style="background:var(--surface2);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--text-3)">Informe a meta de margem e o realizado para calcular a RV do BU Owner.</div>`;
   }
 
-  // Meta panel — usa metas mensais reais da tabela
   const hcPerson=people.hc[selectedPerson.hc];
   if(hcPerson&&hcPerson.metas){
     const mesIdx=hcMesAtual[selectedPerson.hc]??0;
     const t=hcPerson.metas;
     const metaMes=t.m[mesIdx];
-    const triIdx=Math.floor(mesIdx/3); // 0=Q1..3=Q4
+    const triIdx=Math.floor(mesIdx/3);
     const metaTri=[t.q1,t.q2,t.q3,t.q4][triIdx];
-    // realizado trimestre = fat informado para o mês × posição no trimestre (parcial)
-    const posNoTri=(mesIdx%3)+1; // 1=primeiro mês do tri, 2=segundo, 3=terceiro
-    // meses anteriores no mesmo trimestre somam suas metas (como referência); fat = realizado do mês
-    const mesesAntTri=t.m.slice(triIdx*3, mesIdx).reduce((a,b)=>a+b,0);
+    const mesesAntTri=t.m.slice(triIdx*3,mesIdx).reduce((a,b)=>a+b,0);
     const realTri=mesesAntTri+fat;
-    renderMetaPanel('hc-meta-panel',{
-      metaMensal:metaMes, metaTrimestral:metaTri, metaAnual:t.anual,
-      realMes:fat, realTri, realAno:fat // realAno = fat do mês atual como referência
-    });
+    renderMetaPanel('hc-meta-panel',{metaMensal:metaMes,metaTrimestral:metaTri,metaAnual:t.anual,realMes:fat,realTri,realAno:fat});
   } else {
-    renderMetaPanel('hc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:fat,realTri:fat*3,realAno:fat*12});
+    renderMetaPanel('hc-meta-panel',{metaMensal:meta,metaTrimestral:meta*3,metaAnual:meta*12,realMes:mbReal,realTri:mbReal,realAno:mbReal});
   }
 
-  // Calcula comissão base (sem fator de margem ainda)
-  const res=calcMensal(fat,meta,sal,[.025,.028,.031,.035]);
-
-  // Aplica fator de margem sobre comissão base
-  const comComFator=res.total*fatorMB;
-
-  // SAB (também sofre fator de margem)
-  const pctMeta=meta>0?fat/meta:0;
-  const sabBruto=calcSABBonus(SAB_HEAD,fat,pctMeta,'sab-hc-grid');
-  const sab=sabBruto*fatorMB;
-  document.getElementById('hc-sab-total').textContent=fmt(sab);
-
-  const grand=comComFator+sab;
-  const xSal=sal>0?grand/sal:0;
-  const bc=pctMeta>=1.2?'badge-green':pctMeta>=.9?'badge-blue':pctMeta>=.7?'badge-amber':'badge-red';
-
-  // Render resultado (mostra comissão ajustada)
-  const pctBar=Math.min(pctMeta/1.5,1)*100;
-  const bcR=pctMeta>=1.2?'badge-green':pctMeta>=.9?'badge-blue':pctMeta>=.7?'badge-amber':'badge-red';
   document.getElementById('hc-result').innerHTML=`
     <div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-        <span style="color:var(--text-2)">Atingimento receita</span><span class="badge ${bcR}">${fmtPct(pctMeta)}</span>
+        <span style="color:var(--text-2)">Atingimento margem</span>
+        <span class="badge ${pctPct>=100?'badge-green':pctPct>=35?'badge-blue':'badge-red'}">${fmtPct(pctMargem)}</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pctBar.toFixed(1)}%"></div></div>
-      <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta: ${fmt(meta)}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pctPct/1.5,100).toFixed(1)}%"></div></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:3px">Meta margem: ${fmt(metaMargem)}</div>
     </div>
     <div class="divider"></div>
     <div class="result-block">
-      <div class="result-row"><span class="result-key">% comissão aplicada</span><span class="result-val mono">${fmtPct(res.appliedPct)}</span></div>
-      <div class="result-row"><span class="result-key">Comissão bruta (s/ fator MB)</span><span class="result-val mono">${fmt(res.total)}</span></div>
-      <div class="result-row"><span class="result-key">Fator margem bruta</span><span class="result-val mono">${fmtPct(fatorMB)}</span></div>
-      <div class="result-row"><span class="result-key">Comissão c/ fator MB</span><span class="result-val mono">${fmt(comComFator)}</span></div>
-      <div class="result-row"><span class="result-key">Bônus SAB (c/ fator MB)</span><span class="result-val mono">${fmt(sab)}</span></div>
-      <div class="result-total"><span>Total RV</span><span class="mono">${fmt(grand)}</span></div>
-      <div style="font-size:11px;color:var(--text-3);margin-top:8px">${xSal.toFixed(2)}x o salário fixo mensal</div>
+      <div class="result-row"><span class="result-key">Salário trimestral</span><span class="result-val mono">${fmt(salTri)}</span></div>
+      <div class="result-row"><span class="result-key">Multiplicador aplicado</span><span class="result-val mono">${mult}×</span></div>
+      <div class="result-row"><span class="result-key">RV base (margem)</span><span class="result-val mono">${fmt(rv)}</span></div>
+      <div class="result-row"><span class="result-key">Bônus SAB</span><span class="result-val mono">${fmt(sab)}</span></div>
+      <div class="result-total"><span>Total RV no trimestre</span><span class="mono">${fmt(grand)}</span></div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:8px">${xSal.toFixed(2)}× o salário mensal fixo</div>
     </div>`;
 
   document.getElementById('hc-metrics').innerHTML=`
-    <div class="metric-card"><div class="metric-label">Total RV</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
-    <div class="metric-card"><div class="metric-label">Fator Margem Bruta</div><div class="metric-value">${fmtPct(fatorMB)}</div><div class="metric-sub">${pisoAtingido||mbMeta<=0?'Piso atingido':'⚠ Abaixo do piso'}</div></div>
-    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(sab)}</div><div class="metric-sub">após fator MB</div></div>
-    <div class="metric-card"><div class="metric-label">x Salário mensal</div><div class="metric-value">${xSal.toFixed(2)}x</div><div class="metric-sub">multiplicador</div></div>`;
+    <div class="metric-card"><div class="metric-label">Total RV Tri.</div><div class="metric-value mono">${fmt(grand)}</div><div class="metric-sub">${nome}</div></div>
+    <div class="metric-card"><div class="metric-label">Multiplicador</div><div class="metric-value">${mult}×</div><div class="metric-sub">${pisoAtingido||mbMeta<=0?'Piso atingido':'⚠ Abaixo do piso'}</div></div>
+    <div class="metric-card"><div class="metric-label">Bônus SAB</div><div class="metric-value mono">${fmt(sab)}</div><div class="metric-sub">no trimestre</div></div>
+    <div class="metric-card"><div class="metric-label">x Salário mensal</div><div class="metric-value">${xSal.toFixed(2)}×</div><div class="metric-sub">multiplicador</div></div>`;
 }
 
 /* ===== RANKING ===== */
@@ -1708,7 +2103,7 @@ renderSABGrid('sab-b2b-grid',SAB_KAM);
 renderSABGrid('sab-hc-grid',SAB_HEAD);
 renderSABGrid('sab-b2c-grid',SAB_B2C);
 renderSABGrid('sab-lc-grid',SAB_LC);
-calcB2B();calcB2C();calcLC();calcHC();renderRanking();
+calcB2B();calcB2C();calcLC();calcHC();renderRanking();renderFaixasList();
 
 /* ===== PDL — LÍDERES OUTRAS ÁREAS ===== */
 const STATUS_LABELS={pendente:'Pendente',andamento:'Em andamento',concluido:'Concluído'};
@@ -1830,8 +2225,8 @@ function allPeople(){
   const groups=[
     {grp:'b2b',label:'B2B — KAMs',      tagCls:'dir-tag-b2b',tab:'b2b'},
     {grp:'b2c',label:'B2C — Academy',   tagCls:'dir-tag-b2c',tab:'b2c'},
-    {grp:'lc', label:'Líderes Comerciais',tagCls:'dir-tag-lc',tab:'lideres',tagLabel:'Líder Com.'},
-    {grp:'hc', label:'Head Comercial',  tagCls:'dir-tag-hc',tab:'head'},
+    {grp:'lc', label:'BU Heads',tagCls:'dir-tag-lc',tab:'lideres',tagLabel:'BU Head'},
+    {grp:'hc', label:'BU Owners',  tagCls:'dir-tag-hc',tab:'head'},
   ];
   const result=[];
   groups.forEach(g=>{
@@ -1903,11 +2298,17 @@ function renderDiretorio(filter){
     </div>`).join('');
 }
 
-// Intercept showTab to refresh directory when opened
+// Intercept showTab to refresh directory and regra selectors when opened
 const _showTabOrig=showTab;
 window.showTab=function(id,btn){
   _showTabOrig(id,btn);
   if(id==='dir')renderDiretorio(document.getElementById('dir-search')?.value||'');
+  if(id==='faixas')renderFaixasList();
+  // Populate regra selectors in add-person forms
+  populateRegraSelector('b2b-p-regra','kam');
+  populateRegraSelector('b2c-p-regra','b2c');
+  populateRegraSelector('lc-p-regra','buh-com');
+  populateRegraSelector('hc-p-regra','buo-knd');
 };
 
 /* ===== PERSISTÊNCIA — NETLIFY BLOBS ===== */
